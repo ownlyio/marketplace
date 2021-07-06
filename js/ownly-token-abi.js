@@ -8,11 +8,6 @@ let ownlyTokenABI = [
             },
             {
                 "internalType": "string",
-                "name": "baseURI_",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
                 "name": "name_",
                 "type": "string"
             },
@@ -97,12 +92,18 @@ let ownlyTokenABI = [
         "inputs": [
             {
                 "internalType": "string",
-                "name": "newBaseURI",
+                "name": "tokenURI",
                 "type": "string"
             }
         ],
-        "name": "changeBaseURI",
-        "outputs": [],
+        "name": "createToken",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
