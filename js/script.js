@@ -6,8 +6,9 @@ let updateConnectToWallet = () => {
     if(ethereum.selectedAddress) {
         $("#connect-to-metamask").addClass("d-none");
 
-        $("#account-address").html(ethereum.selectedAddress);
-        $("#account-address").removeClass("d-none");
+        let accountAddress = $("#account-address");
+        accountAddress.text(ethereum.selectedAddress);
+        accountAddress.removeClass("d-none");
     } else {
         $("#account-address").addClass("d-none");
         $("#connect-to-metamask").removeClass("d-none");
@@ -49,7 +50,10 @@ $(document).ready(function() {
                 content += '                <div class="token-name"></div>';
                 content += '            </div>';
                 content += '            <div class="card-body">';
-                content += '                <img class="w-100" alt="Token ' + i + '" />';
+                content += '                <img class="w-100 autoFix" alt="Token ' + i + '" />';
+                content += '            </div>';
+                content += '            <div class="card-footer">';
+                content += '                <a href="" target="_blank" class="btn btn-primary view-original">View Original</a>';
                 content += '            </div>';
                 content += '        </div>';
                 content += '    </div>';
@@ -61,13 +65,22 @@ $(document).ready(function() {
                 getTokenURI(i)
                     .then(function(tokenURI) {
                         $.get(tokenURI, function(metadata) {
-                            $(".token-card[data-token-id='" + i + "']").find("img").attr("src", metadata.image);
-                            $(".token-card[data-token-id='" + i + "']").find(".token-name").text(metadata.name);
+                            let tokenCard = $(".token-card[data-token-id='" + i + "']");
+
+                            tokenCard.find(".token-name").text(metadata.name);
+                            tokenCard.find("img").attr("src", metadata.thumbnail);
+                            tokenCard.find(".view-original").attr("href", metadata.image);
                         });
                     });
             }
         });
 
+});
+
+$("img.autoFix").on("error", function(){
+    console.log(this.src);
+    let src = this.src;
+    this.src = src.substr(0, src.indexOf('?')) + '?t=' + new Date().getTime()
 });
 
 $(document).on("click", "#connect-to-metamask", async() => {
