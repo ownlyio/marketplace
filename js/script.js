@@ -59,8 +59,6 @@ let displayTokens = () => {
                 }
             }
 
-            console.log(marketItemsForSale);
-
             getTotalSupply(1)
                 .then(function(result) {
                     let content = '';
@@ -204,12 +202,16 @@ $(document).on("click", "#approve", function() {
     approveButton = $("#approveButton");
     approveButton.prop("disabled", true);
 
-    approve($(this).val())
+    let tokenID = $(this).val();
+
+    approve(tokenID)
         .on('transactionHash', function(hash){
             $("#modal-approve").modal("hide");
             alertProcessing = alertify.message('Processing...', 0);
         }).then(function(receipt) {
             alertProcessing.dismiss();
+
+            $("#create-market-item").val(tokenID);
             $("#modal-create-market-item").modal("show");
         });
 });
