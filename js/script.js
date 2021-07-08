@@ -1,5 +1,5 @@
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-let ownlyMarketplaceAddress = "0xE0d03cC0b307303680c4ba63a89b77689C0d8283";
+let ownlyMarketplaceAddress = "0x7c006e9ac84A8e5dC1416e10a252fc025899D2de";
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -58,7 +58,7 @@ let displayTokens = () => {
                     };
                 }
             }
-
+            console.log(marketItemsForSale);
             getTotalSupply(1)
                 .then(function(result) {
                     let content = '';
@@ -74,7 +74,9 @@ let displayTokens = () => {
                         content += '            <div class="card-footer">';
                         content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            content += '            <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy - ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether")  + ' ETH</button>';
+                            if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== ethereum.selectedAddress) {
+                                content += '        <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy | ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' ETH</button>';
+                            }
                         } else {
                             content += '            <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
                         }
@@ -141,6 +143,8 @@ let createMarketItem = (id, price) => {
     });
 };
 let createMarketSale = (id, price) => {
+    console.log(id);
+    console.log(price);
     return ownlyMarketplaceContract.methods.createMarketSale(id).send({
         from: ethereum.selectedAddress,
         value: price
@@ -152,6 +156,7 @@ let fetchMarketItems = () => {
 
 ethereum.on('accountsChanged', (accounts) => {
     updateConnectToWallet();
+    displayTokens();
 });
 
 $(window).on("load", async () => {
