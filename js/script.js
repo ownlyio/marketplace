@@ -1,5 +1,5 @@
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-let ownlyMarketplaceAddress = "0xf72FB8d38798AA1C543a5E7F0593D674b4D48584";
+let ownlyMarketplaceAddress = "0xE0d03cC0b307303680c4ba63a89b77689C0d8283";
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -73,17 +73,18 @@ let displayTokens = () => {
                         content += '            </div>';
                         content += '            <div class="card-footer">';
                         content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
-                        if(marketItemsForSale[ownlyContractAddress][i]) {
-                            content += '            <button class="btn btn-secondary w-100 buy-token-confirmation" data-token-id="' + i + '">Buy - ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether")  + ' ETH</button>';
+                        if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
+                            content += '            <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy - ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether")  + ' ETH</button>';
                         } else {
-                            content += '            <button class="btn btn-secondary w-100 sell-token-confirmation" data-token-id="' + i + '">Sell</button>';
+                            content += '            <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
                         }
+                        content += '                <small>Owner: <span class="owner"></span></small>';
                         content += '            </div>';
                         content += '        </div>';
                         content += '    </div>';
-
-                        $("#tokens-container").html(content);
                     }
+
+                    $("#tokens-container").html(content);
 
                     for(let i = 1; i <= result; i++) {
                         getTokenURI(i)
@@ -99,15 +100,13 @@ let displayTokens = () => {
                             });
 
                         getOwnerOf(i)
-                            .then(function(tokenURI) {
-                                $.get(tokenURI, function(metadata) {
-                                    let tokenCard = $(".token-card[data-token-id='" + i + "']");
+                            .then(function(owner) {
+                                let tokenCard = $(".token-card[data-token-id='" + i + "']");
+                                tokenCard.find(".owner").text(owner);
 
-                                    tokenCard.find(".token-name").text(metadata.name);
-                                    tokenCard.find("img").attr("src", metadata.thumbnail);
-                                    tokenCard.find("img").removeClass("d-none");
-                                    tokenCard.find(".view-original").attr("href", metadata.image);
-                                });
+                                if(owner.toLowerCase() === ethereum.selectedAddress) {
+                                    tokenCard.find(".sell-token-confirmation").removeClass("d-none");
+                                }
                             });
                     }
                 });
@@ -139,6 +138,12 @@ let createMarketItem = (id, price) => {
     return ownlyMarketplaceContract.methods.createMarketItem(ownlyContractAddress, id, web3.utils.toWei(price, 'ether')).send({
         from: ethereum.selectedAddress,
         value: listingPrice
+    });
+};
+let createMarketSale = (id, price) => {
+    return ownlyMarketplaceContract.methods.createMarketSale(id).send({
+        from: ethereum.selectedAddress,
+        value: price
     });
 };
 let fetchMarketItems = () => {
@@ -233,4 +238,28 @@ $(document).on("click", "#create-market-item", function() {
                 displayTokens();
             });
     }
+});
+
+$(document).on("click", ".create-market-sale-confirmation", function() {
+    let createMarketSaleButton = $("#create-market-sale");
+
+    createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
+    createMarketSaleButton.val($(this).attr("data-item-id"));
+
+    $("#modal-create-market-sale").modal("show");
+});
+
+$(document).on("click", "#create-market-sale", function() {
+    $("#modal-create-market-sale").modal("hide");
+
+    createMarketSale($(this).val(), $(this).attr("data-price"))
+        .on('transactionHash', function(transactionHash){
+            alertProcessing = alertify.message('Processing...', 0);
+        }).on('error', function(error){
+            alertProcessing.dismiss();
+            alertError = alertify.message(error, 0);
+        }).then(function(receipt) {
+            alertProcessing.dismiss();
+            displayTokens();
+        });
 });

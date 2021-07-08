@@ -567,11 +567,6 @@ let marketplaceAbi = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "nftContract",
-                "type": "address"
-            },
-            {
                 "internalType": "uint256",
                 "name": "itemId",
                 "type": "uint256"
