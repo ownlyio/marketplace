@@ -1,4 +1,4 @@
-let env = "production";
+let env = "local";
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
 let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
 let url = (env === "production") ? "https://ownly.io/dev-marketplace/" : "http://ownlyio.dev-marketplace.test/";
@@ -107,10 +107,8 @@ let displayTokens = () => {
                         content += '            <div class="font-size-180 py-2 token-name"></div>';
                         // content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== ethereum.selectedAddress) {
-                                content += '    <div class="font-size-130 token-price">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
-                                // content += '        <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy | ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</button>';
-                            }
+                            content += '    <div class="font-size-130 token-price">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+
                         } else {
                             // content += '        <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
                         }
