@@ -1,5 +1,7 @@
+let env = "production";
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
 let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+let url = (env === "production") ? "https://ownly.io/dev-marketplace/" : "http://ownlyio.dev-marketplace.test/";
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -28,14 +30,14 @@ let initializePage = () => {
     let token = findGetParameter("token");
 
     if(contract && token) {
-        pageContent.load("../token.html", function() {
+        pageContent.load(url + "js/../token.html", function() {
             currentPage = "token";
 
             displayToken(token);
             app.removeClass("d-none");
         });
     } else {
-        pageContent.load("../home.html", function() {
+        pageContent.load(url + "js/../home.html", function() {
             currentPage = "home";
             displayTokens();
 
