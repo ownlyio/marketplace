@@ -1,5 +1,5 @@
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-let ownlyMarketplaceAddress = "0x7c006e9ac84A8e5dC1416e10a252fc025899D2de";
+let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -8,13 +8,47 @@ let alertError;
 let approveButton;
 let marketItemsForSale;
 let listingPrice;
+let currentPage;
 
+let findGetParameter = (parameterName) => {
+    let result = null,
+        tmp = [];
+    let items = location.search.substr(1).split("&");
+    for (let index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+};
+let initializePage = () => {
+    let app = $("#app");
+    let pageContent = $("#page-content");
+
+    let contract = findGetParameter("contract");
+    let token = findGetParameter("token");
+
+    if(contract && token) {
+        pageContent.load("../token.html", function() {
+            currentPage = "token";
+
+            displayToken(token);
+            app.removeClass("d-none");
+        });
+    } else {
+        pageContent.load("../home.html", function() {
+            currentPage = "home";
+            displayTokens();
+
+            app.removeClass("d-none");
+        });
+    }
+};
 let updateConnectToWallet = () => {
     if(ethereum.selectedAddress) {
         $("#connect-to-metamask").addClass("d-none");
 
         let accountAddress = $("#account-address");
-        accountAddress.text(ethereum.selectedAddress);
+        accountAddress.text(shortenAddress(ethereum.selectedAddress, 5, 5));
         accountAddress.removeClass("d-none");
     } else {
         $("#account-address").addClass("d-none");
@@ -58,30 +92,27 @@ let displayTokens = () => {
                     };
                 }
             }
-            console.log(marketItemsForSale);
+
             getTotalSupply(1)
                 .then(function(result) {
                     let content = '';
                     for(let i = 1; i <= result; i++) {
                         content += '    <div class="col-sm-6 col-md-4 mb-5">';
-                        content += '        <div class="card token-card" data-token-id="' + i + '">';
-                        content += '            <div class="card-header">';
-                        content += '                <div class="token-name"></div>';
-                        content += '            </div>';
-                        content += '            <div class="card-body">';
-                        content += '                <img class="w-100 d-none" alt="Token ' + i + '" />';
-                        content += '            </div>';
-                        content += '            <div class="card-footer">';
-                        content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
+                        content += '        <div class="token-card" data-token-id="' + i + '">';
+                        content += '            <a href="#" class="link">';
+                        content += '                <div class="w-100 background-image-cover token-image" style="padding-top:100%"></div>';
+                        content += '            </a>';
+                        content += '            <div class="font-size-180 py-2 token-name"></div>';
+                        // content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
                             if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== ethereum.selectedAddress) {
-                                content += '        <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy | ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' ETH</button>';
+                                content += '    <div class="font-size-130 token-price">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+                                // content += '        <button class="btn btn-secondary w-100 create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '">Buy | ' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</button>';
                             }
                         } else {
-                            content += '            <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
+                            // content += '        <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
                         }
-                        content += '                <small>Owner: <span class="owner"></span></small>';
-                        content += '            </div>';
+                        // content += '                <small>Owner: <span class="owner"></span></small>';
                         content += '        </div>';
                         content += '    </div>';
                     }
@@ -94,8 +125,9 @@ let displayTokens = () => {
                                 $.get(tokenURI, function(metadata) {
                                     let tokenCard = $(".token-card[data-token-id='" + i + "']");
 
+                                    tokenCard.find(".link").attr("href", "?contract=0x5239d0d09839208b341c6C17A36a3AEcB78745De&token=" + i);
                                     tokenCard.find(".token-name").text(metadata.name);
-                                    tokenCard.find("img").attr("src", metadata.thumbnail);
+                                    tokenCard.find(".token-image").css("background-image", "url('" + metadata.thumbnail + "')");
                                     tokenCard.find("img").removeClass("d-none");
                                     tokenCard.find(".view-original").attr("href", metadata.image);
                                 });
@@ -107,15 +139,81 @@ let displayTokens = () => {
                                 tokenCard.find(".owner").text(owner);
 
                                 if(owner.toLowerCase() === ethereum.selectedAddress) {
-                                    tokenCard.find(".sell-token-confirmation").removeClass("d-none");
+                                    tokenCard.find("#create-market-item-confirmation").removeClass("d-none");
                                 }
                             });
                     }
                 });
         });
 };
+let displayToken = (token) => {
+    let createMarketItemConfirmationButton = $("#create-market-item-confirmation");
+
+    getTokenURI(token)
+        .then(function(tokenURI) {
+            $.get(tokenURI, function(metadata) {
+                console.log(metadata);
+
+                $("#token-image").attr("src", metadata.thumbnail);
+                $("#token-name").text(metadata.name);
+                $("#token-description").text(metadata.description);
+                $("#token-original-image").attr("href", metadata.image);
+                createMarketItemConfirmationButton.attr("data-token-id", token);
+
+                let content = '';
+                for(let i = 0; i < metadata.attributes.length; i++) {
+                    content += '    <div class="col-md-6 col-xl-4 mb-4">';
+                    content += '        <div class="card bg-light h-100">';
+                    content += '            <div class="card-body h-100">';
+                    content += '                <div class="d-flex justify-content-center align-items-center h-100">';
+                    content += '                    <div class="text-center">';
+                    content += '                        <div class="neo-bold font-size-80 mb-1 text-uppercase text-color-7">' + metadata.attributes[i].trait_type + '</div>';
+                    content += '                        <div class="font-size-100">' + metadata.attributes[i].value + '</div>';
+                    content += '                    </div>';
+                    content += '                </div>';
+                    content += '            </div>';
+                    content += '        </div>';
+                    content += '    </div>';
+                }
+                $("#token-attributes").html(content);
+            });
+        });
+
+    fetchMarketItem(ownlyContractAddress, token)
+        .then(function(marketItem) {
+            getOwnerOf(token)
+                .then(function(owner) {
+                    $("#token-owner").text(owner);
+
+                    if(parseInt(marketItem.itemId)) {
+                        let tokenPrice = $("#token-price");
+                        tokenPrice.text(web3.utils.fromWei(marketItem.price, "ether") + " BNB");
+                        tokenPrice.removeClass("d-none");
+
+                        if(owner.toLowerCase() !== ethereum.selectedAddress) {
+                            let createMarketSaleConfirmationButton = $("#create-market-sale-confirmation");
+                            createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
+                            createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
+                            createMarketSaleConfirmationButton.closest("div").removeClass("d-none");
+                        }
+                    } else {
+                        if(owner.toLowerCase() === ethereum.selectedAddress) {
+                            createMarketItemConfirmationButton.closest("div").removeClass("d-none");
+                        }
+                    }
+                });
+
+        });
+};
+let shortenAddress = (address, prefixCount, postfixCount) => {
+    let prefix = address.substr(0, prefixCount);
+    let postfix = address.substr(address.length - postfixCount, address.length);
+
+    return prefix + "..." + postfix;
+};
 
 let getTokenURI = (id) => {
+    console.log(id);
     return ownlyContract.methods.tokenURI(id).call();
 };
 let getOwnerOf = (id) => {
@@ -143,8 +241,6 @@ let createMarketItem = (id, price) => {
     });
 };
 let createMarketSale = (id, price) => {
-    console.log(id);
-    console.log(price);
     return ownlyMarketplaceContract.methods.createMarketSale(id).send({
         from: ethereum.selectedAddress,
         value: price
@@ -153,10 +249,13 @@ let createMarketSale = (id, price) => {
 let fetchMarketItems = () => {
     return ownlyMarketplaceContract.methods.fetchMarketItems().call();
 };
+let fetchMarketItem = (address, id) => {
+    return ownlyMarketplaceContract.methods.fetchMarketItem(address, id).call();
+};
 
 ethereum.on('accountsChanged', (accounts) => {
     updateConnectToWallet();
-    displayTokens();
+    initializePage();
 });
 
 $(window).on("load", async () => {
@@ -168,7 +267,7 @@ $(document).ready(function() {
     initializeWeb3();
     initializeContracts();
     initializeListingPrice();
-    displayTokens();
+    initializePage();
 });
 
 $(document).on("click", "#connect-to-metamask", async() => {
@@ -188,7 +287,7 @@ $(document).on("click", "#connect-to-metamask", async() => {
     }
 });
 
-$(document).on("click", ".sell-token-confirmation", function() {
+$(document).on("click", "#create-market-item-confirmation", function() {
     let button = $(this);
     button.prop("disabled", true);
 
@@ -214,9 +313,10 @@ $(document).on("click", "#approve", function() {
 
     let tokenID = $(this).val();
 
+    $("#modal-approve").modal("hide");
+
     approve(tokenID)
         .on('transactionHash', function(hash){
-            $("#modal-approve").modal("hide");
             alertProcessing = alertify.message('Processing...', 0);
         }).then(function(receipt) {
             alertProcessing.dismiss();
@@ -240,12 +340,12 @@ $(document).on("click", "#create-market-item", function() {
                 alertError = alertify.message(error, 0);
             }).then(function(receipt) {
                 alertProcessing.dismiss();
-                displayTokens();
+                initializePage();
             });
     }
 });
 
-$(document).on("click", ".create-market-sale-confirmation", function() {
+$(document).on("click", "#create-market-sale-confirmation", function() {
     let createMarketSaleButton = $("#create-market-sale");
 
     createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
@@ -265,6 +365,6 @@ $(document).on("click", "#create-market-sale", function() {
             alertError = alertify.message(error, 0);
         }).then(function(receipt) {
             alertProcessing.dismiss();
-            displayTokens();
+            initializePage();
         });
 });
