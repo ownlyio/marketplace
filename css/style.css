@@ -196,7 +196,14 @@ html {
 .btn-custom-8:hover, .btn-custom-8:active, .btn-custom-8:focus {
     background-color: #ffffff;
     color:#000000;
-    border:0;
+}
+.btn-custom-9 {
+    background-color:#000000;
+    color:#ffffff;
+}
+.btn-custom-9:hover, .btn-custom-9:active, .btn-custom-9:focus {
+    background-color: #000000;
+    color:#ffffff;
 }
 .bg-color-1 {
     background-color:#f3f3f3!important;

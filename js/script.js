@@ -2,6 +2,7 @@ let env = "local";
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
 let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
 let url = (env === "production") ? "https://ownly.io/dev-marketplace/" : "http://ownlyio.dev-marketplace.test/";
+let accounts = [];
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -45,7 +46,14 @@ let initializePage = () => {
         });
     }
 };
-let updateConnectToWallet = () => {
+let updateConnectToWallet = async () => {
+    await web3.eth.getAccounts();
+
+    web3.eth.net.getId()
+        .then(function(data) {
+            console.log(data);
+        });
+
     if(ethereum.selectedAddress) {
         $("#connect-to-metamask").addClass("d-none");
 
@@ -58,11 +66,15 @@ let updateConnectToWallet = () => {
     }
 };
 let initializeWeb3 = () => {
-    web3 = new Web3(ethereum);
-
-    if (typeof web3 !== 'undefined') {
+    if (typeof web3 !== 'undefined') { // metamsk is not injected
         web3 = new Web3(web3.currentProvider);
+
+        ethereum.on('accountsChanged', (accounts) => {
+            updateConnectToWallet();
+            initializePage();
+        });
     } else {
+        web3 = new Web3("https://data-seed-prebsc-1-s1.binance.org:8545/");
     }
 };
 let initializeContracts = () => {
@@ -152,8 +164,6 @@ let displayToken = (token) => {
     getTokenURI(token)
         .then(function(tokenURI) {
             $.get(tokenURI, function(metadata) {
-                console.log(metadata);
-
                 $("#token-image").attr("src", metadata.thumbnail);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
@@ -213,7 +223,6 @@ let shortenAddress = (address, prefixCount, postfixCount) => {
 };
 
 let getTokenURI = (id) => {
-    console.log(id);
     return ownlyContract.methods.tokenURI(id).call();
 };
 let getOwnerOf = (id) => {
@@ -253,13 +262,8 @@ let fetchMarketItem = (address, id) => {
     return ownlyMarketplaceContract.methods.fetchMarketItem(address, id).call();
 };
 
-ethereum.on('accountsChanged', (accounts) => {
-    updateConnectToWallet();
-    initializePage();
-});
-
 $(window).on("load", async () => {
-    await ethereum.request({ method: 'eth_requestAccounts' });
+    // await ethereum.request({ method: 'eth_requestAccounts' });
     updateConnectToWallet();
 });
 
@@ -276,6 +280,11 @@ $(document).on("click", "#connect-to-metamask", async() => {
         try {
             await ethereum.request({ method: 'eth_requestAccounts' });
             updateConnectToWallet();
+
+            ethereum.on('accountsChanged', (accounts) => {
+                updateConnectToWallet();
+                initializePage();
+            });
         } catch (error) {
 
         }
