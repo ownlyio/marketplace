@@ -274,6 +274,14 @@ html {
     background-size:cover;
 }
 
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+}
+
 /*##################################################################*/
 
 #artist-image {
@@ -281,8 +289,20 @@ html {
     width:200px;
 }
 
-@media(min-width:576px) {
+.carousel-control-prev {
+    left:-35px!important;
+}
+.carousel-control-next {
+    right:-35px!important;
+}
 
+@media(min-width:576px) {
+    .carousel-control-prev {
+        left:-35px!important;
+    }
+    .carousel-control-next {
+        right:-35px!important;
+    }
 }
 
 @media(min-width:768px) {
@@ -290,16 +310,37 @@ html {
         min-width:280px;
         width:280px;
     }
+    .carousel-control-prev {
+        left:-55px!important;
+    }
+    .carousel-control-next {
+        right:-55px!important;
+    }
 }
 
 @media(min-width:992px) {
-
+    .carousel-control-prev {
+        left:-70px!important;
+    }
+    .carousel-control-next {
+        right:-70px!important;
+    }
 }
 
 @media(min-width:1200px) {
-
+    .carousel-control-prev {
+        left:-85px!important;
+    }
+    .carousel-control-next {
+        right:-85px!important;
+    }
 }
 
 @media(min-width:1400px) {
-
+    .carousel-control-prev {
+        left:-95px!important;
+    }
+    .carousel-control-next {
+        right:-95px!important;
+    }
 }

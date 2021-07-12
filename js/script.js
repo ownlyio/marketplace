@@ -36,12 +36,13 @@ let initializePage = () => {
             currentPage = "token";
 
             displayToken(token);
+            displayTokens(token);
             app.removeClass("d-none");
         });
     } else {
         pageContent.load(url + "js/../home.html", function() {
             currentPage = "home";
-            displayTokens();
+            displayTokens(token);
 
             app.removeClass("d-none");
         });
@@ -73,6 +74,13 @@ let connectToMetamask = async () => {
 let updateConnectToWallet = async () => {
     let accounts = await web3.eth.getAccounts();
     address = (accounts.length > 0) ? accounts[0] : false;
+
+    if(!address) {
+        try {
+            await ethereum.enable();
+            address = ethereum.selectedAddress;
+        } catch(e) {}
+    }
 
     if(address) {
         $("#connect-to-metamask").addClass("d-none");
@@ -107,7 +115,6 @@ let initializeWeb3 = async () => {
         }
     } catch(e) {
         web3 = new Web3("https://data-seed-prebsc-1-s1.binance.org:8545/");
-        console.log("No installed");
     }
 };
 let initializeContracts = () => {
@@ -120,7 +127,7 @@ let initializeListingPrice = () => {
             listingPrice = data;
         });
 };
-let displayTokens = () => {
+let displayTokens = (excludedToken) => {
     fetchMarketItems()
         .then(function(data) {
             marketItemsForSale = [];
@@ -163,6 +170,7 @@ let displayTokens = () => {
                                 content += '                <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '" style="border-radius:15px">OWN NOW</button>';
                                 content += '            </div>';
                                 content += '        </div>';
+                                content += '        <div class="owner d-none"></div>';
                             }
                         }
                         content += '        </div>';
@@ -182,17 +190,21 @@ let displayTokens = () => {
                                     tokenCard.find(".token-image").css("background-image", "url('" + metadata.thumbnail + "')");
                                     tokenCard.find("img").removeClass("d-none");
                                     tokenCard.find(".view-original").attr("href", metadata.image);
+
+                                    getOwnerOf(i)
+                                        .then(function(owner) {
+                                            let tokenCard = $(".token-card[data-token-id='" + i + "']");
+                                            tokenCard.find(".owner").text(owner);
+
+                                            if(owner.toLowerCase() === address) {
+                                                tokenCard.find("#create-market-item-confirmation").removeClass("d-none");
+                                            }
+
+                                            if(currentPage === "token") {
+                                                loadRelatedTokens(excludedToken);
+                                            }
+                                        });
                                 });
-                            });
-
-                        getOwnerOf(i)
-                            .then(function(owner) {
-                                let tokenCard = $(".token-card[data-token-id='" + i + "']");
-                                tokenCard.find(".owner").text(owner);
-
-                                if(owner.toLowerCase() === address) {
-                                    tokenCard.find("#create-market-item-confirmation").removeClass("d-none");
-                                }
                             });
                     }
                 });
@@ -260,6 +272,62 @@ let shortenAddress = (address, prefixCount, postfixCount) => {
     let postfix = address.substr(address.length - postfixCount, address.length);
 
     return prefix + "..." + postfix;
+};
+let loadRelatedTokens = (excludedToken) => {
+    let tokenCards = [];
+    let _break = false;
+
+    $("#tokens-container .token-card").closest("div").each(function() {
+        if($(this).find(".owner").html() === "") {
+            _break = true;
+            return 0;
+        }
+        tokenCards.push($(this).html());
+    });
+
+    if(_break) {
+        return 0;
+    }
+
+    let content = '';
+    for(let i = 0; i < tokenCards.length; i+=3) {
+        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
+        content += '        <div class="row">';
+        for(let j = i; j < i + 3 && j < tokenCards.length; j++) {
+            content += '        <div class="col-4">';
+            content +=              tokenCards[j];
+            content += '        </div>';
+        }
+        content += '        </div>';
+        content += '    </div>';
+    }
+    $("#related-tokens-container-xl .carousel-inner").html(content);
+
+    content = '';
+    for(let i = 0; i < tokenCards.length; i+=2) {
+        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
+        content += '        <div class="row">';
+        for(let j = i; j < i + 2 && j < tokenCards.length; j++) {
+            content += '        <div class="col-6">';
+            content +=              tokenCards[j];
+            content += '        </div>';
+        }
+        content += '        </div>';
+        content += '    </div>';
+    }
+    $("#related-tokens-container-md .carousel-inner").html(content);
+
+    content = '';
+    for(let i = 0; i < tokenCards.length; i+=2) {
+        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
+        content +=          tokenCards[i];
+        content += '    </div>';
+    }
+    $("#related-tokens-container-xs .carousel-inner").html(content);
+
+    new bootstrap.Carousel($('#related-tokens-container-xl'));
+    new bootstrap.Carousel($('#related-tokens-container-md'));
+    new bootstrap.Carousel($('#related-tokens-container-xs'));
 };
 
 let getTokenURI = (id) => {
