@@ -46,6 +46,27 @@ let initializePage = () => {
         });
     }
 };
+let connectToMetamask = async () => {
+    if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+            await ethereum.request({ method: 'eth_requestAccounts' });
+            updateConnectToWallet();
+
+            ethereum.on('accountsChanged', (accounts) => {
+                updateConnectToWallet();
+                initializePage();
+            });
+        } catch (error) {
+
+        }
+    } else if (window.web3) { // Legacy dapp browsers...
+        window.web3 = new Web3(web3.currentProvider);
+        updateConnectToWallet();
+    } else {
+        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+    }
+};
 let updateConnectToWallet = async () => {
     await web3.eth.getAccounts();
 
@@ -65,17 +86,19 @@ let updateConnectToWallet = async () => {
         $("#connect-to-metamask").removeClass("d-none");
     }
 };
-let initializeWeb3 = () => {
-    if (typeof web3 !== 'undefined') { // metamsk is not injected
-        web3 = new Web3(web3.currentProvider);
+let initializeWeb3 = async () => {
+    if(ethereum.networkVersion === "97") {
+        web3 = new Web3(ethereum);
 
-        ethereum.on('accountsChanged', (accounts) => {
-            updateConnectToWallet();
-            initializePage();
-        });
+        if (typeof web3 !== 'undefined') { // metamask is not injected
+            web3 = new Web3(web3.currentProvider);
+        } else {
+
+        }
     } else {
         web3 = new Web3("https://data-seed-prebsc-1-s1.binance.org:8545/");
     }
+
 };
 let initializeContracts = () => {
     ownlyContract = new web3.eth.Contract(nftAbi, ownlyContractAddress);
@@ -121,15 +144,17 @@ let displayTokens = () => {
                         content += '            <div class="font-size-110 mb-2">1 of 1 - Single Edition</div>';
                         content += '            <div class="font-size-90 mb-4">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company</div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            content += '            <div class="row align-items-center">';
-                            content += '                <div class="col-6">';
-                            content += '                    <div class="font-size-110">Price:</div>';
-                            content += '                    <div class="font-size-180 neo-black">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
-                            content += '                </div>';
-                            content += '                <div class="col-6">';
-                            content += '                    <a href="#" class="btn btn-custom-2 w-100 font-size-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
-                            content += '                </div>';
-                            content += '            </div>';
+                            if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== ethereum.selectedAddress) {
+                                content += '        <div class="row align-items-center">';
+                                content += '            <div class="col-6">';
+                                content += '                <div class="font-size-110">Price:</div>';
+                                content += '                <div class="font-size-180 neo-black">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+                                content += '            </div>';
+                                content += '            <div class="col-6">';
+                                content += '                <button class="btn btn-custom-2 w-100 font-size-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '" style="border-radius:15px">OWN NOW</button>';
+                                content += '            </div>';
+                                content += '        </div>';
+                            }
                         }
                         content += '        </div>';
                         content += '    </div>';
@@ -207,7 +232,7 @@ let displayToken = (token) => {
                         tokenPrice.removeClass("d-none");
 
                         if(owner.toLowerCase() !== ethereum.selectedAddress) {
-                            let createMarketSaleConfirmationButton = $("#create-market-sale-confirmation");
+                            let createMarketSaleConfirmationButton = $(".create-market-sale-confirmation");
                             createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                             createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
                             createMarketSaleConfirmationButton.closest("div").removeClass("d-none");
@@ -256,6 +281,7 @@ let createMarketItem = (id, price) => {
     });
 };
 let createMarketSale = (id, price) => {
+    console.log(ethereum.selectedAddress);
     return ownlyMarketplaceContract.methods.createMarketSale(id).send({
         from: ethereum.selectedAddress,
         value: price
@@ -270,36 +296,24 @@ let fetchMarketItem = (address, id) => {
 
 $(window).on("load", async () => {
     // await ethereum.request({ method: 'eth_requestAccounts' });
-    updateConnectToWallet();
-});
-
-$(document).ready(function() {
     initializeWeb3();
     initializeContracts();
     initializeListingPrice();
     initializePage();
+    updateConnectToWallet();
 });
 
-$(document).on("click", "#connect-to-metamask", async() => {
-    if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-            await ethereum.request({ method: 'eth_requestAccounts' });
-            updateConnectToWallet();
+$(document).ready(function() {
 
-            ethereum.on('accountsChanged', (accounts) => {
-                updateConnectToWallet();
-                initializePage();
-            });
-        } catch (error) {
+});
 
-        }
-    } else if (window.web3) { // Legacy dapp browsers...
-        window.web3 = new Web3(web3.currentProvider);
-        updateConnectToWallet();
-    } else {
-        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
-    }
+ethereum.on('accountsChanged', (accounts) => {
+    updateConnectToWallet();
+    initializePage();
+});
+
+$(document).on("click", "#connect-to-metamask", () => {
+    connectToMetamask();
 });
 
 $(document).on("click", "#create-market-item-confirmation", function() {
@@ -360,13 +374,17 @@ $(document).on("click", "#create-market-item", function() {
     }
 });
 
-$(document).on("click", "#create-market-sale-confirmation", function() {
-    let createMarketSaleButton = $("#create-market-sale");
+$(document).on("click", ".create-market-sale-confirmation", function() {
+    if(!ethereum.selectedAddress) {
+        connectToMetamask();
+    } else {
+        let createMarketSaleButton = $("#create-market-sale");
 
-    createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
-    createMarketSaleButton.val($(this).attr("data-item-id"));
+        createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
+        createMarketSaleButton.val($(this).attr("data-item-id"));
 
-    $("#modal-create-market-sale").modal("show");
+        $("#modal-create-market-sale").modal("show");
+    }
 });
 
 $(document).on("click", "#create-market-sale", function() {
