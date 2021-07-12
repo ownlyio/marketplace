@@ -19,7 +19,7 @@
 	<link rel="stylesheet" href="fontawesome/css/all.css">
 	<link rel="stylesheet" href="js/alertifyjs/css/alertify.min.css" />
 	<link rel="stylesheet" href="js/alertifyjs/css/themes/default.min.css" />
-	<link rel="stylesheet" href="css/style.css?v=10">
+	<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
 	<div class="d-none" id="app" style="overflow-x:hidden">
@@ -169,6 +169,21 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="modal fade" id="modal-no-metamask-installed" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Metamask is currently not installed</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<a href="https://metamask.io/download.html" target="_blank" class="btn btn-custom-2" id="install-metamask">Install Metamask</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<script src="js/jquery.min.js"></script>
@@ -176,6 +191,6 @@
 	<script src="js/web3.min.js"></script>
 	<script src="js/alertifyjs/alertify.min.js"></script>
 	<script src="js/abi.js?v=9"></script>
-	<script src="js/script.js?v=14"></script>
+	<script src="js/script.js?v=15"></script>
 </body>
 </html>

@@ -276,14 +276,20 @@ html {
 
 /*##################################################################*/
 
-
+#artist-image {
+    min-width:200px;
+    width:200px;
+}
 
 @media(min-width:576px) {
 
 }
 
 @media(min-width:768px) {
-
+    #artist-image {
+        min-width:280px;
+        width:280px;
+    }
 }
 
 @media(min-width:992px) {
