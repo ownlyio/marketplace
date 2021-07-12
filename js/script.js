@@ -1,4 +1,4 @@
-let env = "local";
+let env = "production";
 let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
 let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
 let url = (env === "production") ? "https://ownly.io/dev-marketplace/" : "http://ownlyio.dev-marketplace.test/";
@@ -111,20 +111,26 @@ let displayTokens = () => {
                 .then(function(result) {
                     let content = '';
                     for(let i = 1; i <= result; i++) {
-                        content += '    <div class="col-sm-6 col-md-4 mb-5">';
+                        content += '    <div class="col-sm-6 col-md-4 mb-5 pb-3 px-4">';
                         content += '        <div class="token-card" data-token-id="' + i + '">';
                         content += '            <a href="#" class="link">';
-                        content += '                <div class="w-100 background-image-cover token-image" style="padding-top:100%"></div>';
+                        content += '                <div class="w-100 background-image-cover token-image mb-3" style="padding-top:100%"></div>';
                         content += '            </a>';
-                        content += '            <div class="font-size-180 py-2 token-name"></div>';
-                        // content += '                <a href="" target="_blank" class="btn btn-primary w-100 view-original mb-2">View Original</a>';
+                        // content += '            <div class="font-size-160 neo-bold py-2 token-name"></div>';
+                        content += '            <div class="font-size-160 neo-bold token-name mb-1">The New Breakout Monster</div>';
+                        content += '            <div class="font-size-110 mb-2">1 of 1 - Single Edition</div>';
+                        content += '            <div class="font-size-90 mb-4">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company</div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            content += '    <div class="font-size-130 token-price">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
-
-                        } else {
-                            // content += '        <button class="btn btn-secondary w-100 sell-token-confirmation d-none" data-token-id="' + i + '">Sell</button>';
+                            content += '            <div class="row align-items-center">';
+                            content += '                <div class="col-6">';
+                            content += '                    <div class="font-size-110">Price:</div>';
+                            content += '                    <div class="font-size-180 neo-black">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+                            content += '                </div>';
+                            content += '                <div class="col-6">';
+                            content += '                    <a href="#" class="btn btn-custom-2 w-100 font-size-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+                            content += '                </div>';
+                            content += '            </div>';
                         }
-                        // content += '                <small>Owner: <span class="owner"></span></small>';
                         content += '        </div>';
                         content += '    </div>';
                     }
@@ -137,7 +143,7 @@ let displayTokens = () => {
                                 $.get(tokenURI, function(metadata) {
                                     let tokenCard = $(".token-card[data-token-id='" + i + "']");
 
-                                    tokenCard.find(".link").attr("href", "?contract=0x5239d0d09839208b341c6C17A36a3AEcB78745De&token=" + i);
+                                    tokenCard.find(".link").attr("href", "?contract=" + ownlyContractAddress + "&token=" + i);
                                     tokenCard.find(".token-name").text(metadata.name);
                                     tokenCard.find(".token-image").css("background-image", "url('" + metadata.thumbnail + "')");
                                     tokenCard.find("img").removeClass("d-none");
