@@ -1,4 +1,4 @@
-let env = "local";
+let env = "staging";
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
