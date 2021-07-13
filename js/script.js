@@ -1,4 +1,4 @@
-let env = "staging";
+let env = "local";
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -141,14 +141,14 @@ let updateConnectToWallet = async () => {
     }
 
     if(address) {
-        $("#connect-to-metamask").addClass("d-none");
+        $("#connect-to-metamask-container").addClass("d-none");
 
         let accountAddress = $("#account-address");
-        accountAddress.text(shortenAddress(address, 5, 5));
+        accountAddress.html(shortenAddress(address, 5, 5) + "&nbsp;");
         accountAddress.removeClass("d-none");
     } else {
         $("#account-address").addClass("d-none");
-        $("#connect-to-metamask").removeClass("d-none");
+        $("#connect-to-metamask-container").removeClass("d-none");
     }
 };
 let initializeWeb3 = async () => {
@@ -428,6 +428,12 @@ let fetchMarketItem = (address, id) => {
     return ownlyMarketplaceContract.methods.fetchMarketItem(address, id).call();
 };
 
+initializeEnvVariables();
+
+$(document).ready(function() {
+    initiate_loading_page();
+});
+
 $(window).on("load", async () => {
     initializeWeb3();
     initializeContracts();
@@ -435,11 +441,6 @@ $(window).on("load", async () => {
     initializePage();
     updateConnectToWallet();
     close_loading_page();
-});
-
-$(document).ready(function() {
-    initializeEnvVariables();
-    initiate_loading_page();
 });
 
 $(document).on("click", "#install-metamask", () => {
@@ -536,4 +537,26 @@ $(document).on("click", "#create-market-sale", function() {
         });
 });
 
+$(document).on("submit", "#newsletter-form", async (event) => {
+    event.preventDefault();
 
+    newsletter_form = $("#newsletter-form");
+    newsletter_form.find("[type='submit']").prop("disabled", true);
+
+    let data = new FormData(event.target);
+    fetch(event.target.action, {
+        method: "POST",
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        newsletter_form.find("input").val("");
+
+        $("#newsletter-form [type='submit']").prop("disabled", false);
+
+        $("#modal-subscribe-success").modal("show");
+    }).catch(error => {
+        console.log('Oops! There was a problem submitting your form');
+    });
+});
