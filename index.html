@@ -22,164 +22,221 @@
 	<link rel="stylesheet" href="css/style.css?v=12">
 </head>
 <body>
-	<div class="d-none" id="app" style="overflow-x:hidden">
-		<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
-			<div class="container">
-				<div class="d-flex align-items-center" style="min-height:63px">
-					<a class="navbar-brand m-0" href="/">
-						<img src="img/ownly/own-token.webp" width="53" alt="Ownly">
-					</a>
-					<a href="/" class="link-color-1 font-size-170 rubik-black ps-2 text-decoration-none">OWNLY</a>
+	<div style="overflow-x:hidden">
+		<div class="d-flex justify-content-center align-items-center position-fixed vh-100 w-100 bg-white" id="loading-ownly-container" style="z-index:1031">
+			<div class="pb-5">
+				<img src="img/ownly/own-token.webp" id="loading-ownly" style="width:200px; transition:1s" alt="Ownly" />
+				<div class="progress mt-4">
+					<div class="progress-bar progress-bar-striped progress-bar-animated bg-color-2" id="loading-page-progress-bar" role="progressbar" style="width:0"></div>
 				</div>
-				
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarSupportedContent" style="flex-grow:initial">
-					<ul class="navbar-nav mb-2 mb-lg-0">
-						<li class="nav-item">
-							<button type="button" class="btn btn-custom-9 shadow-sm font-size-90 py-2 px-4 d-none" id="connect-to-metamask" style="border-radius:100px">Connect Wallet</button>
-							<div class="d-none" id="account-address"></div>
-						</li>
-					</ul>
-				</div>
+				<input type="hidden" id="progress_width" value="0">
 			</div>
-		</nav>
-		
-		<div id="page-content" style="min-height:calc(100vh - 201px)"></div>
-		
-		<div class="w-100 bg-white border-top">
-			<div class="container py-4">
-				<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end">
-					<div class="d-flex me-3 mb-4 mb-md-0">
-						<div class="text-center pe-3 pe-md-5">
-							<img src="img/ownly/ownly-2.png" class="mb-3" width="120" alt="Ownly" />
-							<div class="text-color-1 font-size-90">Ownly &copy; 2021</div>
-						</div>
-						
-						<div class="d-flex flex-column justify-content-between ps-3 py-1" style="border-left:3px solid #000000">
-							<div class="d-flex text-color-1 mb-2">
-								<div class="text-center me-3" style="min-width:20px">
-									<i class="fas fa-map-marker-alt font-size-120"></i>
-								</div>
-								<div class="font-size-90">
-									<div>SILI DELI: DOST-BU TBI Office, Ground floor,</div>
-									<div>Student Union Bldg., Bicol University Main Campus,</div>
-									<div>Daraga, Albay Sagpon</div>
-								</div>
-							</div>
-							
-							<div class="d-flex text-color-1 mb-2">
-								<div class="text-center me-3" style="min-width:20px">
-									<i class="fas fa-envelope font-size-120"></i>
-								</div>
-								<div class="font-size-90">support@ownly.io</div>
-							</div>
-							
-							<div class="d-flex text-color-1">
-								<div class="text-center me-3" style="min-width:20px">
-									<i class="fas fa-phone font-size-120"></i>
-								</div>
-								<div class="font-size-90">0956 152 5513</div>
-							</div>
-						</div>
+		</div>
+	
+		<div class="d-none" id="app">
+			<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
+				<div class="container">
+					<div class="d-flex align-items-center" style="min-height:63px">
+						<a class="navbar-brand m-0" href="/">
+							<img src="img/ownly/own-token.webp" width="53" alt="Ownly">
+						</a>
+						<a href="/" class="link-color-1 font-size-170 rubik-black ps-2 text-decoration-none">OWNLY</a>
 					</div>
 					
-					<div class="px-2 px-md-0">
-						<div class="text-color-1 font-size-140 font-size-sm-160 mb-2">Connect with us:</div>
-						<div class="font-size-170 font-size-sm-200 font-size-lg-200 font-size-xl-240 font-size-xl-300 line-height-140">
-							<a href="https://twitter.com/ownlyio" class="text-decoration-none">
-								<i class="fab fa-twitter text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://t.me/ownlyio" class="text-decoration-none">
-								<i class="fab fa-telegram text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://discord.gg/cXez8Jz8" class="text-decoration-none">
-								<i class="fab fa-discord text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://github.com/ownlyio" class="text-decoration-none">
-								<i class="fab fa-github text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://www.linkedin.com/company/ownlyio/" class="text-decoration-none">
-								<i class="fab fa-linkedin-in text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://web.facebook.com/ownly.io" class="text-decoration-none">
-								<i class="fab fa-facebook text-color-4 me-2 me-sm-3"></i>
-							</a>
-							<a href="https://www.instagram.com/ownly.io/" class="text-decoration-none">
-								<i class="fab fa-instagram text-color-4"></i>
-							</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent" style="flex-grow:initial">
+						<ul class="navbar-nav mb-2 mb-lg-0">
+							<li class="nav-item">
+								<button type="button" class="btn btn-custom-9 shadow-sm font-size-90 py-2 px-4 d-none" id="connect-to-metamask" style="border-radius:100px">Connect Wallet</button>
+								<div class="d-none" id="account-address"></div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			
+			<div id="page-content" style="min-height:calc(100vh - 201px)"></div>
+			
+			<div>
+				<div class="bg-white">
+					<div class="container py-5">
+						<div class="font-size-120 neo-bold mb-5 pb-1" style="letter-spacing:0.1em">MEET THE ARTIST</div>
+					</div>
+				</div>
+				
+				<div class="bg-color-18">
+					<div class="container py-5">
+						<div class="d-flex flex-column flex-md-row">
+							<div class="pe-md-5 mb-4" id="artist-image" style="margin-top:-120px">
+								<div class="background-image-cover w-100 rounded-circle shadow-lg" style="background-image:url('img/artists/Eugene-Oligo.webp'); padding-top:100%"></div>
+							</div>
+							
+							<div class="ps-md-3 ps-xl-4">
+								<div class="neo-black font-size-240 mb-3">EUGENE OLIGO</div>
+								
+								<div class="d-flex align-items-center mb-4 mb-md-5">
+									<div class="me-3">
+										<a href="https://web.facebook.com/eugene.delacroixii" target="_blank">
+											<i class="fab fa-facebook-f text-color-6 font-size-150"></i>
+										</a>
+									</div>
+									<div class="me-3">
+										<a href="https://www.instagram.com/eugene_dlcrx/" target="_blank">
+											<i class="fab fa-instagram text-color-6 font-size-150"></i>
+										</a>
+									</div>
+									<div>
+										<a href="https://edlcrx.artstation.com/" target="_blank">
+											<i class="fab fa-artstation text-color-6 font-size-150"></i>
+										</a>
+									</div>
+								</div>
+								
+								<div>
+									<p class="text-color-6 font-size-110">Eugene is a multimedia artist that focuses on digital illustrations, digital painting, concept art 2D and 3D. He also creates traditional artworks such as paintings, portraits and so on.</p>
+									<p class="text-color-6 font-size-110">He served many clients locally, nationally and internationally. He had a collaboration project with Titus pens, and was invited to be a guest artist to make doodle wall art with other artists.</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="modal fade" id="modal-approve" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Post Item For Sale</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div>This will give Ownly Marketplace an access to transfer your token once sold.</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="button" class="btn btn-primary" id="approve">Confirm</button>
+			
+			<div class="w-100 bg-white border-top">
+				<div class="container py-4">
+					<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end">
+						<div class="d-flex me-3 mb-4 mb-md-0">
+							<div class="text-center pe-3 pe-md-5">
+								<img src="img/ownly/ownly-2.png" class="mb-3" width="120" alt="Ownly" />
+								<div class="text-color-1 font-size-90">Ownly &copy; 2021</div>
+							</div>
+							
+							<div class="d-flex flex-column justify-content-between ps-3 py-1" style="border-left:3px solid #000000">
+								<div class="d-flex text-color-1 mb-2">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-map-marker-alt font-size-120"></i>
+									</div>
+									<div class="font-size-90">
+										<div>SILI DELI: DOST-BU TBI Office, Ground floor,</div>
+										<div>Student Union Bldg., Bicol University Main Campus,</div>
+										<div>Daraga, Albay Sagpon</div>
+									</div>
+								</div>
+								
+								<div class="d-flex text-color-1 mb-2">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-envelope font-size-120"></i>
+									</div>
+									<div class="font-size-90">support@ownly.io</div>
+								</div>
+								
+								<div class="d-flex text-color-1">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-phone font-size-120"></i>
+									</div>
+									<div class="font-size-90">0956 152 5513</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="px-2 px-md-0">
+							<div class="text-color-1 font-size-140 font-size-sm-160 mb-2">Connect with us:</div>
+							<div class="font-size-170 font-size-sm-200 font-size-lg-200 font-size-xl-240 font-size-xl-300 line-height-140">
+								<a href="https://twitter.com/ownlyio" class="text-decoration-none">
+									<i class="fab fa-twitter text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://t.me/ownlyio" class="text-decoration-none">
+									<i class="fab fa-telegram text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://discord.gg/cXez8Jz8" class="text-decoration-none">
+									<i class="fab fa-discord text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://github.com/ownlyio" class="text-decoration-none">
+									<i class="fab fa-github text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://www.linkedin.com/company/ownlyio/" class="text-decoration-none">
+									<i class="fab fa-linkedin-in text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://web.facebook.com/ownly.io" class="text-decoration-none">
+									<i class="fab fa-facebook text-color-4 me-2 me-sm-3"></i>
+								</a>
+								<a href="https://www.instagram.com/ownly.io/" class="text-decoration-none">
+									<i class="fab fa-instagram text-color-4"></i>
+								</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="modal fade" id="modal-create-market-item" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Purchase Token</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<small>Price</small>
-						<input type="number" class="form-control" name="price" id="price" placeholder="Price" />
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="button" class="btn btn-primary" id="create-market-item">Submit</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="modal-create-market-sale" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Post Item For Sale</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div>Are you sure you want to purchase this item?</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="button" class="btn btn-primary" id="create-market-sale">Confirm</button>
+			
+			<div class="modal fade" id="modal-approve" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Post Item For Sale</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<div>This will give Ownly Marketplace an access to transfer your token once sold.</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary" id="approve">Confirm</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="modal fade" id="modal-no-metamask-installed" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Metamask is currently not installed</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			
+			<div class="modal fade" id="modal-create-market-item" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Purchase Token</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<small>Price</small>
+							<input type="number" class="form-control" name="price" id="price" placeholder="Price" />
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary" id="create-market-item">Submit</button>
+						</div>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-						<a href="https://metamask.io/download.html" target="_blank" class="btn btn-custom-2" id="install-metamask">Install Metamask</a>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="modal-create-market-sale" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Post Item For Sale</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<div>Are you sure you want to purchase this item?</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary" id="create-market-sale">Confirm</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="modal-no-metamask-installed" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Metamask is currently not installed</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<a href="https://metamask.io/download.html" target="_blank" class="btn btn-custom-2" id="install-metamask">Install Metamask</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -191,6 +248,6 @@
 	<script src="js/web3.min.js"></script>
 	<script src="js/alertifyjs/alertify.min.js"></script>
 	<script src="js/abi.js?v=9"></script>
-	<script src="js/script.js?v=16"></script>
+	<script src="js/script.js?v=17"></script>
 </body>
 </html>

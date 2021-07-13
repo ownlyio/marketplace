@@ -13,7 +13,47 @@ let marketItemsForSale;
 let listingPrice;
 let currentPage;
 let address = false;
+let loading_interval;
 
+let initiate_loading_page = () => {
+    loading_interval = setInterval(function() {
+        if($("#loading-ownly").css('opacity') === "1") {
+            $("#loading-ownly").css('opacity', '0.3');
+        } else {
+            $("#loading-ownly").css('opacity', '1');
+        }
+    }, 1100);
+
+    let all = document.getElementsByTagName("*");
+    for (let i=0, max=all.length; i < max; i++)
+    {
+        loading_set_ele(all[i]);
+    }
+};
+let loading_check_element = (ele) => {
+    let all = document.getElementsByTagName("*");
+    let per_inc=100/all.length;
+
+    if($(ele).on())
+    {
+        let prog_width=per_inc+Number(document.getElementById("progress_width").value);
+        document.getElementById("progress_width").value=prog_width;
+        $("#loading-page-progress-bar").css("width", prog_width + "%")
+    } else {
+        loading_set_ele(ele);
+    }
+}
+let loading_set_ele = (set_element) => {
+    loading_check_element(set_element);
+}
+let close_loading_page = () => {
+    let loadingOwnlyContainer = $("#loading-ownly-container");
+
+    loadingOwnlyContainer.removeClass("d-flex");
+    loadingOwnlyContainer.addClass("d-none");
+
+    clearInterval(loading_interval);
+};
 let findGetParameter = (parameterName) => {
     let result = null,
         tmp = [];
@@ -154,7 +194,7 @@ let displayTokens = (excludedToken) => {
                         content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
                         content += '        <div class="token-card" data-token-id="' + i + '">';
                         content += '            <a href="#" class="link">';
-                        content += '                <div class="w-100 background-image-cover token-image mb-3" style="padding-top:100%"></div>';
+                        content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3" style="background-image:url(\'img/thumbnails/token.webp\'); padding-top:100%"></div>';
                         content += '            </a>';
                         content += '            <div class="font-size-160 neo-bold token-name mb-1"></div>';
                         content += '            <div class="font-size-110 mb-2">1 of 1 - Single Edition</div>';
@@ -371,16 +411,16 @@ let fetchMarketItem = (address, id) => {
 };
 
 $(window).on("load", async () => {
-    // await ethereum.request({ method: 'eth_requestAccounts' });
     initializeWeb3();
     initializeContracts();
     initializeListingPrice();
     initializePage();
     updateConnectToWallet();
+    close_loading_page();
 });
 
 $(document).ready(function() {
-
+    initiate_loading_page();
 });
 
 $(document).on("click", "#install-metamask", () => {
