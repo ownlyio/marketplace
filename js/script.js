@@ -1,8 +1,8 @@
-let env = "production";
-let ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-let ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
-let url = (env === "production") ? "https://ownly.io/dev-marketplace/" : "http://ownlyio.dev-marketplace.test/";
-let accounts = [];
+let env = "staging";
+let ownlyContractAddress;
+let ownlyMarketplaceAddress;
+let url;
+let bscRPCEndpoint;
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -15,6 +15,24 @@ let currentPage;
 let address = false;
 let loading_interval;
 
+let initializeEnvVariables = () => {
+    if(env === "production") {
+        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
+        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        url = "https://ownly.io/marketplace/";
+        bscRPCEndpoint = "https://dataseed1.binance.org/";
+    } else if(env === "staging") {
+        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
+        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        url = "https://ownly.io/dev-marketplace/";
+        bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+    } else {
+        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
+        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        url = "http://ownlyio.dev-marketplace.test/";
+        bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+    }
+};
 let initiate_loading_page = () => {
     loading_interval = setInterval(function() {
         if($("#loading-ownly").css('opacity') === "1") {
@@ -151,10 +169,10 @@ let initializeWeb3 = async () => {
 
             }
         } else {
-            web3 = new Web3("https://data-seed-prebsc-1-s1.binance.org:8545/");
+            web3 = new Web3(bscRPCEndpoint);
         }
     } catch(e) {
-        web3 = new Web3("https://data-seed-prebsc-1-s1.binance.org:8545/");
+        web3 = new Web3(bscRPCEndpoint);
     }
 };
 let initializeContracts = () => {
@@ -420,6 +438,7 @@ $(window).on("load", async () => {
 });
 
 $(document).ready(function() {
+    initializeEnvVariables();
     initiate_loading_page();
 });
 
