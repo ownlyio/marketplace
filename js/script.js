@@ -1,4 +1,4 @@
-let env = "local";
+let env = "staging";
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -95,12 +95,17 @@ let initializePage = () => {
 
             displayToken(token);
             displayTokens(token);
+
+            $("#artist-section").load(url + "js/../artist.html");
+
             app.removeClass("d-none");
         });
     } else {
         pageContent.load(url + "js/../home.html", function() {
             currentPage = "home";
             displayTokens(token);
+
+            $("#artist-section").load(url + "js/../artist.html");
 
             app.removeClass("d-none");
         });
