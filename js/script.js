@@ -1,4 +1,4 @@
-let env = "staging";
+let env = "local";
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -217,13 +217,13 @@ let displayTokens = (excludedToken) => {
                         content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
                         content += '        <div class="token-card" data-token-id="' + i + '">';
                         content += '            <a href="#" class="link">';
-                        content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3" style="background-image:url(\'img/thumbnails/token.webp\'); padding-top:100%"></div>';
+                        content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'img/thumbnails/token.webp\'); padding-top:100%"></div>';
                         content += '            </a>';
                         content += '            <div class="font-size-160 neo-bold token-name mb-1"></div>';
                         content += '            <div class="font-size-110 mb-2">1 of 1 - Single Edition</div>';
-                        content += '            <div class="font-size-90 mb-4">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company</div>';
+                        content += '            <div class="font-size-90 mb-4 clamp token-description-truncated">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company. Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company.</div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address) {
+                            if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase()) {
                                 content += '        <div class="row align-items-center">';
                                 content += '            <div class="col-6">';
                                 content += '                <div class="font-size-100 font-size-md-110">Price:</div>';
@@ -242,6 +242,11 @@ let displayTokens = (excludedToken) => {
 
                     $("#tokens-container").html(content);
 
+                    Ellipsis({
+                        class: '.token-description-truncated',
+                        lines: 3
+                    });
+
                     for(let i = 1; i <= result; i++) {
                         getTokenURI(i)
                             .then(function(tokenURI) {
@@ -259,7 +264,7 @@ let displayTokens = (excludedToken) => {
                                             let tokenCard = $(".token-card[data-token-id='" + i + "']");
                                             tokenCard.find(".owner").text(owner);
 
-                                            if(owner.toLowerCase() === address) {
+                                            if(owner.toLowerCase() === address.toLowerCase()) {
                                                 tokenCard.find("#create-market-item-confirmation").removeClass("d-none");
                                             }
 
@@ -279,6 +284,7 @@ let displayToken = (token) => {
     getTokenURI(token)
         .then(function(tokenURI) {
             $.get(tokenURI, function(metadata) {
+                $("meta[property='og:image']").attr("content", metadata.thumbnail);
                 $("#token-image").attr("src", metadata.thumbnail);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
@@ -315,14 +321,14 @@ let displayToken = (token) => {
                         tokenPrice.text(web3.utils.fromWei(marketItem.price, "ether") + " BNB");
                         tokenPrice.removeClass("d-none");
 
-                        if(owner.toLowerCase() !== address) {
+                        if(owner.toLowerCase() !== address.toLowerCase()) {
                             let createMarketSaleConfirmationButton = $(".create-market-sale-confirmation");
                             createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                             createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
                             createMarketSaleConfirmationButton.closest("div").removeClass("d-none");
                         }
                     } else {
-                        if(owner.toLowerCase() === address) {
+                        if(owner.toLowerCase() === address.toLowerCase()) {
                             createMarketItemConfirmationButton.closest("div").removeClass("d-none");
                         }
                     }
@@ -340,12 +346,15 @@ let loadRelatedTokens = (excludedToken) => {
     let tokenCards = [];
     let _break = false;
 
-    $("#tokens-container .token-card").closest("div").each(function() {
+    $("#tokens-container .col-md-6").each(function() {
         if($(this).find(".owner").html() === "") {
             _break = true;
             return 0;
         }
-        tokenCards.push($(this).html());
+
+        if($(this).find(".token-card").attr("data-token-id") !== excludedToken) {
+            tokenCards.push($(this).html());
+        }
     });
 
     if(_break) {
