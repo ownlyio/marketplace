@@ -1,4 +1,5 @@
 let env = "staging";
+let cacheVersion = 2;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -90,22 +91,22 @@ let initializePage = () => {
     let token = findGetParameter("token");
 
     if(contract && token) {
-        pageContent.load(url + "js/../token.html", function() {
+        pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
             currentPage = "token";
 
             displayToken(token);
             displayTokens(token);
 
-            $("#artist-section").load(url + "js/../artist.html");
+            $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
             app.removeClass("d-none");
         });
     } else {
-        pageContent.load(url + "js/../home.html", function() {
+        pageContent.load(url + "js/../home.html?v=" + cacheVersion, function() {
             currentPage = "home";
             displayTokens(token);
 
-            $("#artist-section").load(url + "js/../artist.html");
+            $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
             app.removeClass("d-none");
         });
@@ -149,7 +150,7 @@ let updateConnectToWallet = async () => {
         $("#connect-to-metamask-container").addClass("d-none");
 
         let accountAddress = $("#account-address");
-        accountAddress.html(shortenAddress(address, 5, 5) + "&nbsp;");
+        accountAddress.html(shortenAddress(web3.utils.toChecksumAddress(address), 5, 5) + "&nbsp;");
         accountAddress.removeClass("d-none");
     } else {
         $("#account-address").addClass("d-none");
@@ -220,7 +221,7 @@ let displayTokens = (excludedToken) => {
                         content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'img/thumbnails/token.webp\'); padding-top:100%"></div>';
                         content += '            </a>';
                         content += '            <div class="font-size-160 neo-bold token-name mb-1"></div>';
-                        content += '            <div class="font-size-110 mb-2">1 of 1 - Single Edition</div>';
+                        content += '            <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
                         content += '            <div class="font-size-90 mb-4 clamp token-description-truncated">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company. Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company.</div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
                             if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase()) {
@@ -284,16 +285,17 @@ let displayToken = (token) => {
     getTokenURI(token)
         .then(function(tokenURI) {
             $.get(tokenURI, function(metadata) {
-                $("meta[property='og:image']").attr("content", metadata.thumbnail);
                 $("#token-image").attr("src", metadata.thumbnail);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
                 $("#token-original-image").attr("href", metadata.image);
+                $("#token-contract-address").text(ownlyContractAddress);
+                $("#token-id").text(token);
                 createMarketItemConfirmationButton.attr("data-token-id", token);
 
                 let content = '';
                 for(let i = 0; i < metadata.attributes.length; i++) {
-                    content += '    <div class="col-md-6 col-xl-4 mb-4">';
+                    content += '    <div class="col-md-6 col-xl-4 p-2">';
                     content += '        <div class="card bg-light h-100">';
                     content += '            <div class="card-body h-100">';
                     content += '                <div class="d-flex justify-content-center align-items-center h-100">';
@@ -325,7 +327,7 @@ let displayToken = (token) => {
                             let createMarketSaleConfirmationButton = $(".create-market-sale-confirmation");
                             createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                             createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
-                            createMarketSaleConfirmationButton.closest("div").removeClass("d-none");
+                            createMarketSaleConfirmationButton.closest(".row").removeClass("d-none");
                         }
                     } else {
                         if(owner.toLowerCase() === address.toLowerCase()) {
@@ -400,6 +402,11 @@ let loadRelatedTokens = (excludedToken) => {
     new bootstrap.Carousel($('#related-tokens-container-xl'));
     new bootstrap.Carousel($('#related-tokens-container-md'));
     new bootstrap.Carousel($('#related-tokens-container-xs'));
+
+    Ellipsis({
+        class: '.token-description-truncated',
+        lines: 3
+    });
 };
 
 let getTokenURI = (id) => {
@@ -416,7 +423,7 @@ let getTotalSupply = () => {
 };
 let approve = (id) => {
     return ownlyContract.methods.approve(ownlyMarketplaceAddress, id).send({
-        from: address,
+        from: web3.utils.toChecksumAddress(address)
     });
 };
 
@@ -425,13 +432,14 @@ let getListingPrice = () => {
 };
 let createMarketItem = (id, price) => {
     return ownlyMarketplaceContract.methods.createMarketItem(ownlyContractAddress, id, web3.utils.toWei(price, 'ether')).send({
-        from: address,
+        from: web3.utils.toChecksumAddress(address),
         value: listingPrice
     });
 };
 let createMarketSale = (id, price) => {
+    console.log(address);
     return ownlyMarketplaceContract.methods.createMarketSale(id).send({
-        from: address,
+        from: web3.utils.toChecksumAddress(address),
         value: price
     });
 };

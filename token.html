@@ -1,34 +1,107 @@
 <div class="container pb-5" style="padding-top:80px">
-	<div class="row align-items-center pt-5 mb-5" id="token-card">
-		<div class="col-md-6 pe-4">
-			<img src="img/thumbnails/token.webp" class="w-100 border-1 shadow-sm" id="token-image" alt="Token" />
+	<div class="row pt-5 mb-5" id="token-card">
+		<div class="col-md-5 pe-4">
+			<a href="" target="_blank" id="token-original-image">
+				<img src="img/thumbnails/token.webp" class="w-100 border-1 shadow-sm" id="token-image" alt="Token" />
+			</a>
 		</div>
 		
-		<div class="col-md-6 ps-4">
-			<div class="neo-bold font-size-250 mb-4" id="token-name"></div>
-			<div class="font-size-100 mb-4 pb-1">Limited Edition</div>
-			<div class="neo-bold font-size-140 mb-4" id="token-price"></div>
+		<div class="col-md-7 ps-4 mt-5">
+			<div class="neo-black font-size-250 mb-1" id="token-name"></div>
+			<div class="font-size-110 neo-bold mb-4 pb-1">#1 of 1 - Single Edition</div>
 			
-			<div class="mb-4 d-none">
-				<button class="btn btn-secondary px-4 create-market-sale-confirmation" style="width:172px">PURCHASE</button>
+			<div class="row align-items-center d-none mb-4">
+				<div class="col-6">
+					<div class="font-size-120 font-size-md-250 neo-black" id="token-price"></div>
+				</div>
+				<div class="col-6 text-end">
+					<button class="btn btn-custom-2 font-size-100 font-size-md-120 neo-bold px-5 link create-market-sale-confirmation" style="border-radius:15px">OWN NOW</button>
+				</div>
 			</div>
 			
-			<div class="mb-4 d-none">
-				<button class="btn btn-secondary px-4" id="create-market-item-confirmation">POST ITEM FOR SALE</button>
-			</div>
+<!--			<div class="mb-4 d-none">-->
+<!--				<button class="btn btn-secondary px-4" id="create-market-item-confirmation">POST ITEM FOR SALE</button>-->
+<!--			</div>-->
 			
-			<button class="btn btn-secondary w-100 sell-token-confirmation d-none">Sell</button>
+<!--			<button class="btn btn-secondary w-100 sell-token-confirmation d-none">Sell</button>-->
 			
-			<div class="font-size-110 neo-bold mb-1">DESCRIPTION</div>
-			<div class="font-size-100 mb-4 pb-1" id="token-description">2021</div>
-			
-			<div class="row mb-4" id="token-attributes"></div>
-			
-			<div class="font-size-110 neo-bold mb-1">OWNER</div>
-			<div class="font-size-100 mb-4 pb-1" id="token-owner"></div>
-			
-			<div class="mb-4">
-				<a href="" target="_blank" id="token-original-image" class="btn btn-secondary px-4" style="width:172px">VIEW ORIGINAL</a>
+			<div class="accordion" id="accordionExample">
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingOne">
+						<button class="accordion-button neo-bold font-size-60" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							Description
+						</button>
+					</h2>
+					<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+						<div class="accordion-body">
+							<div class="d-flex align-items-center mb-3">
+								<div class="text-color-7">Created by</div>
+								<div class="ps-2">
+									<img src="img/ownly/own-token.webp" width="30" alt="Own" />
+								</div>
+							</div>
+							
+							<div class="font-size-100 line-height-140 mb-1" id="token-description"></div>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingTwo">
+						<button class="accordion-button neo-bold font-size-60 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+							Properties
+						</button>
+					</h2>
+					<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+						<div class="accordion-body px-4">
+							<div class="row" id="token-attributes"></div>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingThree">
+						<button class="accordion-button neo-bold font-size-60 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+							About the Collection
+						</button>
+					</h2>
+					<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+						<div class="accordion-body">
+							Created by multimedia artist Eugene Oligo, our socmed collaboration entitled Titans of the Industry features the pioneers, entrepreneurs, and the 'titans' of the crypto space. This collection will surely help you recognize the 'big ones', their feats, and their impact on the blockchain world.
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingFour">
+						<button class="accordion-button neo-bold font-size-60 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+							Token Details
+						</button>
+					</h2>
+					<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+						<div class="accordion-body">
+							<table>
+								<tr>
+									<td class="neo-bold pe-3 py-1">Token:</td>
+									<td class="py-1">BEP-721</td>
+								</tr>
+								<tr>
+									<td class="neo-bold pe-3 py-1">Blockchain:</td>
+									<td class="py-1">Binance Smart Chain</td>
+								</tr>
+								<tr>
+									<td class="neo-bold pe-3 py-1">Contract Address:</td>
+									<td class="py-1" id="token-contract-address"></td>
+								</tr>
+								<tr>
+									<td class="neo-bold pe-3 py-1">Token ID:</td>
+									<td class="py-1" id="token-id"></td>
+								</tr>
+								<tr>
+									<td class="neo-bold pe-3 py-1">Owner Address</td>
+									<td class="py-1" id="token-owner"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
