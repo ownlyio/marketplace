@@ -116,6 +116,9 @@ html {
 .text-color-8 {
     color:#137ebf;
 }
+.text-color-9 {
+    color:#e3965c;
+}
 .link-color-1 {
     color:#bc3326;
 }
@@ -259,6 +262,9 @@ html {
 .bg-color-18 {
     background-color:#f4f1ec!important;
 }
+.bg-color-19 {
+    background-color:#e3965c!important;
+}
 .letter-spacing-5 {
     letter-spacing:0.05em;
 }
@@ -272,6 +278,11 @@ html {
     background-position:center;
     background-repeat:no-repeat;
     background-size:cover;
+}
+.background-image-contain {
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:contain;
 }
 
 .carousel-control-prev-icon {
@@ -321,6 +332,12 @@ html {
     .carousel-control-next {
         right:-55px!important;
     }
+    #banner-left {
+        width:100%!important;
+    }
+    #banner-right {
+        width:0!important;;
+    }
 }
 
 @media(min-width:992px) {
@@ -333,6 +350,12 @@ html {
     }
     .carousel-control-next {
         right:-70px!important;
+    }
+    #banner-left {
+        width:45%!important;
+    }
+    #banner-right {
+        width:55%!important;;
     }
 }
 
