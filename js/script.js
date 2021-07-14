@@ -1,9 +1,10 @@
 let env = "staging";
-let cacheVersion = 2;
+let cacheVersion = 3;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
 let bscRPCEndpoint;
+let blockchainExplorer;
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -22,16 +23,19 @@ let initializeEnvVariables = () => {
         ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
         url = "https://ownly.io/marketplace/";
         bscRPCEndpoint = "https://dataseed1.binance.org/";
+        blockchainExplorer = "https://bscscan.com/";
     } else if(env === "staging") {
         ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
         ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
         url = "https://ownly.io/dev-marketplace/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+        blockchainExplorer = "https://testnet.bscscan.com/";
     } else {
         ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
         ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
         url = "http://ownlyio.dev-marketplace.test/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+        blockchainExplorer = "https://testnet.bscscan.com/";
     }
 };
 let initiate_loading_page = () => {
@@ -220,23 +224,27 @@ let displayTokens = (excludedToken) => {
                         content += '            <a href="#" class="link">';
                         content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'img/thumbnails/token.webp\'); padding-top:100%"></div>';
                         content += '            </a>';
-                        content += '            <div class="font-size-160 neo-bold token-name mb-1"></div>';
-                        content += '            <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
-                        content += '            <div class="font-size-90 mb-4 clamp token-description-truncated">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company. Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company.</div>';
+                        content += '            <div class="d-flex flex-column justify-content-between h-100">';
+                        content += '                <div class="d-flex align-items-center mb-1" style="min-height:61px">';
+                        content += '                    <div class="font-size-160 neo-bold token-name"></div>';
+                        content += '                </div>';
+                        content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
+                        content += '                <div class="font-size-90 mb-4 clamp token-description-truncated">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company. Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company.</div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
                             if(marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase()) {
-                                content += '        <div class="row align-items-center">';
-                                content += '            <div class="col-6">';
-                                content += '                <div class="font-size-100 font-size-md-110">Price:</div>';
-                                content += '                <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+                                content += '            <div class="row align-items-center">';
+                                content += '                <div class="col-6">';
+                                content += '                    <div class="font-size-100 font-size-md-110">Price:</div>';
+                                content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItemsForSale[ownlyContractAddress][i].price, "ether") + ' BNB</div>';
+                                content += '                </div>';
+                                content += '                <div class="col-6">';
+                                content += '                    <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '" style="border-radius:15px">OWN NOW</button>';
+                                content += '                </div>';
                                 content += '            </div>';
-                                content += '            <div class="col-6">';
-                                content += '                <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItemsForSale[ownlyContractAddress][i].itemId + '" data-price="' + marketItemsForSale[ownlyContractAddress][i].price + '" style="border-radius:15px">OWN NOW</button>';
-                                content += '            </div>';
-                                content += '        </div>';
-                                content += '        <div class="owner d-none"></div>';
+                                content += '            <div class="owner d-none"></div>';
                             }
                         }
+                        content += '            </div>';
                         content += '        </div>';
                         content += '    </div>';
                     }
@@ -288,10 +296,20 @@ let displayToken = (token) => {
                 $("#token-image").attr("src", metadata.thumbnail);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
-                $("#token-original-image").attr("href", metadata.image);
                 $("#token-contract-address").text(ownlyContractAddress);
                 $("#token-id").text(token);
+                $("#token-bscscan-link").attr("href", blockchainExplorer + "token/" + ownlyContractAddress + "?a=" + token);
+
                 createMarketItemConfirmationButton.attr("data-token-id", token);
+
+                let image = metadata.image.split("ipfs://");
+                if(image.length > 1) {
+                    image = "https://ipfs.io/ipfs/" + image[1];
+                } else {
+                    image = image[0];
+                }
+                $("#token-original-image").attr("href", image);
+                $("#token-original-image-preload").attr("src", image);
 
                 let content = '';
                 for(let i = 0; i < metadata.attributes.length; i++) {
