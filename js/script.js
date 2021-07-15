@@ -1,11 +1,12 @@
 let env = "staging";
-let cacheVersion = 8;
+let cacheVersion = 9;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
 let bscRPCEndpoint;
 let blockchainExplorer;
 let covalenthqAPI;
+let chainID;
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -20,26 +21,29 @@ let loading_interval;
 
 let initializeEnvVariables = () => {
     if(env === "production") {
-        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        ownlyContractAddress = "0x28d4C8d152369A0e19D74348EB4331B1c3C6BedD";
+        ownlyMarketplaceAddress = "0xC67A6d139876db70895E6c260A08c7990d12a830";
         url = "https://ownly.io/marketplace/";
         bscRPCEndpoint = "https://dataseed1.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/56/";
+        chainID = 56;
     } else if(env === "staging") {
-        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        ownlyContractAddress = "0x28d4C8d152369A0e19D74348EB4331B1c3C6BedD";
+        ownlyMarketplaceAddress = "0xC67A6d139876db70895E6c260A08c7990d12a830";
         url = "https://ownly.io/dev-marketplace/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/97/";
+        chainID = 97;
     } else {
-        ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
-        ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
+        ownlyContractAddress = "0x28d4C8d152369A0e19D74348EB4331B1c3C6BedD";
+        ownlyMarketplaceAddress = "0xC67A6d139876db70895E6c260A08c7990d12a830";
         url = "http://ownlyio.dev-marketplace.test/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/97/";
+        chainID = 97;
     }
 };
 let initiate_loading_page = () => {
@@ -133,6 +137,7 @@ let connectToMetamask = async () => {
                 updateConnectToWallet();
                 initializePage();
             });
+            ethereum.on('chainChanged', (_chainId) => window.location.reload());
         } catch (error) {
 
         }
@@ -174,17 +179,21 @@ let initializeWeb3 = async () => {
             initializePage();
         });
 
-        if(ethereum.networkVersion === "97") {
+        ethereum.on('chainChanged', (_chainId) => window.location.reload());
+
+        console.log(ethereum.networkVersion);
+
+        // if(ethereum.networkVersion === "97" || ethereum.networkVersion === "56") {
             web3 = new Web3(ethereum);
 
-            if (typeof web3 !== 'undefined') { // metamask is not injected
+            // if (typeof web3 !== 'undefined') { // metamask is not injected
                 web3 = new Web3(web3.currentProvider);
-            } else {
-
-            }
-        } else {
-            web3 = new Web3(bscRPCEndpoint);
-        }
+            // } else {
+            //
+            // }
+        // } else {
+        //     web3 = new Web3(bscRPCEndpoint);
+        // }
     } catch(e) {
         web3 = new Web3(bscRPCEndpoint);
     }
@@ -402,8 +411,41 @@ let displayToken = (token) => {
                             createMarketSaleConfirmationButton.closest(".row").removeClass("d-none");
                         }
                     } else {
-                        if(owner.toLowerCase() === address.toLowerCase()) {
+                        if(address && owner.toLowerCase() === address.toLowerCase()) {
                             createMarketItemConfirmationButton.closest("div").removeClass("d-none");
+                        } else {
+                            $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+                                let _break = false;
+
+                                for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
+                                    for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
+                                        if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+                                            let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+                                            let setTransactionHashInterval = setInterval(function() {
+                                                if($("#tokens-container").html() !== "") {
+                                                    let bscscanTransactionHash = $("#token-bscscan-transaction-hash");
+
+                                                    bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                    bscscanTransactionHash.removeClass("d-none");
+
+                                                    bscscanTransactionHash.closest(".row").removeClass("d-none");
+
+                                                    $(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
+
+                                                    clearInterval(setTransactionHashInterval);
+                                                }
+                                            }, 1000);
+
+                                            _break = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if(_break) {
+                                        break;
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -520,7 +562,6 @@ let createMarketItem = (id, price) => {
     });
 };
 let createMarketSale = (id, price) => {
-    console.log(address);
     return ownlyMarketplaceContract.methods.createMarketSale(id).send({
         from: web3.utils.toChecksumAddress(address),
         value: price
@@ -618,12 +659,16 @@ $(document).on("click", ".create-market-sale-confirmation", function() {
     if(!address) {
         connectToMetamask();
     } else {
-        let createMarketSaleButton = $("#create-market-sale");
+        if(parseInt(ethereum.networkVersion) === chainID) {
+            let createMarketSaleButton = $("#create-market-sale");
 
-        createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
-        createMarketSaleButton.val($(this).attr("data-item-id"));
+            createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
+            createMarketSaleButton.val($(this).attr("data-item-id"));
 
-        $("#modal-create-market-sale").modal("show");
+            $("#modal-create-market-sale").modal("show");
+        } else {
+            $("#modal-wrong-network").modal("show");
+        }
     }
 });
 
