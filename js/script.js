@@ -24,7 +24,7 @@ let initializeEnvVariables = () => {
         ownlyContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         ownlyMarketplaceAddress = "0x86C8979c85A6bc80A539C6C20E108E567ed09fd4";
         url = "https://ownly.io/marketplace/";
-        url = "http://ownlyio.dev-marketplace.test/";
+        url = "https://ownly.io/dev-marketplace/";
         bscRPCEndpoint = "https://dataseed1.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/56/";
