@@ -1,5 +1,5 @@
 let env = "staging";
-let cacheVersion = 9;
+let cacheVersion = 10;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -181,7 +181,7 @@ let initializeWeb3 = async () => {
 
         ethereum.on('chainChanged', (_chainId) => window.location.reload());
 
-        console.log(ethereum.networkVersion);
+        // console.log(ethereum.networkVersion);
 
         // if(ethereum.networkVersion === "97" || ethereum.networkVersion === "56") {
             web3 = new Web3(ethereum);
@@ -413,7 +413,7 @@ let displayToken = (token) => {
                     } else {
                         if(address && owner.toLowerCase() === address.toLowerCase()) {
                             createMarketItemConfirmationButton.closest("div").removeClass("d-none");
-                        } else {
+
                             $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
                                 let _break = false;
 
