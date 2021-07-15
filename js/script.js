@@ -1,10 +1,11 @@
 let env = "staging";
-let cacheVersion = 5;
+let cacheVersion = 6;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
 let bscRPCEndpoint;
 let blockchainExplorer;
+let covalenthqAPI;
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -24,18 +25,21 @@ let initializeEnvVariables = () => {
         url = "https://ownly.io/marketplace/";
         bscRPCEndpoint = "https://dataseed1.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
+        covalenthqAPI = "https://api.covalenthq.com/v1/56/";
     } else if(env === "staging") {
         ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
         ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
         url = "https://ownly.io/dev-marketplace/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
+        covalenthqAPI = "https://api.covalenthq.com/v1/97/";
     } else {
         ownlyContractAddress = "0x5239d0d09839208b341c6C17A36a3AEcB78745De";
         ownlyMarketplaceAddress = "0x027ED5D715367fF1947200669FD130c47aD6989a";
         url = "http://ownlyio.dev-marketplace.test/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
+        covalenthqAPI = "https://api.covalenthq.com/v1/97/";
     }
 };
 let initiate_loading_page = () => {
@@ -229,7 +233,7 @@ let displayTokens = (excludedToken) => {
                         content += '                    <div class="font-size-160 neo-bold token-name"></div>';
                         content += '                </div>';
                         content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
-                        content += '                <div class="font-size-90 mb-4 clamp token-description-truncated">Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company. Inspired by Coinbase founder, Brian Armstrong\'s rise from an unknown crypto startup back in 201x to a multi-billion dollar public company.</div>';
+                        content += '                <div class="font-size-90 mb-4 clamp token-description-truncated"></div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
                             if(address && marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase()) {
                                 content += '            <div class="row align-items-center">';
@@ -244,13 +248,38 @@ let displayTokens = (excludedToken) => {
                                 content += '            <div class="owner d-none"></div>';
                             }
                         } else {
+                            $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + i + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+                                let _break = false;
+
+                                for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
+                                    for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
+                                        if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+                                            let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+                                            let setTransactionHashInterval = setInterval(function() {
+                                                if($("#tokens-container").html() !== "") {
+                                                    $(".token-card[data-token-id='" + i + "'] .bscscan-transaction-hash").attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                    clearInterval(setTransactionHashInterval);
+                                                }
+                                            }, 2000);
+
+                                            _break = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if(_break) {
+                                        break;
+                                    }
+                                }
+                            });
+
                             content += '                <div class="row align-items-center">';
                             content += '                    <div class="col-6">';
                             content += '                        <div>';
-                            content += '                            <a href="#" class="font-size-90 text-decoration-none">View on BscScan</a>';
+                            content += '                            <a href="#" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash">View on BscScan</a>';
                             content += '                        </div>';
                             content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                            content += '                        <div class="font-size-90">0x7ef...9826F</div>';
+                            content += '                        <div class="font-size-90 owner-address"></div>';
                             content += '                    </div>';
                             content += '                    <div class="col-6">';
                             content += '                        <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
@@ -264,11 +293,6 @@ let displayTokens = (excludedToken) => {
 
                     $("#tokens-container").html(content);
 
-                    Ellipsis({
-                        class: '.token-description-truncated',
-                        lines: 3
-                    });
-
                     for(let i = 1; i <= result; i++) {
                         getTokenURI(i)
                             .then(function(tokenURI) {
@@ -277,14 +301,21 @@ let displayTokens = (excludedToken) => {
 
                                     tokenCard.find(".link").attr("href", "?contract=" + ownlyContractAddress + "&token=" + i);
                                     tokenCard.find(".token-name").text(metadata.name);
+                                    tokenCard.find(".token-description-truncated").text(metadata.description);
                                     tokenCard.find(".token-image").css("background-image", "url('" + metadata.thumbnail + "')");
                                     tokenCard.find("img").removeClass("d-none");
                                     tokenCard.find(".view-original").attr("href", metadata.image);
+
+                                    Ellipsis({
+                                        class: '.token-description-truncated',
+                                        lines: 3
+                                    });
 
                                     getOwnerOf(i)
                                         .then(function(owner) {
                                             let tokenCard = $(".token-card[data-token-id='" + i + "']");
                                             tokenCard.find(".owner").text(owner);
+                                            tokenCard.find(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
 
                                             if(address && owner.toLowerCase() === address.toLowerCase()) {
                                                 tokenCard.find("#create-market-item-confirmation").removeClass("d-none");
