@@ -1,5 +1,5 @@
 let env = "staging";
-let cacheVersion = 6;
+let cacheVersion = 8;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -235,7 +235,7 @@ let displayTokens = (excludedToken) => {
                         content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
                         content += '                <div class="font-size-90 mb-4 clamp token-description-truncated"></div>';
                         if(marketItemsForSale[ownlyContractAddress] && marketItemsForSale[ownlyContractAddress][i]) {
-                            if(address && marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase()) {
+                            if(!address || (address && marketItemsForSale[ownlyContractAddress][i].seller.toLowerCase() !== address.toLowerCase())) {
                                 content += '            <div class="row align-items-center">';
                                 content += '                <div class="col-6">';
                                 content += '                    <div class="font-size-100 font-size-md-110">Price:</div>';
@@ -257,10 +257,13 @@ let displayTokens = (excludedToken) => {
                                             let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
                                             let setTransactionHashInterval = setInterval(function() {
                                                 if($("#tokens-container").html() !== "") {
-                                                    $(".token-card[data-token-id='" + i + "'] .bscscan-transaction-hash").attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                    let bscscanTransactionHash = $(".token-card[data-token-id='" + i + "'] .bscscan-transaction-hash");
+
+                                                    bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                    bscscanTransactionHash.removeClass("d-none");
                                                     clearInterval(setTransactionHashInterval);
                                                 }
-                                            }, 2000);
+                                            }, 1000);
 
                                             _break = true;
                                             break;
@@ -276,7 +279,7 @@ let displayTokens = (excludedToken) => {
                             content += '                <div class="row align-items-center">';
                             content += '                    <div class="col-6">';
                             content += '                        <div>';
-                            content += '                            <a href="#" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash">View on BscScan</a>';
+                            content += '                            <a href="#" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash d-none">View on BscScan</a>';
                             content += '                        </div>';
                             content += '                        <div class="font-size-100 neo-bold">Owner</div>';
                             content += '                        <div class="font-size-90 owner-address"></div>';
@@ -322,7 +325,14 @@ let displayTokens = (excludedToken) => {
                                             }
 
                                             if(currentPage === "token") {
-                                                loadRelatedTokens(excludedToken);
+                                                Ellipsis({
+                                                    class: '.token-description-truncated',
+                                                    lines: 3
+                                                });
+
+                                                setTimeout(function() {
+                                                    loadRelatedTokens(excludedToken);
+                                                }, 1000)
                                             }
                                         });
                                 });
@@ -410,6 +420,8 @@ let loadRelatedTokens = (excludedToken) => {
     let tokenCards = [];
     let _break = false;
 
+    $("#tokens-container").addClass("d-none");
+
     $("#tokens-container .col-md-6").each(function() {
         if($(this).find(".owner").html() === "") {
             _break = true;
@@ -465,10 +477,19 @@ let loadRelatedTokens = (excludedToken) => {
     new bootstrap.Carousel($('#related-tokens-container-md'));
     new bootstrap.Carousel($('#related-tokens-container-xs'));
 
-    Ellipsis({
-        class: '.token-description-truncated',
-        lines: 3
-    });
+    // $(document).on('slide.bs.carousel', '#related-tokens-container-xl', function () {
+    //     Ellipsis({
+    //         class: '.token-description-truncated',
+    //         lines: 3
+    //     });
+    //
+    //     setTimeout(function() {
+    //         Ellipsis({
+    //             class: '.token-description-truncated',
+    //             lines: 3
+    //         });
+    //     }, 10);
+    // });
 };
 
 let getTokenURI = (id) => {
