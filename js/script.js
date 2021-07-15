@@ -1,4 +1,4 @@
-let env = "staging";
+let env = "production";
 let cacheVersion = 10;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
@@ -21,9 +21,10 @@ let loading_interval;
 
 let initializeEnvVariables = () => {
     if(env === "production") {
-        ownlyContractAddress = "0x28d4C8d152369A0e19D74348EB4331B1c3C6BedD";
-        ownlyMarketplaceAddress = "0xC67A6d139876db70895E6c260A08c7990d12a830";
+        ownlyContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
+        ownlyMarketplaceAddress = "0x86C8979c85A6bc80A539C6C20E108E567ed09fd4";
         url = "https://ownly.io/marketplace/";
+        url = "http://ownlyio.dev-marketplace.test/";
         bscRPCEndpoint = "https://dataseed1.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/56/";
