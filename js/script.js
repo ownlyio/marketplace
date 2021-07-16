@@ -417,40 +417,40 @@ let displayToken = (token) => {
                     } else {
                         if(address && owner.toLowerCase() === address.toLowerCase()) {
                             createMarketItemConfirmationButton.closest("div").removeClass("d-none");
+                        }
 
-                            $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-                                let _break = false;
+                        $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+                            let _break = false;
 
-                                for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
-                                    for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
-                                        if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
-                                            let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
-                                            let setTransactionHashInterval = setInterval(function() {
-                                                if($("#tokens-container").html() !== "") {
-                                                    let bscscanTransactionHash = $("#token-bscscan-transaction-hash");
+                            for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
+                                for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
+                                    if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+                                        let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+                                        let setTransactionHashInterval = setInterval(function() {
+                                            if($("#tokens-container").html() !== "") {
+                                                let bscscanTransactionHash = $("#token-bscscan-transaction-hash");
 
-                                                    bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
-                                                    bscscanTransactionHash.removeClass("d-none");
+                                                bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                bscscanTransactionHash.removeClass("d-none");
 
-                                                    bscscanTransactionHash.closest(".row").removeClass("d-none");
+                                                bscscanTransactionHash.closest(".row").removeClass("d-none");
 
-                                                    $(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
+                                                $(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
 
-                                                    clearInterval(setTransactionHashInterval);
-                                                }
-                                            }, 1000);
+                                                clearInterval(setTransactionHashInterval);
+                                            }
+                                        }, 1000);
 
-                                            _break = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if(_break) {
+                                        _break = true;
                                         break;
                                     }
                                 }
-                            });
-                        }
+
+                                if(_break) {
+                                    break;
+                                }
+                            }
+                        });
                     }
                 });
 
