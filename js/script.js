@@ -1,5 +1,5 @@
-let env = "production";
-let cacheVersion = 10;
+let env = "staging";
+let cacheVersion = 13;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -24,7 +24,7 @@ let initializeEnvVariables = () => {
         ownlyContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         ownlyMarketplaceAddress = "0x86C8979c85A6bc80A539C6C20E108E567ed09fd4";
         url = "https://ownly.io/marketplace/";
-        bscRPCEndpoint = "https://bsc-dataseed.binance.org/\n";
+        bscRPCEndpoint = "https://bsc-dataseed.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/56/";
         chainID = 56;
@@ -518,20 +518,6 @@ let loadRelatedTokens = (excludedToken) => {
     new bootstrap.Carousel($('#related-tokens-container-xl'));
     new bootstrap.Carousel($('#related-tokens-container-md'));
     new bootstrap.Carousel($('#related-tokens-container-xs'));
-
-    // $(document).on('slide.bs.carousel', '#related-tokens-container-xl', function () {
-    //     Ellipsis({
-    //         class: '.token-description-truncated',
-    //         lines: 3
-    //     });
-    //
-    //     setTimeout(function() {
-    //         Ellipsis({
-    //             class: '.token-description-truncated',
-    //             lines: 3
-    //         });
-    //     }, 10);
-    // });
 };
 
 let getTokenURI = (id) => {
