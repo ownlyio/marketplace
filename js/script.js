@@ -1,5 +1,5 @@
 let env = "production";
-let cacheVersion = 14;
+let cacheVersion = 15;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
 let url;
@@ -181,9 +181,11 @@ let initializeWeb3 = async () => {
 
         ethereum.on('chainChanged', (_chainId) => window.location.reload());
 
+        console.log(ethereum.networkVersion);
+
         // console.log(ethereum.networkVersion);
 
-        // if(ethereum.networkVersion === "97" || ethereum.networkVersion === "56") {
+        if(ethereum.networkVersion === "97" || ethereum.networkVersion === "56") {
             web3 = new Web3(ethereum);
 
             // if (typeof web3 !== 'undefined') { // metamask is not injected
@@ -191,9 +193,9 @@ let initializeWeb3 = async () => {
             // } else {
             //
             // }
-        // } else {
-        //     web3 = new Web3(bscRPCEndpoint);
-        // }
+        } else {
+            web3 = new Web3(bscRPCEndpoint);
+        }
     } catch(e) {
         web3 = new Web3(bscRPCEndpoint);
     }
