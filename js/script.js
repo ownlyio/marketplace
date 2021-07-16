@@ -1,4 +1,4 @@
-let env = "staging";
+let env = "production";
 let cacheVersion = 13;
 let ownlyContractAddress;
 let ownlyMarketplaceAddress;
