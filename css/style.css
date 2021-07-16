@@ -51,6 +51,13 @@
     font-family: NeogroteskEss-RegularIt;
 }
 @font-face {
+    font-family: NeogroteskEss-Light;
+    src: url('../fonts/Neo/NeogroteskEss-Light.otf');
+}
+.neo-light {
+    font-family: NeogroteskEss-Light;
+}
+@font-face {
     font-family: NeogroteskEss-LightIt;
     src: url('../fonts/Neo/NeogroteskEss-LightIt.otf');
 }
@@ -322,6 +329,12 @@ html {
     }
     .carousel-control-next {
         right:-35px!important;
+    }
+    .banner-min-size {
+        min-height:calc(100vh - 80px);
+    }
+    .font-size-sm-93 {
+        font-size: 0.93em;
     }
 }
 
