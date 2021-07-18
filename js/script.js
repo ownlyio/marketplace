@@ -318,9 +318,8 @@ let displayTokens = (excludedToken) => {
                                     tokenCard.find(".link").attr("href", "?contract=" + ownlyContractAddress + "&token=" + i);
                                     tokenCard.find(".token-name").text(metadata.name);
                                     tokenCard.find(".token-description-truncated").text(metadata.description);
-                                    tokenCard.find(".token-image").css("background-image", "url('" + metadata.thumbnail + "')");
+                                    tokenCard.find(".token-image").css("background-image", "url('" + metadata.image + "')");
                                     tokenCard.find("img").removeClass("d-none");
-                                    tokenCard.find(".view-original").attr("href", metadata.image);
 
                                     Ellipsis({
                                         class: '.token-description-truncated',
@@ -360,7 +359,7 @@ let displayToken = (token) => {
     getTokenURI(token)
         .then(function(tokenURI) {
             $.get(tokenURI, function(metadata) {
-                $("#token-image").attr("src", metadata.thumbnail);
+                $("#token-image").attr("src", metadata.image);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
                 $("#token-contract-address").text(ownlyContractAddress);
@@ -369,14 +368,8 @@ let displayToken = (token) => {
 
                 createMarketItemConfirmationButton.attr("data-token-id", token);
 
-                let image = metadata.image.split("ipfs://");
-                if(image.length > 1) {
-                    image = "https://ipfs.io/ipfs/" + image[1];
-                } else {
-                    image = image[0];
-                }
-                $("#token-original-image").attr("href", image);
-                $("#token-original-image-preload").attr("src", image);
+                $("#token-original-image").attr("href", metadata.asset);
+                $("#token-original-image-preload").attr("src", metadata.asset);
 
                 let content = '';
                 for(let i = 0; i < metadata.attributes.length; i++) {
