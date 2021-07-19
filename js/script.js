@@ -243,7 +243,7 @@ let displayTokens = (excludedToken) => {
                         content += '            </a>';
                         content += '            <div class="d-flex flex-column justify-content-between h-100">';
                         content += '                <div class="d-flex align-items-center mb-1" style="min-height:61px">';
-                        content += '                    <div class="font-size-160 neo-bold token-name"></div>';
+                        content += '                    <a href="#" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none"></a>';
                         content += '                </div>';
                         content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
                         content += '                <div class="font-size-90 mb-4 clamp token-description-truncated"></div>';
