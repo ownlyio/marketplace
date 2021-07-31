@@ -686,7 +686,8 @@ $(document).on("click", "#approve", function() {
 
     approve(tokenID)
         .on('transactionHash', function(hash){
-            alertProcessing = alertify.message('Processing...', 0);
+            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
+            $(".ajs-message").addClass("bg-color-3");
         }).then(function(receipt) {
             alertProcessing.dismiss();
 
@@ -703,7 +704,8 @@ $(document).on("click", "#create-market-item", function() {
     if(price > 0) {
         createMarketItem($(this).val(), price)
             .on('transactionHash', function(transactionHash){
-                alertProcessing = alertify.message('Processing...', 0);
+                alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
+                $(".ajs-message").addClass("bg-color-3");
             }).on('error', function(error){
                 alertProcessing.dismiss();
                 alertError = alertify.message(error, 0);
@@ -726,7 +728,8 @@ $(document).on("click", "#cancel-market-item", function() {
 
     cancelMarketItem($(this).val())
         .on('transactionHash', function(transactionHash){
-            alertProcessing = alertify.message('Processing...', 0);
+            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
+            $(".ajs-message").addClass("bg-color-3");
         }).on('error', function(error){
         alertProcessing.dismiss();
         alertError = alertify.message(error, 0);
@@ -758,7 +761,8 @@ $(document).on("click", "#create-market-sale", function() {
 
     createMarketSale($(this).val(), $(this).attr("data-price"))
         .on('transactionHash', function(transactionHash){
-            alertProcessing = alertify.message('Processing...', 0);
+            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
+            $(".ajs-message").addClass("bg-color-3");
         }).on('error', function(error){
             alertProcessing.dismiss();
             alertError = alertify.message(error, 0);
