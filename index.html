@@ -185,7 +185,7 @@
 			</div>
 			
 			<div class="modal fade" id="modal-create-market-item" tabindex="-1">
-				<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-dialog modal-dialog-centered modal-sm">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title">Set Price</h5>
@@ -193,7 +193,10 @@
 						</div>
 						<div class="modal-body">
 							<small>Price</small>
-							<input type="number" class="form-control" name="price" id="price" placeholder="Price" />
+							<div class="input-group mb-3">
+								<input type="number" class="form-control" name="price" id="price" placeholder="Price">
+								<span class="input-group-text" id="basic-addon2">BNB</span>
+							</div>
 						</div>
 						<div class="modal-footer justify-content-center">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -267,16 +270,33 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="modal fade" id="modal-cancel-market-item" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered modal-sm">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="text-center mt-3 mb-3">
+								<i class="fas fa-exclamation-circle font-size-400 text-color-4"></i>
+							</div>
+							<h5 class="w-100 font-size-100 text-center">Are you sure you want to cancel this market item?</h5>
+						</div>
+						<div class="modal-footer justify-content-center">
+							<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-custom-7 px-4" id="cancel-market-item">Confirm</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.bundle.min.js"></script>
-	<script src="js/web3.min.js"></script>
+	<script src="js/web3.min.js?v=3"></script>
 	<script src="js/abi.js?v=12"></script>
 	<script src="js/alertifyjs/alertify.min.js"></script>
 	<script src="js/ellipsis.min.js"></script>
 	<script src="js/fancybox/fancybox.umd.js"></script>
-	<script src="js/script.js?v=40" id="script"></script>
+	<script src="js/script.js?v=45" id="script"></script>
 </body>
 </html>
