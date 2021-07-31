@@ -22,7 +22,7 @@ let initializeEnvVariables = () => {
 
     if(currentURL.includes("ownly.io/marketplace")) {
         ownlyContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
-        ownlyMarketplaceAddress = "0x86C8979c85A6bc80A539C6C20E108E567ed09fd4";
+        ownlyMarketplaceAddress = "0xB781092d4056FF0447C3Ef9acf25A2173CeE13a8";
         url = "https://ownly.io/marketplace/";
         bscRPCEndpoint = "https://bsc-dataseed.binance.org/";
         blockchainExplorer = "https://bscscan.com/";
