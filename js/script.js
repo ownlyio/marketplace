@@ -416,10 +416,13 @@ let displayTokens = (excludedToken) => {
         });
 };
 let displayToken = (token) => {
-    let createMarketItemConfirmationButton = $("#create-market-item-confirmation");
+    let createMarketItemConfirmationButton = $(".create-market-item-confirmation");
+    let cancelMarketItemConfirmationButton = $(".cancel-market-item-confirmation");
 
     getTokenURI(token)
         .then(function(tokenURI) {
+            $("#point-to-bscnetwork-message").addClass("d-none");
+
             $.get(tokenURI, function(metadata) {
                 $("#token-image").attr("src", metadata.image);
                 $("#token-name").text(metadata.name);
@@ -459,45 +462,50 @@ let displayToken = (token) => {
                     $("#token-owner").text(owner);
 
                     if(parseInt(marketItem.itemId)) {
-                        let tokenPrice = $("#token-price");
+                        let tokenPrice = $(".token-price");
                         tokenPrice.text(web3.utils.fromWei(marketItem.price, "ether") + " BNB");
                         tokenPrice.removeClass("d-none");
 
-                        if(address && owner.toLowerCase() !== address.toLowerCase()) {
+                        if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
+                            cancelMarketItemConfirmationButton.attr("data-item-id", parseInt(marketItem.itemId));
+                            $("#cancel-market-item-container").removeClass("d-none");
+                        } else {
                             let createMarketSaleConfirmationButton = $(".create-market-sale-confirmation");
                             createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                             createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
-                            createMarketSaleConfirmationButton.closest(".row").removeClass("d-none");
+                            $("#create-market-sale-container").removeClass("d-none");
                         }
                     } else {
-                        if(address && owner.toLowerCase() === address.toLowerCase()) {
-                            createMarketItemConfirmationButton.closest("div").removeClass("d-none");
-                        }
-
                         $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
                             let _break = false;
 
                             for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
                                 for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
-                                    if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
-                                        let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
-                                        let setTransactionHashInterval = setInterval(function() {
-                                            if($("#tokens-container").html() !== "") {
-                                                let bscscanTransactionHash = $("#token-bscscan-transaction-hash");
+                                    if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
+                                        if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+                                            let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+                                            let setTransactionHashInterval = setInterval(function() {
+                                                if($("#tokens-container").html() !== "") {
+                                                    let bscscanTransactionHash = $(".token-bscscan-transaction-hash");
 
-                                                bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
-                                                bscscanTransactionHash.removeClass("d-none");
+                                                    bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                    bscscanTransactionHash.removeClass("d-none");
 
-                                                bscscanTransactionHash.closest(".row").removeClass("d-none");
+                                                    $(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
 
-                                                $(".owner-address").text(shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5));
+                                                    clearInterval(setTransactionHashInterval);
 
-                                                clearInterval(setTransactionHashInterval);
-                                            }
-                                        }, 1000);
+                                                    if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
+                                                        $("#create-market-item-container").removeClass("d-none");
+                                                    } else {
+                                                        $("#sold-out-container").removeClass("d-none");
+                                                    }
+                                                }
+                                            }, 1000);
 
-                                        _break = true;
-                                        break;
+                                            _break = true;
+                                            break;
+                                        }
                                     }
                                 }
 
