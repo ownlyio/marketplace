@@ -186,17 +186,21 @@ let initializeWeb3 = async () => {
 
         ethereum.on('chainChanged', (_chainId) => window.location.reload());
 
-        if(!ethereum.networkVersion) {
-            window.location.reload()
-            return 0;
-        }
+        // if(!ethereum.networkVersion) {
+        //     window.location.reload(true)
+        //     return 0;
+        // }
+        //
 
-        if(ethereum.networkVersion === "56" || ethereum.networkVersion === "97") {
+        // console.log(ethereum);
+        // await ethereum.enable();
+        //
+        // if(ethereum !== undefined) {
             web3 = new Web3(ethereum);
             web3 = new Web3(web3.currentProvider);
-        } else {
-            web3 = new Web3(bscRPCEndpoint);
-        }
+        // } else {
+        //     web3 = new Web3(bscRPCEndpoint);
+        // }
     } catch(e) {
         web3 = new Web3(bscRPCEndpoint);
     }
