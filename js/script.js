@@ -459,6 +459,8 @@ let displayToken = (token) => {
                 .then(async function(owner) {
                     $("#token-owner").html('<a href="' + blockchainExplorer + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5) + '</a>');
 
+                    let transaction_hashes = await getTokenTransfers(owner, token);
+
                     if(parseInt(marketItem.itemId)) {
                         let tokenPrice = $(".token-price");
                         tokenPrice.text(web3.utils.fromWei(marketItem.price, "ether") + " BNB");
@@ -474,8 +476,6 @@ let displayToken = (token) => {
                             $("#create-market-sale-container").removeClass("d-none");
                         }
                     } else {
-                        let transaction_hashes = await getTokenTransfers(owner, token);
-
                         if($("#tokens-container").html() !== "") {
                             let bscscanTransactionHash = $(".token-bscscan-transaction-hash");
 
@@ -490,38 +490,37 @@ let displayToken = (token) => {
                                 $("#sold-out-container").removeClass("d-none");
                             }
                         }
-
-                        let transfers_content = '   <thead>';
-                        transfers_content += '          <tr>';
-                        transfers_content += '              <th style="vertical-align:middle">Price</th>';
-                        transfers_content += '              <th style="vertical-align:middle">From</th>';
-                        transfers_content += '              <th style="vertical-align:middle">To</th>';
-                        transfers_content += '              <th style="vertical-align:middle; min-width:110px">Date</th>';
-                        transfers_content += '          </tr>';
-                        transfers_content += '      </thead>';
-                        transfers_content += '      <tbody>';
-                        for(let j = 0; j < transaction_hashes.length; j++) {
-                            let price = 0;
-                            await $.get(covalenthqAPI + "transaction_v2/" + transaction_hashes[j].tx_hash + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-                                price = web3.utils.fromWei(data.data.items[0].value, "ether");
-                            });
-
-                            transfers_content += '      <tr>';
-                            transfers_content += '          <td style="vertical-align:middle">' + price + ' BNB</td>';
-                            transfers_content += '          <td style="vertical-align:middle">';
-                            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[0].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3.utils.toChecksumAddress(transaction_hashes[j].decoded.params[0].value), 4, 4) + '</a>';
-                            transfers_content += '          </td>';
-                            transfers_content += '          <td style="vertical-align:middle">';
-                            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
-                            transfers_content += '          </td>';
-                            transfers_content += '          <td style="vertical-align:middle">' + moment(transaction_hashes[j].block_signed_at).format('llll') + '</td>';
-                            transfers_content += '      </tr>';
-                        }
-                        transfers_content += '      </tbody>';
-                        $("#transfer-history").html(transfers_content);
                     }
-                });
 
+                    let transfers_content = '   <thead>';
+                    transfers_content += '          <tr>';
+                    transfers_content += '              <th style="vertical-align:middle">Price</th>';
+                    transfers_content += '              <th style="vertical-align:middle">From</th>';
+                    transfers_content += '              <th style="vertical-align:middle">To</th>';
+                    transfers_content += '              <th style="vertical-align:middle; min-width:110px">Date</th>';
+                    transfers_content += '          </tr>';
+                    transfers_content += '      </thead>';
+                    transfers_content += '      <tbody>';
+                    for(let j = 0; j < transaction_hashes.length; j++) {
+                        let price = 0;
+                        await $.get(covalenthqAPI + "transaction_v2/" + transaction_hashes[j].tx_hash + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+                            price = web3.utils.fromWei(data.data.items[0].value, "ether");
+                        });
+
+                        transfers_content += '      <tr>';
+                        transfers_content += '          <td style="vertical-align:middle">' + price + ' BNB</td>';
+                        transfers_content += '          <td style="vertical-align:middle">';
+                        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[0].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3.utils.toChecksumAddress(transaction_hashes[j].decoded.params[0].value), 4, 4) + '</a>';
+                        transfers_content += '          </td>';
+                        transfers_content += '          <td style="vertical-align:middle">';
+                        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
+                        transfers_content += '          </td>';
+                        transfers_content += '          <td style="vertical-align:middle">' + moment(transaction_hashes[j].block_signed_at).format('llll') + '</td>';
+                        transfers_content += '      </tr>';
+                    }
+                    transfers_content += '      </tbody>';
+                    $("#transfer-history").html(transfers_content);
+                });
         });
 };
 let shortenAddress = (address, prefixCount, postfixCount) => {
