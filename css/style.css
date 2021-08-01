@@ -140,6 +140,13 @@ html {
     color: #ffffff;
     text-decoration: underline;
 }
+.link-color-3 {
+    color:#16b99a;
+}
+.link-color-3:hover {
+    color: #13a187;
+    text-decoration: underline;
+}
 .btn-custom-1 {
     background-color:#bc3426;
     color:#ffffff;
