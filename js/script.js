@@ -6,6 +6,7 @@ let bscRPCEndpoint;
 let blockchainExplorer;
 let covalenthqAPI;
 let chainID;
+let ownlyAPI;
 let web3;
 let ownlyContract;
 let ownlyMarketplaceContract;
@@ -46,6 +47,7 @@ let initializeEnvVariables = () => {
         blockchainExplorer = "https://testnet.bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/97/";
         chainID = 97;
+        ownlyAPI = "http://ownly-api.test/";
     }
 
     $(".website-home-link").attr("href", url);
@@ -134,6 +136,7 @@ let connectToMetamask = async () => {
         window.web3 = new Web3(ethereum);
         try {
             await ethereum.request({ method: 'eth_requestAccounts' });
+
             updateConnectToWallet();
 
             ethereum.on('accountsChanged', (accounts) => {
@@ -198,6 +201,8 @@ let initializeWeb3 = async () => {
         // if(ethereum !== undefined) {
             web3 = new Web3(ethereum);
             web3 = new Web3(web3.currentProvider);
+
+            await storeMarketAccount();
         // } else {
         //     web3 = new Web3(bscRPCEndpoint);
         // }
@@ -421,9 +426,9 @@ let displayToken = (token) => {
 
     getTokenURI(token)
         .then(function(tokenURI) {
-            $("#point-to-bscnetwork-message").addClass("d-none");
-
             $.get(tokenURI, function(metadata) {
+                $("#point-to-bscnetwork-message").addClass("d-none");
+
                 $("#token-image").attr("src", metadata.image);
                 $("#token-name").text(metadata.name);
                 $("#token-description").text(metadata.description);
@@ -606,6 +611,15 @@ let getTokenTransfers = async (owner, token) => {
     });
 
     return transaction_hashes;
+};
+let storeMarketAccount = async (address) => {
+    // await $.post(ownlyAPI + "api/store-market-account", {
+    //     address: address
+    // }, function(data) {
+    //     console.log(data);
+    // }).fail(function(error) {
+    //     console.log(error);
+    // });
 };
 
 let getTokenURI = (id) => {
