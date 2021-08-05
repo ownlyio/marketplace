@@ -29,6 +29,7 @@ let initializeEnvVariables = () => {
         blockchainExplorer = "https://bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/56/";
         chainID = 56;
+        ownlyAPI = "https://ownlyio.herokuapp.com/";
     } else if(currentURL.includes("ownly.io/dev-marketplace")) {
         ownlyContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
         ownlyMarketplaceAddress = "0x47F4f62317A14656371f3Cc8327E668A1216fd4F";
@@ -38,6 +39,7 @@ let initializeEnvVariables = () => {
         blockchainExplorer = "https://testnet.bscscan.com/";
         covalenthqAPI = "https://api.covalenthq.com/v1/97/";
         chainID = 97;
+        ownlyAPI = "https://ownlyio.herokuapp.com/";
     } else {
         ownlyContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
         ownlyMarketplaceAddress = "0x47F4f62317A14656371f3Cc8327E668A1216fd4F";
