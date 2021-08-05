@@ -201,8 +201,6 @@ let initializeWeb3 = async () => {
         // if(ethereum !== undefined) {
             web3 = new Web3(ethereum);
             web3 = new Web3(web3.currentProvider);
-
-            await storeMarketAccount();
         // } else {
         //     web3 = new Web3(bscRPCEndpoint);
         // }
@@ -318,8 +316,18 @@ let displayTokens = (excludedToken) => {
                                             content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'' + metadata.image + '\'); padding-top:100%"></div>';
                                             content += '            </a>';
                                             content += '            <div class="d-flex flex-column justify-content-between h-100">';
-                                            content += '                <div class="d-flex align-items-center mb-1" style="min-height:61px">';
-                                            content += '                    <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
+                                            content += '                <div class="d-flex justify-content-between">';
+                                            content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
+                                            content += '                        <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
+                                            content += '                    </div>';
+                                            content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
+                                            content += '                        <div class="">';
+                                            content += '                            <button class="btn add-to-favorites p-0 m-0" data-contract-address="' + ownlyContractAddress + '" data-token-id="' + i +'" data-status="0" style="width:24px; height:24px; border-radius:50%; box-shadow: none" disabled>';
+                                            content += '                                <i class="far fa-heart font-size-140 text-color-1"></i>';
+                                            content += '                            </button>';
+                                            content += '                        </div>';
+                                            content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">0</div>';
+                                            content += '                    </div>';
                                             content += '                </div>';
                                             content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
                                             content += '                <div class="font-size-90 mb-4 clamp token-description-truncated">' + metadata.description + '</div>';
@@ -408,6 +416,30 @@ let displayTokens = (excludedToken) => {
                                             if(i === parseInt(result)) {
                                                 $("#tokens-container").html(content);
 
+                                                for(let l = 1; l <= result; l++) {
+                                                    if(ethereum.selectedAddress) {
+                                                        $.post(ownlyAPI + "api/get-market-item-favorites", {
+                                                            address: ethereum.selectedAddress,
+                                                            contract_address: ownlyContractAddress,
+                                                            token_id: l
+                                                        }, function(data) {
+                                                            let favorite = $(".add-to-favorites[data-contract-address='" + ownlyContractAddress + "'][data-token-id='" + l + "']");
+
+                                                            favorite.prop("disabled", false);
+
+                                                            if(data.status) {
+                                                                favorite.attr("data-status", 1);
+                                                                favorite.find("i").removeClass("far");
+                                                                favorite.find("i").addClass("fas");
+                                                            }
+
+                                                            favorite.closest(".add-to-favorites-container").find(".favorites-count").text(data.total);
+                                                        }).fail(function(error) {
+                                                            console.log(error);
+                                                        });
+                                                    }
+                                                }
+
                                                 Ellipsis({
                                                     class: '.token-description-truncated',
                                                     lines: 3
@@ -418,6 +450,8 @@ let displayTokens = (excludedToken) => {
                             });
                     });
             }
+
+
         });
 };
 let displayToken = (token) => {
@@ -611,15 +645,6 @@ let getTokenTransfers = async (owner, token) => {
     });
 
     return transaction_hashes;
-};
-let storeMarketAccount = async (address) => {
-    // await $.post(ownlyAPI + "api/store-market-account", {
-    //     address: address
-    // }, function(data) {
-    //     console.log(data);
-    // }).fail(function(error) {
-    //     console.log(error);
-    // });
 };
 
 let getTokenURI = (id) => {
@@ -829,4 +854,54 @@ $(document).on("submit", "#newsletter-form", async (event) => {
     }).catch(error => {
         console.log('Oops! There was a problem submitting your form');
     });
+});
+
+$(document).on("click", ".add-to-favorites", async function() {
+    web3 = new Web3(ethereum);
+    web3 = new Web3(web3.currentProvider);
+
+    let message = "I am confirming this action in Ownly Marketplace.";
+    let signature = await web3.eth.personal.sign(message, ethereum.selectedAddress);
+    // var signing_address = await web3.eth.personal.ecRecover(message, signature)
+
+    let button = $(this);
+    let contract_address = button.attr("data-contract-address");
+    let token_id = button.attr("data-token-id");
+    let status = parseInt(button.attr("data-status"));
+
+    if(signature) {
+        await $.post(ownlyAPI + "api/store-market-account", {
+            address: ethereum.selectedAddress,
+            signature: signature
+        }, function(data) {
+            let new_status = (status) ? 0 : 1;
+
+            let count = parseInt(button.closest(".add-to-favorites-container").find(".favorites-count").text());
+
+            if(new_status === 1) {
+                button.find("i").removeClass("far");
+                button.find("i").addClass("fas");
+                button.closest(".add-to-favorites-container").find(".favorites-count").text(count + 1);
+            } else {
+                button.find("i").removeClass("fas");
+                button.find("i").addClass("far");
+                button.closest(".add-to-favorites-container").find(".favorites-count").text(count - 1);
+            }
+
+            button.attr("data-status", new_status);
+
+            $.post(ownlyAPI + "api/store-market-item-favorite", {
+                address: ethereum.selectedAddress,
+                contract_address: contract_address,
+                token_id: token_id,
+                status: new_status
+            }, function(data) {
+
+            }).fail(function(error) {
+                console.log(error);
+            });
+        }).fail(function(error) {
+            console.log(error);
+        });
+    }
 });
