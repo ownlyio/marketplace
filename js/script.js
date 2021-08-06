@@ -110,6 +110,7 @@ let initializePage = () => {
 
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
+    let profile = findGetParameter("profile");
 
     if(contract && token) {
         pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
@@ -119,6 +120,12 @@ let initializePage = () => {
             displayTokens(token);
 
             $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
+
+            app.removeClass("d-none");
+        });
+    } else if(profile) {
+        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, function() {
+            currentPage = "profile";
 
             app.removeClass("d-none");
         });
@@ -173,8 +180,20 @@ let updateConnectToWallet = async () => {
         $("#connect-to-metamask-container").addClass("d-none");
 
         let accountAddress = $("#account-address");
-        accountAddress.html(shortenAddress(web3.utils.toChecksumAddress(address), 5, 5) + "&nbsp;");
+
+        let content = ' <div class="d-flex align-items-center">';
+        content += '        <canvas data-jdenticon-value="" class="jdenticon" width="35" height="35" style="border-radius:50%; border:2px solid #aaaaaa">';
+        content += '            Fallback text or image for browsers not supporting inline svg.';
+        content += '        </canvas>';
+        content += '        <span class="font-size-90 ps-2">' + shortenAddress(web3.utils.toChecksumAddress(address), 5, 5) + "&nbsp;" + '</span>';
+        content += '    </div>';
+
+        accountAddress.html(content);
         accountAddress.removeClass("d-none");
+
+        jdenticon.update(".jdenticon", address.toString());
+
+        $("#account-address").attr("href", "?profile=" + address);
     } else {
         $("#account-address").addClass("d-none");
         $("#connect-to-metamask-container").removeClass("d-none");
@@ -309,7 +328,7 @@ let displayTokens = (excludedToken) => {
                     .then(function(marketItem) {
                         getTokenURI(i)
                             .then(function(tokenURI) {
-                                $.get(tokenURI, function(metadata) {
+                                $.get(tokenURI + "?v=" + cacheVersion, function(metadata) {
                                     getOwnerOf(i)
                                         .then(async function(owner) {
                                             content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
@@ -462,7 +481,7 @@ let displayToken = (token) => {
 
     getTokenURI(token)
         .then(function(tokenURI) {
-            $.get(tokenURI, function(metadata) {
+            $.get(tokenURI + "?v=" + cacheVersion, function(metadata) {
                 $("#point-to-bscnetwork-message").addClass("d-none");
 
                 $("#token-image").attr("src", metadata.image);
@@ -904,6 +923,44 @@ $(document).on("click", ".add-to-favorites", async function() {
             });
         }).fail(function(error) {
             console.log(error);
+        });
+    }
+});
+
+$(document).on("submit", "#account-settings-form", async function(e) {
+    e.preventDefault();
+
+    let button = $(this).find("[type='submit']");
+
+    web3 = new Web3(ethereum);
+    web3 = new Web3(web3.currentProvider);
+
+    let message = "I am confirming this action in Ownly Marketplace.";
+    let signature = await web3.eth.personal.sign(message, ethereum.selectedAddress);
+
+    if(signature) {
+        let form_data = new FormData($(this)[0]);
+        form_data.append('address', ethereum.selectedAddress);
+        form_data.append('signature', signature);
+
+        button.prop("disabled", true);
+        button.text("Saving Changes");
+
+        $.ajax({
+            url: ownlyAPI + "api/store-account-settings",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data
+        }).done(function(response) {
+            $("#modal-success .message").text("Saving changes successful");
+            $("#modal-success").modal("show");
+        }).fail(function(error) {
+            console.log(error);
+        }).always(function() {
+            button.prop("disabled", false);
+            button.text("Save Changes");
         });
     }
 });

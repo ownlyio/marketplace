@@ -1,0 +1,53 @@
+<div class="position-relative" style="min-height:calc(100vh - 80px); margin-top:80px; background-position:66% 50%">
+	<div class="container pt-4">
+		<div class="pt-3">
+			<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+				<li class="nav-item mb-3 me-2" role="presentation">
+					<button class="nav-link py-2 py-lg-3 px-3 px-lg-4 active" id="pills-account-settings-tab" data-bs-toggle="pill" data-bs-target="#pills-account-settings" type="button" role="tab" aria-controls="pills-account-settings" aria-selected="true">Account Settings</button>
+				</li>
+				<li class="nav-item mb-3 me-2" role="presentation">
+					<button class="nav-link py-2 py-lg-3 px-3 px-lg-4" id="pills-owned-tab" data-bs-toggle="pill" data-bs-target="#pills-owned" type="button" role="tab" aria-controls="pills-owned" aria-selected="false">Owned</button>
+				</li>
+				<li class="nav-item mb-3" role="presentation">
+					<button class="nav-link py-2 py-lg-3 px-3 px-lg-4" id="pills-favorites-tab" data-bs-toggle="pill" data-bs-target="#pills-favorites" type="button" role="tab" aria-controls="pills-favorites" aria-selected="false">Favorites</button>
+				</li>
+			</ul>
+			<div class="tab-content" id="pills-tabContent">
+				<div class="tab-pane fade show active pt-1 pb-5" id="pills-account-settings" role="tabpanel" aria-labelledby="pills-account-settings-tab">
+					<div class="row">
+						<div class="col-lg-6">
+							<form id="account-settings-form">
+								<div class="mb-4 mb-lg-5">
+									<label class="neo-bold mb-2" for="username">Username</label>
+									<input type="text" class="form-control py-2 py-lg-3 px-3" name="username" placeholder="Enter Username" id="username" style="border-width:2px" required />
+								</div>
+								
+								<div class="mb-4 mb-lg-5">
+									<label class="neo-bold mb-2" for="email-address">Email Address</label>
+									<input type="text" class="form-control py-2 py-lg-3 px-3" name="email_address" placeholder="Enter Email Address" id="email-address" style="border-width:2px" required />
+								</div>
+								
+								<div class="mb-5">
+									<label class="neo-bold mb-2" for="bio">Bio</label>
+									<input type="text" class="form-control py-2 py-lg-3 px-3" name="bio" placeholder="Enter who you are or your interests" id="bio" style="border-width:2px" />
+								</div>
+								
+								<div class="mb-4 mb-lg-5">
+									<button type="submit" class="btn btn-custom-6 py-2 py-lg-3 px-5" style="border-radius:29px">Save Changes</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				
+				<div class="tab-pane fade" id="pills-owned" role="tabpanel" aria-labelledby="pills-owned-tab">
+					<h4 class="text-center py-5"><i class="fas fa-wrench fa-3x"></i><br><br>Section is under development</h4>
+				</div>
+				
+				<div class="tab-pane fade" id="pills-favorites" role="tabpanel" aria-labelledby="pills-favorites-tab">
+					<h4 class="text-center py-5"><i class="fas fa-wrench fa-3x"></i><br><br>Section is under development</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

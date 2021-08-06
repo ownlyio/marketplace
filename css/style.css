@@ -312,6 +312,41 @@ html {
     background-color: #ffffff;
 }
 
+#account-address:after {
+    content: none
+}
+
+#pills-account-settings-tab {
+    background-color:#ffffff;
+    color:#bc3326;
+    font-weight:bold;
+}
+#pills-account-settings-tab.active {
+    background-color:#bc3326;
+    color:#ffffff;
+    font-weight:normal;
+}
+#pills-owned-tab {
+    background-color:#ffffff;
+    color:#147ca0;
+    font-weight:bold;
+}
+#pills-owned-tab.active {
+    background-color:#147ca0;
+    color:#ffffff;
+    font-weight:normal;
+}
+#pills-favorited-tab {
+    background-color:#ffffff;
+    color:#16b99a;
+    font-weight:bold;
+}
+#pills-favorited-tab.active {
+    background-color:#16b99a;
+    color:#ffffff;
+    font-weight:normal;
+}
+
 /*##################################################################*/
 
 #artist-image {
