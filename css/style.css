@@ -336,12 +336,12 @@ html {
     color:#ffffff;
     font-weight:normal;
 }
-#pills-favorited-tab {
+#pills-favorites-tab {
     background-color:#ffffff;
     color:#16b99a;
     font-weight:bold;
 }
-#pills-favorited-tab.active {
+#pills-favorites-tab.active {
     background-color:#16b99a;
     color:#ffffff;
     font-weight:normal;

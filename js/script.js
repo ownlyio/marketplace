@@ -104,13 +104,26 @@ let findGetParameter = (parameterName) => {
     }
     return result;
 };
-let initializePage = () => {
+let getAddress = async () => {
+    let accounts = await web3.eth.getAccounts();
+    address = (accounts.length > 0) ? accounts[0] : false;
+
+    if(!address) {
+        try {
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            address = (accounts.length > 0) ? accounts[0] : false;
+        } catch(e) {}
+    }
+};
+let initializePage = async () => {
     let app = $("#app");
     let pageContent = $("#page-content");
 
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
     let profile = findGetParameter("profile");
+
+    await getAddress();
 
     if(contract && token) {
         pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
@@ -123,9 +136,18 @@ let initializePage = () => {
 
             app.removeClass("d-none");
         });
-    } else if(profile) {
-        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, function() {
+    } else if(profile && address) {
+        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
             currentPage = "profile";
+
+            let data = await displayProfile();
+
+            if(data) {
+                console.log(data.name);
+                $("#account-settings-form [name='username']").val(data.name);
+                $("#account-settings-form [name='email_address']").val(data.email);
+                $("#account-settings-form [name='bio']").val(data.bio);
+            }
 
             app.removeClass("d-none");
         });
@@ -166,15 +188,7 @@ let connectToMetamask = async () => {
     }
 };
 let updateConnectToWallet = async () => {
-    let accounts = await web3.eth.getAccounts();
-    address = (accounts.length > 0) ? accounts[0] : false;
-
-    if(!address) {
-        try {
-            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            address = (accounts.length > 0) ? accounts[0] : false;
-        } catch(e) {}
-    }
+    await getAddress();
 
     if(address) {
         $("#connect-to-metamask-container").addClass("d-none");
@@ -582,6 +596,27 @@ let displayToken = (token) => {
                     $("#transfer-history").html(transfers_content);
                 });
         });
+};
+let displayProfile = async () => {
+    let data = null;
+
+    let formData = new FormData();
+    formData.append('address', ethereum.selectedAddress);
+
+    await $.ajax({
+        url: ownlyAPI + "api/get-account-settings",
+        method: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData
+    }).done(function(response) {
+        data = response.data;
+    }).fail(function(error) {
+        console.log(error);
+    }).always(function() {});
+
+    return data;
 };
 let shortenAddress = (address, prefixCount, postfixCount) => {
     let prefix = address.substr(0, prefixCount);
