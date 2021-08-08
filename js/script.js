@@ -17,7 +17,7 @@ let listingPrice;
 let currentPage;
 let address = false;
 let loading_interval;
-
+//
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
