@@ -117,7 +117,7 @@ let initializePage = () => {
             currentPage = "token";
 
             displayToken(token);
-            displayTokens(token);
+            displayTokens(token, "all");
 
             $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
@@ -127,12 +127,15 @@ let initializePage = () => {
         pageContent.load(url + "js/../profile.html?v=" + cacheVersion, function() {
             currentPage = "profile";
 
+            displayTokens(0, "owned");
+            displayTokens(0, "favorites");
+
             app.removeClass("d-none");
         });
     } else {
         pageContent.load(url + "js/../home.html?v=" + cacheVersion, function() {
             currentPage = "home";
-            displayTokens(token);
+            displayTokens(0, "all");
 
             $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
@@ -319,7 +322,7 @@ let initializeListingPrice = () => {
             listingPrice = data;
         });
 };
-let displayTokens = (excludedToken) => {
+let displayTokens = (excludedToken, type) => {
     getTotalSupply()
         .then(async function(result) {
             let content = '';
@@ -331,112 +334,145 @@ let displayTokens = (excludedToken) => {
                                 $.get(tokenURI + "?v=" + cacheVersion, function(metadata) {
                                     getOwnerOf(i)
                                         .then(async function(owner) {
-                                            content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
-                                            content += '        <div class="token-card" data-token-id="' + i + '">';
-                                            content += '            <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="link">';
-                                            content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'' + metadata.image + '\'); padding-top:100%"></div>';
-                                            content += '            </a>';
-                                            content += '            <div class="d-flex flex-column justify-content-between h-100">';
-                                            content += '                <div class="d-flex justify-content-between">';
-                                            content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
-                                            content += '                        <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
-                                            content += '                    </div>';
-                                            content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
-                                            content += '                        <div class="">';
-                                            content += '                            <button class="btn add-to-favorites p-0 m-0" data-contract-address="' + ownlyContractAddress + '" data-token-id="' + i +'" data-status="0" style="width:24px; height:24px; border-radius:50%; box-shadow: none" disabled>';
-                                            content += '                                <i class="far fa-heart font-size-140 text-color-1"></i>';
-                                            content += '                            </button>';
-                                            content += '                        </div>';
-                                            content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">0</div>';
-                                            content += '                    </div>';
-                                            content += '                </div>';
-                                            content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
-                                            content += '                <div class="font-size-90 mb-4 clamp token-description-truncated">' + metadata.description + '</div>';
-                                            if(parseInt(marketItem.itemId)) {
-                                                content += '                <div class="row align-items-center">';
-                                                content += '                    <div class="col-6">';
-                                                content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
-                                                content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItem.price, "ether") + ' BNB</div>';
-                                                content += '                    </div>';
-                                                content += '                    <div class="col-6 button-container">';
-                                                if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
-                                                    content += '                    <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-                                                } else {
-                                                    content += '                    <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" style="border-radius:15px">OWN NOW</button>';
+                                            let isOwned = type === "owned" && address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address);
+
+                                            let isFavorited = false;
+                                            if(type === "favorites") {
+                                                if(ethereum.selectedAddress) {
+                                                    await $.post(ownlyAPI + "api/get-market-item-favorites", {
+                                                        address: ethereum.selectedAddress,
+                                                        contract_address: ownlyContractAddress,
+                                                        token_id: i
+                                                    }, function(data) {
+                                                        if(data.status) {
+                                                            isFavorited = true;
+                                                        }
+                                                    }).fail(function(error) {
+                                                        console.log(error);
+                                                    });
                                                 }
+                                            }
+
+                                            isFavorited = type === "favorites" && isFavorited;
+
+                                            if(type === "all" || isOwned || isFavorited) {
+                                                content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
+                                                content += '        <div class="token-card" data-token-id="' + i + '">';
+                                                content += '            <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="link">';
+                                                content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'' + metadata.image + '\'); padding-top:100%"></div>';
+                                                content += '            </a>';
+                                                content += '            <div class="d-flex flex-column justify-content-between h-100">';
+                                                content += '                <div class="d-flex justify-content-between">';
+                                                content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
+                                                content += '                        <a href="?contract=' + ownlyContractAddress + '&token=' + i + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
+                                                content += '                    </div>';
+                                                content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
+                                                content += '                        <div class="">';
+                                                content += '                            <button class="btn add-to-favorites p-0 m-0" data-contract-address="' + ownlyContractAddress + '" data-token-id="' + i +'" data-status="0" style="width:24px; height:24px; border-radius:50%; box-shadow: none" disabled>';
+                                                content += '                                <i class="far fa-heart font-size-140 text-color-1"></i>';
+                                                content += '                            </button>';
+                                                content += '                        </div>';
+                                                content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">0</div>';
                                                 content += '                    </div>';
                                                 content += '                </div>';
-                                                content += '                <div class="owner d-none">' + owner + '</div>';
-                                            } else {
-                                                $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + i + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-                                                    let _break = false;
+                                                content += '                <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
+                                                content += '                <div class="font-size-90 mb-4 clamp token-description-truncated">' + metadata.description + '</div>';
+                                                if(parseInt(marketItem.itemId)) {
+                                                    content += '                <div class="row align-items-center">';
+                                                    content += '                    <div class="col-6">';
+                                                    content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
+                                                    content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItem.price, "ether") + ' BNB</div>';
+                                                    content += '                    </div>';
+                                                    content += '                    <div class="col-6 button-container">';
+                                                    if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
+                                                        content += '                    <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                                                    } else {
+                                                        content += '                    <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" style="border-radius:15px">OWN NOW</button>';
+                                                    }
+                                                    content += '                    </div>';
+                                                    content += '                </div>';
+                                                    content += '                <div class="owner d-none">' + owner + '</div>';
+                                                } else {
+                                                    $.get(covalenthqAPI + "tokens/" + ownlyContractAddress + "/nft_transactions/" + i + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+                                                        let _break = false;
 
-                                                    for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
-                                                        for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
-                                                            if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
-                                                                if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
-                                                                    let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
-                                                                    let setTransactionHashInterval = setInterval(function() {
-                                                                        if($("#tokens-container").html() !== "") {
-                                                                            let bscscanTransactionHash = $(".token-card[data-token-id='" + i + "'] .bscscan-transaction-hash");
+                                                        for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
+                                                            for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
+                                                                if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
+                                                                    if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+                                                                        let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+                                                                        let setTransactionHashInterval = setInterval(function() {
+                                                                            if($("#tokens-container").html() !== "") {
+                                                                                let bscscanTransactionHash = $(".token-card[data-token-id='" + i + "'] .bscscan-transaction-hash");
 
-                                                                            bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
-                                                                            bscscanTransactionHash.removeClass("d-none");
-                                                                            clearInterval(setTransactionHashInterval);
-                                                                        }
-                                                                    }, 1000);
+                                                                                bscscanTransactionHash.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                                                bscscanTransactionHash.removeClass("d-none");
+                                                                                clearInterval(setTransactionHashInterval);
+                                                                            }
+                                                                        }, 1000);
 
-                                                                    _break = true;
-                                                                    break;
+                                                                        _break = true;
+                                                                        break;
+                                                                    }
                                                                 }
                                                             }
-                                                        }
 
-                                                        if(_break) {
-                                                            break;
+                                                            if(_break) {
+                                                                break;
+                                                            }
                                                         }
+                                                    });
+
+                                                    content += '                <div class="row align-items-center">';
+                                                    content += '                    <div class="col-6">';
+                                                    content += '                        <div>';
+                                                    content += '                            <a href="#" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash d-none">View on BscScan</a>';
+                                                    content += '                        </div>';
+                                                    content += '                        <div class="font-size-100 neo-bold">Owner</div>';
+                                                    content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5) + '</div>';
+                                                    content += '                    </div>';
+                                                    content += '                    <div class="col-6">';
+                                                    if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
+                                                        content += '                    <button class="btn btn-custom-4 w-100 font-size-100 font-size-md-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                                                    } else {
+                                                        content += '                    <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
                                                     }
-                                                });
-
-                                                content += '                <div class="row align-items-center">';
-                                                content += '                    <div class="col-6">';
-                                                content += '                        <div>';
-                                                content += '                            <a href="#" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash d-none">View on BscScan</a>';
-                                                content += '                        </div>';
-                                                content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                                                content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3.utils.toChecksumAddress(owner), 5, 5) + '</div>';
-                                                content += '                    </div>';
-                                                content += '                    <div class="col-6">';
-                                                if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
-                                                    content += '                    <button class="btn btn-custom-4 w-100 font-size-100 font-size-md-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-                                                } else {
-                                                    content += '                    <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                                                    content += '                    </div>';
+                                                    content += '                </div>';
                                                 }
-                                                content += '                    </div>';
-                                                content += '                </div>';
-                                            }
-                                            content += '            </div>';
-                                            content += '        </div>';
-                                            content += '    </div>';
+                                                content += '            </div>';
+                                                content += '        </div>';
+                                                content += '    </div>';
 
-                                            if(address && owner.toLowerCase() === address.toLowerCase()) {
-                                                $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
-                                            }
+                                                if(address && owner.toLowerCase() === address.toLowerCase()) {
+                                                    $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
+                                                }
 
-                                            if(currentPage === "token") {
-                                                Ellipsis({
-                                                    class: '.token-description-truncated',
-                                                    lines: 3
-                                                });
+                                                if(currentPage === "token") {
+                                                    Ellipsis({
+                                                        class: '.token-description-truncated',
+                                                        lines: 3
+                                                    });
 
-                                                setTimeout(function() {
-                                                    loadRelatedTokens(excludedToken);
-                                                }, 1000)
+                                                    setTimeout(function() {
+                                                        loadRelatedTokens(excludedToken);
+                                                    }, 1000)
+                                                }
                                             }
 
-                                            if(i === parseInt(result)) {
+                                            let contentIsCreated = false;
+                                            if(i === parseInt(result) && type === "all") {
                                                 $("#tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            } else if(i === parseInt(result) && type === "owned") {
+                                                $("#owned-tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            } else if(i === parseInt(result) && type === "favorites") {
+                                                $("#favorite-tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            }
 
+                                            if(contentIsCreated) {
                                                 for(let l = 1; l <= result; l++) {
                                                     if(ethereum.selectedAddress) {
                                                         $.post(ownlyAPI + "api/get-market-item-favorites", {
