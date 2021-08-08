@@ -104,18 +104,7 @@ let findGetParameter = (parameterName) => {
     }
     return result;
 };
-let getAddress = async () => {
-    let accounts = await web3.eth.getAccounts();
-    address = (accounts.length > 0) ? accounts[0] : false;
-
-    if(!address) {
-        try {
-            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            address = (accounts.length > 0) ? accounts[0] : false;
-        } catch(e) {}
-    }
-};
-let initializePage = async () => {
+let initializePage = () => {
     let app = $("#app");
     let pageContent = $("#page-content");
 
@@ -123,38 +112,30 @@ let initializePage = async () => {
     let token = findGetParameter("token");
     let profile = findGetParameter("profile");
 
-    await getAddress();
-
     if(contract && token) {
         pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
             currentPage = "token";
 
             displayToken(token);
-            displayTokens(token);
+            displayTokens(token, "all");
 
             $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
             app.removeClass("d-none");
         });
-    } else if(profile && address) {
-        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
+    } else if(profile) {
+        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, function() {
             currentPage = "profile";
 
-            let data = await displayProfile();
-
-            if(data) {
-                console.log(data.name);
-                $("#account-settings-form [name='username']").val(data.name);
-                $("#account-settings-form [name='email_address']").val(data.email);
-                $("#account-settings-form [name='bio']").val(data.bio);
-            }
+            displayTokens(0, "owned");
+            displayTokens(0, "favorites");
 
             app.removeClass("d-none");
         });
     } else {
         pageContent.load(url + "js/../home.html?v=" + cacheVersion, function() {
             currentPage = "home";
-            displayTokens(token);
+            displayTokens(0, "all");
 
             $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion);
 
@@ -188,7 +169,15 @@ let connectToMetamask = async () => {
     }
 };
 let updateConnectToWallet = async () => {
-    await getAddress();
+    let accounts = await web3.eth.getAccounts();
+    address = (accounts.length > 0) ? accounts[0] : false;
+
+    if(!address) {
+        try {
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            address = (accounts.length > 0) ? accounts[0] : false;
+        } catch(e) {}
+    }
 
     if(address) {
         $("#connect-to-metamask-container").addClass("d-none");
@@ -234,8 +223,8 @@ let initializeWeb3 = async () => {
         // await ethereum.enable();
         //
         // if(ethereum !== undefined) {
-            web3 = new Web3(ethereum);
-            web3 = new Web3(web3.currentProvider);
+        web3 = new Web3(ethereum);
+        web3 = new Web3(web3.currentProvider);
         // } else {
         //     web3 = new Web3(bscRPCEndpoint);
         // }
@@ -471,9 +460,19 @@ let displayTokens = (excludedToken, type) => {
                                                 }
                                             }
 
-                                            if(i === parseInt(result)) {
+                                            let contentIsCreated = false;
+                                            if(i === parseInt(result) && type === "all") {
                                                 $("#tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            } else if(i === parseInt(result) && type === "owned") {
+                                                $("#owned-tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            } else if(i === parseInt(result) && type === "favorites") {
+                                                $("#favorite-tokens-container").html(content);
+                                                contentIsCreated = true;
+                                            }
 
+                                            if(contentIsCreated) {
                                                 for(let l = 1; l <= result; l++) {
                                                     if(ethereum.selectedAddress) {
                                                         $.post(ownlyAPI + "api/get-market-item-favorites", {
@@ -619,27 +618,6 @@ let displayToken = (token) => {
                     $("#transfer-history").html(transfers_content);
                 });
         });
-};
-let displayProfile = async () => {
-    let data = null;
-
-    let formData = new FormData();
-    formData.append('address', ethereum.selectedAddress);
-
-    await $.ajax({
-        url: ownlyAPI + "api/get-account-settings",
-        method: "POST",
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: formData
-    }).done(function(response) {
-        data = response.data;
-    }).fail(function(error) {
-        console.log(error);
-    }).always(function() {});
-
-    return data;
 };
 let shortenAddress = (address, prefixCount, postfixCount) => {
     let prefix = address.substr(0, prefixCount);
@@ -828,11 +806,11 @@ $(document).on("click", "#approve", function() {
             alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
             $(".ajs-message").addClass("bg-color-3");
         }).then(function(receipt) {
-            alertProcessing.dismiss();
+        alertProcessing.dismiss();
 
-            $("#create-market-item").val(tokenID);
-            $("#modal-create-market-item").modal("show");
-        });
+        $("#create-market-item").val(tokenID);
+        $("#modal-create-market-item").modal("show");
+    });
 });
 
 $(document).on("click", "#create-market-item", function() {
@@ -846,12 +824,12 @@ $(document).on("click", "#create-market-item", function() {
                 alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
                 $(".ajs-message").addClass("bg-color-3");
             }).on('error', function(error){
-                alertProcessing.dismiss();
-                alertError = alertify.message(error, 0);
-            }).then(function(receipt) {
-                alertProcessing.dismiss();
-                initializePage();
-            });
+            alertProcessing.dismiss();
+            alertError = alertify.message(error, 0);
+        }).then(function(receipt) {
+            alertProcessing.dismiss();
+            initializePage();
+        });
     }
 });
 
@@ -903,12 +881,12 @@ $(document).on("click", "#create-market-sale", function() {
             alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
             $(".ajs-message").addClass("bg-color-3");
         }).on('error', function(error){
-            alertProcessing.dismiss();
-            alertError = alertify.message(error, 0);
-        }).then(function(receipt) {
-            alertProcessing.dismiss();
-            initializePage();
-        });
+        alertProcessing.dismiss();
+        alertError = alertify.message(error, 0);
+    }).then(function(receipt) {
+        alertProcessing.dismiss();
+        initializePage();
+    });
 });
 
 $(document).on("submit", "#newsletter-form", async (event) => {
