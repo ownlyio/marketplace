@@ -32,8 +32,8 @@ let initializeEnvVariables = () => {
         ownlyAPI = "https://ownlyio.herokuapp.com/";
     } else if(currentURL.includes("ownly.io/dev-marketplace")) {
         ownlyContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
-        ownlyMarketplaceAddress = "0x47F4f62317A14656371f3Cc8327E668A1216fd4F";
-        marketplaceAbi = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"listingPrice","type":"uint256"}],"name":"MarketItemCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemSold","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"cancelMarketItem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"createMarketItem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"createMarketSale","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"fetchMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMarketItems","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMyNFTs","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getListingPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"marketItemId","type":"uint256"}],"name":"getMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingPrice","type":"uint256"}],"name":"setListingPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}];
+        ownlyMarketplaceAddress = "0xe14349c0ce9662f8449e6aacf264765376bc7151";
+        marketplaceAbi = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"},{"indexed":false,"internalType":"uint256","name":"listingPrice","type":"uint256"}],"name":"MarketItemCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemSold","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"cancelMarketItem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"a","type":"string"},{"internalType":"string","name":"b","type":"string"}],"name":"compareStrings","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"createMarketItem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"createMarketSale","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"fetchMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMarketItems","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMyNFTs","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getListingPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"marketItemId","type":"uint256"}],"name":"getMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingPrice","type":"uint256"}],"name":"setListingPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}];
         url = "https://ownly.io/dev-marketplace/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
@@ -42,8 +42,8 @@ let initializeEnvVariables = () => {
         ownlyAPI = "https://ownlyio.herokuapp.com/";
     } else {
         ownlyContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
-        ownlyMarketplaceAddress = "0x47F4f62317A14656371f3Cc8327E668A1216fd4F";
-        marketplaceAbi = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"listingPrice","type":"uint256"}],"name":"MarketItemCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemSold","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"cancelMarketItem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"createMarketItem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"createMarketSale","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"fetchMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMarketItems","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMyNFTs","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getListingPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"marketItemId","type":"uint256"}],"name":"getMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingPrice","type":"uint256"}],"name":"setListingPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}];
+        ownlyMarketplaceAddress = "0xe14349c0ce9662f8449e6aacf264765376bc7151";
+        marketplaceAbi = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"},{"indexed":false,"internalType":"uint256","name":"listingPrice","type":"uint256"}],"name":"MarketItemCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"MarketItemSold","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"cancelMarketItem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"a","type":"string"},{"internalType":"string","name":"b","type":"string"}],"name":"compareStrings","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"createMarketItem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"createMarketSale","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContractAddress","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"fetchMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMarketItems","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"fetchMyNFTs","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getListingPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"marketItemId","type":"uint256"}],"name":"getMarketItem","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"string","name":"currency","type":"string"},{"internalType":"uint256","name":"listingPrice","type":"uint256"},{"internalType":"bool","name":"cancelled","type":"bool"}],"internalType":"struct Marketplace.MarketItem","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingPrice","type":"uint256"}],"name":"setListingPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}];
         url = "http://ownlyio.dev-marketplace.test/";
         bscRPCEndpoint = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         blockchainExplorer = "https://testnet.bscscan.com/";
@@ -380,14 +380,25 @@ let displayTokens = (excludedToken, type) => {
                                                 if(parseInt(marketItem.itemId)) {
                                                     content += '                <div class="row align-items-center">';
                                                     content += '                    <div class="col-6">';
-                                                    content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
-                                                    content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItem.price, "ether") + ' BNB</div>';
+                                                    content += '                        <div class="d-flex align-items-end mb-1">';
+                                                    content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
+                                                    if(marketItem.currency === "OWN") {
+                                                        content += '                        <div class="ps-2 ms-1">';
+                                                        content += '                            <img src="img/ownly/own-token.png" width="30" />';
+                                                        content += '                        </div>';
+                                                    } else if(marketItem.currency === "BNB") {
+                                                        content += '                        <div class="ps-2 ms-1">';
+                                                        content += '                            <img src="img/bnb/bnb.webp" width="30" />';
+                                                        content += '                        </div>';
+                                                    }
+                                                    content += '                        </div>';
+                                                    content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3.utils.fromWei(marketItem.price, "ether") + ' ' + marketItem.currency + '</div>';
                                                     content += '                    </div>';
                                                     content += '                    <div class="col-6 button-container">';
                                                     if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
                                                         content += '                    <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
                                                     } else {
-                                                        content += '                    <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" style="border-radius:15px">OWN NOW</button>';
+                                                        content += '                    <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
                                                     }
                                                     content += '                    </div>';
                                                     content += '                </div>';
@@ -474,27 +485,7 @@ let displayTokens = (excludedToken, type) => {
 
                                             if(contentIsCreated) {
                                                 for(let l = 1; l <= result; l++) {
-                                                    if(ethereum.selectedAddress) {
-                                                        $.post(ownlyAPI + "api/get-market-item-favorites", {
-                                                            address: ethereum.selectedAddress,
-                                                            contract_address: ownlyContractAddress,
-                                                            token_id: l
-                                                        }, function(data) {
-                                                            let favorite = $(".add-to-favorites[data-contract-address='" + ownlyContractAddress + "'][data-token-id='" + l + "']");
-
-                                                            favorite.prop("disabled", false);
-
-                                                            if(data.status) {
-                                                                favorite.attr("data-status", 1);
-                                                                favorite.find("i").removeClass("far");
-                                                                favorite.find("i").addClass("fas");
-                                                            }
-
-                                                            favorite.closest(".add-to-favorites-container").find(".favorites-count").text(data.total);
-                                                        }).fail(function(error) {
-                                                            console.log(error);
-                                                        });
-                                                    }
+                                                    getMarketItemFavorites(l);
                                                 }
 
                                                 Ellipsis({
@@ -530,6 +521,10 @@ let displayToken = (token) => {
                 $("#token-original-image").attr("href", metadata.asset);
                 $("#token-original-image-preload").attr("src", metadata.asset);
 
+                let addToFavoritesButton = $(".add-to-favorites");
+                addToFavoritesButton.attr("data-contract-address", ownlyContractAddress);
+                addToFavoritesButton.attr("data-token-id", token);
+
                 let content = '';
                 for(let i = 0; i < metadata.attributes.length; i++) {
                     content += '    <div class="col-md-6 col-xl-4 p-2">';
@@ -559,8 +554,14 @@ let displayToken = (token) => {
 
                     if(parseInt(marketItem.itemId)) {
                         let tokenPrice = $(".token-price");
-                        tokenPrice.text(web3.utils.fromWei(marketItem.price, "ether") + " BNB");
+                        tokenPrice.html(web3.utils.fromWei(marketItem.price, "ether") + " " + marketItem.currency);
                         tokenPrice.removeClass("d-none");
+
+                        if(marketItem.currency === "OWN") {
+                            $(".token-price-currency").attr("src", "img/ownly/own-token.png");
+                        } else {
+                            $(".token-price-currency").attr("src", "img/bnb/bnb.webp");
+                        }
 
                         if(address && web3.utils.toChecksumAddress(owner) === web3.utils.toChecksumAddress(address)) {
                             cancelMarketItemConfirmationButton.attr("data-item-id", parseInt(marketItem.itemId));
@@ -569,8 +570,11 @@ let displayToken = (token) => {
                             let createMarketSaleConfirmationButton = $(".create-market-sale-confirmation");
                             createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                             createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
+                            createMarketSaleConfirmationButton.attr("data-currency", marketItem.currency);
                             $("#create-market-sale-container").removeClass("d-none");
                         }
+
+                        $("#token-loading").addClass("d-none");
                     } else {
                         if($("#tokens-container").html() !== "") {
                             let bscscanTransactionHash = $(".token-bscscan-transaction-hash");
@@ -616,6 +620,8 @@ let displayToken = (token) => {
                     }
                     transfers_content += '      </tbody>';
                     $("#transfer-history").html(transfers_content);
+
+                    getMarketItemFavorites(token);
                 });
         });
 };
@@ -703,6 +709,27 @@ let getTokenTransfers = async (owner, token) => {
 
     return transaction_hashes;
 };
+let getMarketItemFavorites = (tokenId) => {
+    $.post(ownlyAPI + "api/get-market-item-favorites", {
+        address: (address) ? address : 0,
+        contract_address: ownlyContractAddress,
+        token_id: tokenId
+    }, function(data) {
+        let favorite = $(".add-to-favorites[data-contract-address='" + ownlyContractAddress + "'][data-token-id='" + tokenId + "']");
+
+        favorite.prop("disabled", false);
+
+        if(data.status) {
+            favorite.attr("data-status", 1);
+            favorite.find("i").removeClass("far");
+            favorite.find("i").addClass("fas");
+        }
+
+        favorite.closest(".add-to-favorites-container").find(".favorites-count").text(data.total);
+    }).fail(function(error) {
+        console.log(error);
+    });
+};
 
 let getTokenURI = (id) => {
     return ownlyContract.methods.tokenURI(id).call();
@@ -725,8 +752,8 @@ let approve = (id) => {
 let getListingPrice = () => {
     return ownlyMarketplaceContract.methods.getListingPrice().call();
 };
-let createMarketItem = (id, price) => {
-    return ownlyMarketplaceContract.methods.createMarketItem(ownlyContractAddress, id, web3.utils.toWei(price, 'ether')).send({
+let createMarketItem = (id, price, currency) => {
+    return ownlyMarketplaceContract.methods.createMarketItem(ownlyContractAddress, id, web3.utils.toWei(price, 'ether'), currency).send({
         from: web3.utils.toChecksumAddress(address),
         value: listingPrice
     });
@@ -783,7 +810,7 @@ $(document).on("click", ".create-market-item-confirmation", function() {
         .then(function(approved) {
             button.prop("disabled", false);
 
-            if(approved === ownlyMarketplaceAddress) {
+            if(web3.utils.toChecksumAddress(approved) === web3.utils.toChecksumAddress(ownlyMarketplaceAddress)) {
                 $("#create-market-item").val(tokenID);
                 $("#modal-create-market-item").modal("show");
             } else {
@@ -803,14 +830,13 @@ $(document).on("click", "#approve", function() {
 
     approve(tokenID)
         .on('transactionHash', function(hash){
-            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
-            $(".ajs-message").addClass("bg-color-3");
+            $("#modal-processing").modal("show");
         }).then(function(receipt) {
-        alertProcessing.dismiss();
+            $("#modal-processing").modal("hide");
 
-        $("#create-market-item").val(tokenID);
-        $("#modal-create-market-item").modal("show");
-    });
+            $("#create-market-item").val(tokenID);
+            $("#modal-create-market-item").modal("show");
+        });
 });
 
 $(document).on("click", "#create-market-item", function() {
@@ -819,17 +845,20 @@ $(document).on("click", "#create-market-item", function() {
     let price = $("#price").val();
 
     if(price > 0) {
-        createMarketItem($(this).val(), price)
+        createMarketItem($(this).val(), price, $("#price-currency").val())
             .on('transactionHash', function(transactionHash){
-                alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
-                $(".ajs-message").addClass("bg-color-3");
+                $("#modal-processing").modal("show");
             }).on('error', function(error){
-            alertProcessing.dismiss();
-            alertError = alertify.message(error, 0);
-        }).then(function(receipt) {
-            alertProcessing.dismiss();
-            initializePage();
-        });
+                $("#modal-processing").modal("hide");
+                alertError = alertify.message(error, 0);
+            }).then(function(receipt) {
+                $("#modal-processing").modal("hide");
+
+                $("#modal-success .message").text("You have successfully posted your item for sale.");
+                $("#modal-success").modal("show");
+
+                initializePage();
+            });
     }
 });
 
@@ -845,15 +874,14 @@ $(document).on("click", "#cancel-market-item", function() {
 
     cancelMarketItem($(this).val())
         .on('transactionHash', function(transactionHash){
-            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
-            $(".ajs-message").addClass("bg-color-3");
+            $("#modal-processing").modal("show");
         }).on('error', function(error){
-        alertProcessing.dismiss();
-        alertError = alertify.message(error, 0);
-    }).then(function(receipt) {
-        alertProcessing.dismiss();
-        initializePage();
-    });
+            $("#modal-processing").modal("hide");
+            alertError = alertify.message(error, 0);
+        }).then(function(receipt) {
+            $("#modal-processing").modal("hide");
+            initializePage();
+        });
 });
 
 $(document).on("click", ".create-market-sale-confirmation", function() {
@@ -861,12 +889,16 @@ $(document).on("click", ".create-market-sale-confirmation", function() {
         connectToMetamask();
     } else {
         if(parseInt(ethereum.networkVersion) === chainID) {
-            let createMarketSaleButton = $("#create-market-sale");
-
-            createMarketSaleButton.attr("data-price", $(this).attr("data-price"));
-            createMarketSaleButton.val($(this).attr("data-item-id"));
-
-            $("#modal-create-market-sale").modal("show");
+            createMarketSale($(this).attr("data-item-id"), $(this).attr("data-price"))
+                .on('transactionHash', function(transactionHash){
+                    $("#modal-processing").modal("show");
+                }).on('error', function(error){
+                    $("#modal-processing").modal("hide");
+                    alertError = alertify.message(error, 0);
+                }).then(function(receipt) {
+                    $("#modal-processing").modal("hide");
+                    initializePage();
+                });
         } else {
             $("#modal-wrong-network").modal("show");
         }
@@ -878,15 +910,14 @@ $(document).on("click", "#create-market-sale", function() {
 
     createMarketSale($(this).val(), $(this).attr("data-price"))
         .on('transactionHash', function(transactionHash){
-            alertProcessing = alertify.message('<div class="d-flex justify-content-between align-items-center"><div class="spinner-grow text-white" style="width: 1.5rem; height: 1.5rem;" role="status"><span class="visually-hidden">Loading</span></div><div class="text-white">Processing</div><div style="width:1.5rem; height:1.5rem"></div></div>', 0);
-            $(".ajs-message").addClass("bg-color-3");
+            $("#modal-processing").modal("show");
         }).on('error', function(error){
-        alertProcessing.dismiss();
-        alertError = alertify.message(error, 0);
-    }).then(function(receipt) {
-        alertProcessing.dismiss();
-        initializePage();
-    });
+            $("#modal-processing").modal("hide");
+            alertError = alertify.message(error, 0);
+        }).then(function(receipt) {
+            $("#modal-processing").modal("hide");
+            initializePage();
+        });
 });
 
 $(document).on("submit", "#newsletter-form", async (event) => {
@@ -914,52 +945,56 @@ $(document).on("submit", "#newsletter-form", async (event) => {
 });
 
 $(document).on("click", ".add-to-favorites", async function() {
-    web3 = new Web3(ethereum);
-    web3 = new Web3(web3.currentProvider);
+    if(!address) {
+        connectToMetamask();
+    } else {
+        web3 = new Web3(ethereum);
+        web3 = new Web3(web3.currentProvider);
 
-    let message = "I am confirming this action in Ownly Marketplace.";
-    let signature = await web3.eth.personal.sign(message, ethereum.selectedAddress);
-    // var signing_address = await web3.eth.personal.ecRecover(message, signature)
+        let message = "I am confirming this action in Ownly Marketplace.";
+        let signature = await web3.eth.personal.sign(message, ethereum.selectedAddress);
+        // var signing_address = await web3.eth.personal.ecRecover(message, signature)
 
-    let button = $(this);
-    let contract_address = button.attr("data-contract-address");
-    let token_id = button.attr("data-token-id");
-    let status = parseInt(button.attr("data-status"));
+        let button = $(this);
+        let contract_address = button.attr("data-contract-address");
+        let token_id = button.attr("data-token-id");
+        let status = parseInt(button.attr("data-status"));
 
-    if(signature) {
-        await $.post(ownlyAPI + "api/store-market-account", {
-            address: ethereum.selectedAddress,
-            signature: signature
-        }, function(data) {
-            let new_status = (status) ? 0 : 1;
-
-            let count = parseInt(button.closest(".add-to-favorites-container").find(".favorites-count").text());
-
-            if(new_status === 1) {
-                button.find("i").removeClass("far");
-                button.find("i").addClass("fas");
-                button.closest(".add-to-favorites-container").find(".favorites-count").text(count + 1);
-            } else {
-                button.find("i").removeClass("fas");
-                button.find("i").addClass("far");
-                button.closest(".add-to-favorites-container").find(".favorites-count").text(count - 1);
-            }
-
-            button.attr("data-status", new_status);
-
-            $.post(ownlyAPI + "api/store-market-item-favorite", {
+        if(signature) {
+            await $.post(ownlyAPI + "api/store-market-account", {
                 address: ethereum.selectedAddress,
-                contract_address: contract_address,
-                token_id: token_id,
-                status: new_status
+                signature: signature
             }, function(data) {
+                let new_status = (status) ? 0 : 1;
 
+                let count = parseInt(button.closest(".add-to-favorites-container").find(".favorites-count").text());
+
+                if(new_status === 1) {
+                    button.find("i").removeClass("far");
+                    button.find("i").addClass("fas");
+                    button.closest(".add-to-favorites-container").find(".favorites-count").text(count + 1);
+                } else {
+                    button.find("i").removeClass("fas");
+                    button.find("i").addClass("far");
+                    button.closest(".add-to-favorites-container").find(".favorites-count").text(count - 1);
+                }
+
+                button.attr("data-status", new_status);
+
+                $.post(ownlyAPI + "api/store-market-item-favorite", {
+                    address: ethereum.selectedAddress,
+                    contract_address: contract_address,
+                    token_id: token_id,
+                    status: new_status
+                }, function(data) {
+
+                }).fail(function(error) {
+                    console.log(error);
+                });
             }).fail(function(error) {
                 console.log(error);
             });
-        }).fail(function(error) {
-            console.log(error);
-        });
+        }
     }
 });
 
@@ -999,4 +1034,10 @@ $(document).on("submit", "#account-settings-form", async function(e) {
             button.text("Save Changes");
         });
     }
+});
+
+$(document).on("click", ".select-price-current", async function(e) {
+    $("#price-currency img").attr("src", $(this).data("image"));
+    $("#price-currency span").text($(this).data("currency"));
+    $("#price-currency").val($(this).data("currency"));
 });

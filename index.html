@@ -192,14 +192,32 @@
 				<div class="modal-dialog modal-dialog-centered modal-sm">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Set Price</h5>
+							<h5 class="modal-title">Set Token Price</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<small>Price</small>
 							<div class="input-group mb-3">
-								<input type="number" class="form-control" name="price" id="price" placeholder="Price">
-								<span class="input-group-text" id="basic-addon2">BNB</span>
+								<input type="number" class="form-control" name="price" id="price" placeholder="Enter price">
+								<button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="price-currency" value="OWN">
+									<img src="img/ownly/own-token.png" width="22" />
+									<span class="ps-2 pe-1">OWN</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end">
+									<li class="select-price-current" data-image="img/ownly/own-token.png" data-currency="OWN">
+										<button type="button" class="dropdown-item d-flex align-items-center bg-white text-black-50">
+											<img src="img/ownly/own-token.png" width="22" />
+											<span class="ps-2 fw-bold">OWN</span>
+										</button>
+									</li>
+									<li><hr class="dropdown-divider my-1"></li>
+									<li class="select-price-current" data-image="img/bnb/bnb.webp" data-currency="BNB">
+										<button type="button" class="dropdown-item d-flex align-items-center bg-white text-black-50">
+											<img src="img/bnb/bnb.webp" width="22" />
+											<span class="ps-2 fw-bold">BNB</span>
+										</button>
+									</li>
+								</ul>
 							</div>
 						</div>
 						<div class="modal-footer justify-content-center">
@@ -307,6 +325,21 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="modal fade" id="modal-processing" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+				<div class="modal-dialog modal-dialog-centered modal-sm">
+					<div class="modal-content" style="border-radius:3rem">
+						<div class="modal-body">
+							<div class="py-5 text-center">
+								<div class="spinner-grow background-image-cover bg-transparent mb-4" style="width:6rem; height:6rem; background-image:url('img/ownly/own-token.png')" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</div>
+								<h5 class="w-100 font-size-110 text-center message mb-0">Processing</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	
@@ -319,6 +352,6 @@
 	<script src="js/fancybox/fancybox.umd.js"></script>
 	<script src="js/moment.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js" async integrity="sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/" crossorigin="anonymous"></script>
-	<script src="js/script.js?v=57" id="script"></script>
+	<script src="js/script.js?v=58" id="script"></script>
 </body>
 </html>
