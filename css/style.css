@@ -346,6 +346,12 @@ html {
     color:#ffffff;
     font-weight:normal;
 }
+.nav-pills-custom-1 .nav-link.active, .nav-pills-custom-1 .show>.nav-link {
+    background-color: #147ca0;
+}
+.nav-pills-custom-1 .nav-link {
+    color: #147ca0;
+}
 
 /*##################################################################*/
 
