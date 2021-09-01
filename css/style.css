@@ -366,6 +366,9 @@ html {
 .carousel-control-next {
     right:-35px!important;
 }
+.mustachios-text {
+    width:80%;
+}
 
 @media(min-width:576px) {
     #artist-image {
@@ -384,6 +387,9 @@ html {
     .font-size-sm-93 {
         font-size: 0.93em;
     }
+    .mustachios-text {
+        width:70%;
+    }
 }
 
 @media(min-width:768px) {
@@ -398,6 +404,9 @@ html {
     }
     #banner-right {
         width:0!important;;
+    }
+    .mustachios-text {
+        width:60%;
     }
 }
 
@@ -417,6 +426,9 @@ html {
     }
     #banner-right {
         width:55%!important;;
+    }
+    .mustachios-text {
+        width:50%;
     }
 }
 

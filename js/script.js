@@ -199,6 +199,9 @@ let initializePage = () => {
             currentPage = "home";
             displayTokens(0, "all", collection);
 
+            $(".header-collection").addClass("d-none");
+            $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
+
             if(collection === "titans-of-industry") {
                 $("#artist-section").load(url + "js/../artist-eugene.html?v=" + cacheVersion);
             } else if(collection === "the-mustachios") {
@@ -393,7 +396,7 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
         content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
         content += '        <div class="token-card" data-token-id="' + i + '">';
         content += '            <a href="?contract=' + contractAddress + '&token=' + i + '" class="link">';
-        content += '                <div class="w-100 background-image-cover token-image shadow-sm border-1 mb-3 bg-secondary" style="background-image:url(\'' + metadata.image + '\'); padding-top:100%"></div>';
+        content += '                <div class="w-100 background-image-contain token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.image + '\'); padding-top:100%; border:1px solid #cccccc; background-color:rgba(0,0,0,0.03)"></div>';
         content += '            </a>';
         content += '            <div class="d-flex flex-column justify-content-between h-100">';
         content += '                <div class="d-flex justify-content-between">';
