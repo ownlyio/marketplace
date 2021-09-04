@@ -36,8 +36,8 @@ let hasMarketplaceEthereumContract = false;
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
-    // if(currentURL.includes("ownly.io/marketplace")) {
-    if(true) {
+    if(currentURL.includes("ownly.io/marketplace")) {
+    // if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -158,8 +158,9 @@ let initializePage = () => {
 
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
-    let profile = findGetParameter("profile");
     let collection = findGetParameter("collection");
+    let profile = findGetParameter("profile");
+    let tab = findGetParameter("tab");
 
     if(contract && token) {
         pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
@@ -182,11 +183,65 @@ let initializePage = () => {
             app.removeClass("d-none");
         });
     } else if(profile) {
-        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, function() {
-            currentPage = "profile";
+        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
+            $("#pills-account-settings-tab").attr("href", "?profile=" + profile);
+            $("#pills-owned-tab").attr("href", "?profile=" + profile + "&tab=owned");
+            $("#pills-favorites-tab").attr("href", "?profile=" + profile + "&tab=favorites");
 
-            displayTokens(0, "owned", null);
-            displayTokens(0, "favorites", null);
+            if(tab === "owned") {
+                currentPage = "profile:owned";
+
+                $("#pills-owned-tab").addClass("active");
+                $("#owned-container").removeClass("d-none");
+
+                let accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                address = (accounts.length > 0) ? accounts[0] : false;
+
+                displayOwnedTokens();
+            } else if(tab === "favorites") {
+                currentPage = "profile:favorites";
+
+                let accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                address = (accounts.length > 0) ? accounts[0] : false;
+
+                $("#pills-favorites-tab").addClass("active");
+                $("#favorites-container").removeClass("d-none");
+
+                displayFavoritedTokens();
+            } else {
+                currentPage = "profile:settings";
+
+                $("#pills-account-settings-tab").addClass("active");
+                $("#account-settings-container").removeClass("d-none");
+
+                let form_data = new FormData();
+                form_data.append('address', profile);
+
+                $.ajax({
+                    url: ownlyAPI + "api/get-account-settings",
+                    method: "POST",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data
+                }).done(async function(response) {
+                    let accountSettingsForm = $("#account-settings-form");
+
+                    accountSettingsForm.find("[name='username']").val(response.data.name);
+                    accountSettingsForm.find("[name='email_address']").val(response.data.email);
+                    accountSettingsForm.find("[name='bio']").val(response.data.bio);
+
+                    let accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    address = (accounts.length > 0) ? accounts[0] : false;
+
+                    if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
+                        accountSettingsForm.find("input").prop("disabled", false);
+                        accountSettingsForm.find("[type='submit']").removeClass("d-none");
+                    }
+                }).fail(function(error) {
+                    console.log(error);
+                });
+            }
 
             app.removeClass("d-none");
         });
@@ -311,10 +366,16 @@ let initializeListingPrice = () => {
         });
 };
 let displayTokens = (excludedToken, type, collection) => {
-    if(collection === "titans-of-industry") {
+    if(type === "owned") {
         displayTitanTokens(excludedToken, type);
-    } else if(collection === "the-mustachios") {
-        displayMustachioTokens(excludedToken, type);
+    } else if(type === "favorites") {
+
+    } else {
+        if(collection === "titans-of-industry") {
+            displayTitanTokens(excludedToken, type);
+        } else if(collection === "the-mustachios") {
+            displayMustachioTokens(excludedToken, type);
+        }
     }
 };
 let displayTitanTokens = function(excludedToken, type) {
@@ -336,6 +397,142 @@ let displayTitanTokens = function(excludedToken, type) {
                     });
             }
         });
+};
+let displayOwnedTokens = async function() {
+    let ownedTokens = [];
+
+    try {
+        await $.get("https://api.covalenthq.com/v1/" + chainIDBsc + "/address/" + address + "/balances_v2/?nft=true&no-nft-fetch=true&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+            for(let i = 0; i < data.data.items.length; i++) {
+                if(data.data.items[i].contract_address && web3Bsc.utils.toChecksumAddress(data.data.items[i].contract_address) === titansContractAddress) {
+                    if(data.data.items[i].nft_data) {
+                        for(let j = 0; j < data.data.items[i].nft_data.length; j++) {
+                            ownedTokens.push({
+                                contractAddress: titansContractAddress,
+                                tokenId: data.data.items[i].nft_data[j].token_id
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    } catch(error) {}
+
+    try {
+        await $.get("https://api.covalenthq.com/v1/" + chainIDEth + "/address/" + address + "/balances_v2/?nft=true&no-nft-fetch=true&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+            for(let i = 0; i < data.data.items.length; i++) {
+                if(data.data.items[i].contract_address && web3Bsc.utils.toChecksumAddress(data.data.items[i].contract_address) === mustachiosContractAddress) {
+                    if(data.data.items[i].nft_data) {
+                        for(let j = 0; j < data.data.items[i].nft_data.length; j++) {
+                            ownedTokens.push({
+                                contractAddress: mustachiosContractAddress,
+                                tokenId: data.data.items[i].nft_data[j].token_id
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    } catch(error) {}
+
+    content = '';
+
+    for(let i = 0; i < ownedTokens.length; i++) {
+        marketplaceBinanceContract.methods.fetchMarketItem(ownedTokens[i].contractAddress, ownedTokens[i].tokenId).call()
+            .then(async function(marketItem) {
+                await titansContract.methods.tokenURI(ownedTokens[i].tokenId).call()
+                    .then(async function(tokenURI) {
+                        await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
+                            await titansContract.methods.ownerOf(ownedTokens[i].tokenId).call()
+                                .then(async function(owner) {
+                                    await formatTokenCards(null, "owned", ownedTokens.length, ownedTokens[i].tokenId, marketItem, metadata, owner, ownedTokens[i].contractAddress);
+                                });
+                        });
+                    });
+            });
+    }
+
+    if(ownedTokens.length === 0) {
+        content += '    <div class="d-flex flex-column align-items-center py-5">';
+        content += '        <div class="mb-4">';
+        content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
+        content += '        </div>';
+        content += '        <div>You haven\'t owned any tokens from our collections yet.<div>';
+        content += '    </div>';
+
+        $("#owned-tokens-container").html(content);
+    }
+};
+let displayFavoritedTokens = async function() {
+    let favoritedTokens = [];
+
+    await $.post(ownlyAPI + "api/get-market-item-user-favorites", {
+        address: ethereum.selectedAddress,
+        contract_addresses: [
+            titansContractAddress,
+            mustachiosContractAddress
+        ]
+    }, function(data) {
+        favoritedTokens = data.favorites;
+    }).fail(function(error) {
+        console.log(error);
+    });
+
+    content = '';
+
+    for(let i = 0; i < favoritedTokens.length; i++) {
+        if(web3Bsc.utils.toChecksumAddress(favoritedTokens[i].contract_address) === titansContractAddress) {
+            marketplaceBinanceContract.methods.fetchMarketItem(favoritedTokens[i].contract_address, favoritedTokens[i].token_id).call()
+                .then(async function(marketItem) {
+                    await titansContract.methods.tokenURI(favoritedTokens[i].token_id).call()
+                        .then(async function(tokenURI) {
+                            await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
+                                await titansContract.methods.ownerOf(favoritedTokens[i].token_id).call()
+                                    .then(async function(owner) {
+                                        await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address);
+                                    });
+                            });
+                        });
+                });
+        } else if(web3Bsc.utils.toChecksumAddress(favoritedTokens[i].contract_address) === mustachiosContractAddress) {
+            if(hasMarketplaceEthereumContract) {
+                marketplaceEthereumContract.methods.fetchMarketItem(favoritedTokens[i].contract_address, favoritedTokens[i].token_id).call()
+                    .then(async function(marketItem) {
+                        await mustachiosContract.methods.tokenURI(favoritedTokens[i].token_id).call()
+                            .then(async function(tokenURI) {
+                                await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
+                                    await mustachiosContract.methods.ownerOf(favoritedTokens[i].token_id).call()
+                                        .then(async function(owner) {
+                                            await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address);
+                                        });
+                                });
+                            });
+                    });
+            } else {
+                let marketItem = false;
+                await mustachiosContract.methods.tokenURI(favoritedTokens[i].token_id).call()
+                    .then(async function(tokenURI) {
+                        await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
+                            await mustachiosContract.methods.ownerOf(favoritedTokens[i].token_id).call()
+                                .then(async function(owner) {
+                                    await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address);
+                                });
+                        });
+                    });
+            }
+        }
+    }
+
+    if(favoritedTokens.length === 0) {
+        content += '    <div class="d-flex flex-column align-items-center py-5">';
+        content += '        <div class="mb-4">';
+        content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
+        content += '        </div>';
+        content += '        <div>You haven\'t added any favorite tokens yet.<div>';
+        content += '    </div>';
+
+        $("#favorite-tokens-container").html(content);
+    }
 };
 let displayMustachioTokens = function(excludedToken, type) {
     mustachiosContract.methods.totalSupply().call()
@@ -392,6 +589,13 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
 
     isFavorited = type === "favorites" && isFavorited;
 
+    let chainId;
+    if(web3Bsc.utils.toChecksumAddress(contractAddress) === titansContractAddress) {
+        chainId = chainIDBsc;
+    } else if(web3Bsc.utils.toChecksumAddress(contractAddress) === mustachiosContractAddress) {
+        chainId = chainIDEth;
+    }
+
     if(type === "all" || isOwned || isFavorited) {
         content += '    <div class="col-md-6 col-xl-4 mb-5 pb-md-3 px-md-4">';
         content += '        <div class="token-card" data-token-id="' + i + '">';
@@ -446,13 +650,6 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
             let transaction_hash = "#";
 
             let getLatestTransaction = function(_contractAddress, _token) {
-                let chainId;
-                if(web3Bsc.utils.toChecksumAddress(contractAddress) === titansContractAddress) {
-                    chainId = chainIDBsc;
-                } else if(web3Bsc.utils.toChecksumAddress(contractAddress) === mustachiosContractAddress) {
-                    chainId = chainIDEth;
-                }
-
                 $.get("https://api.covalenthq.com/v1/" + chainId + "/tokens/" + contractAddress + "/nft_transactions/" + _token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
                     if(data) {
                         let _break = false;
@@ -464,10 +661,17 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
                                         let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
                                         let setTransactionHashInterval = setInterval(function() {
                                             if($("#tokens-container").html() !== "") {
-                                                let bscscanTransactionHash = $(".token-card[data-token-id='" + _token + "'] .bscscan-transaction-hash");
+                                                let transactionHashLink = $(".token-card[data-token-id='" + _token + "'] .transaction-hash");
 
-                                                bscscanTransactionHash.attr("href", blockchainExplorerBsc + "tx/" + transaction_hash);
-                                                bscscanTransactionHash.removeClass("d-none");
+                                                let blockchainExplorer;
+                                                if(chainId === chainIDEth) {
+                                                    blockchainExplorer = blockchainExplorerEth;
+                                                } else {
+                                                    blockchainExplorer = blockchainExplorerBsc;
+                                                }
+
+                                                transactionHashLink.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+                                                transactionHashLink.removeClass("d-none");
                                                 clearInterval(setTransactionHashInterval);
                                             }
                                         }, 1000);
@@ -492,7 +696,7 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
             content += '                <div class="row align-items-center" style="min-height:69px">';
             content += '                    <div class="col-6">';
             content += '                        <div>';
-            content += '                            <a href="' + blockchainExplorerBsc + "tx/" + transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none bscscan-transaction-hash">View on BscScan</a>';
+            content += '                            <a href="' + blockchainExplorerBsc + "tx/" + transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + ((chainId === chainIDEth) ? 'Etherscan' : 'BscScan') + '</a>';
             content += '                        </div>';
             content += '                        <div class="font-size-100 neo-bold">Owner</div>';
             content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
@@ -530,9 +734,9 @@ let formatTokenCards = async function(excludedToken, type, totalSupply, i, marke
 
     if(type === "all") {
         $("#tokens-container").html(content);
-    } else if(i === parseInt(totalSupply) && type === "owned") {
+    } else if(type === "owned") {
         $("#owned-tokens-container").html(content);
-    } else if(i === parseInt(totalSupply) && type === "favorites") {
+    } else if(type === "favorites") {
         $("#favorite-tokens-container").html(content);
     }
 
@@ -644,10 +848,10 @@ let displayTokenDetails = async function(marketItem, token, owner, contractAddre
             $("#create-market-sale-container").removeClass("d-none");
         }
     } else {
-        let bscscanTransactionHash = $(".token-bscscan-transaction-hash");
+        let transactionHash = $(".token-transaction-hash");
 
-        bscscanTransactionHash.attr("href", blockchainExplorerBsc + "tx/" + transaction_hashes[0].tx_hash);
-        bscscanTransactionHash.removeClass("d-none");
+        transactionHash.attr("href", blockchainExplorerBsc + "tx/" + transaction_hashes[0].tx_hash);
+        transactionHash.removeClass("d-none");
 
         $(".owner-address").text(shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5));
 
