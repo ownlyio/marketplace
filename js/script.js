@@ -803,13 +803,21 @@ let displayMustachioToken = (token) => {
             displayTokenMetadata(tokenURI, mustachiosContractAddress, token);
         });
 
-    marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
-        .then(function(marketItem) {
-            mustachiosContract.methods.ownerOf(token).call()
-                .then(async function(owner) {
-                    displayTokenDetails(marketItem, token, owner, mustachiosContractAddress);
-                });
-        });
+    if(hasMarketplaceEthereumContract) {
+        marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
+            .then(function(marketItem) {
+                mustachiosContract.methods.ownerOf(token).call()
+                    .then(async function(owner) {
+                        displayTokenDetails(marketItem, token, owner, mustachiosContractAddress);
+                    });
+            });
+    } else {
+        let marketItem = false;
+        mustachiosContract.methods.ownerOf(token).call()
+            .then(async function(owner) {
+                displayTokenDetails(marketItem, token, owner, mustachiosContractAddress);
+            });
+    }
 };
 let displayTokenMetadata = function(tokenURI, contractAddress, token) {
     $.get(tokenURI + "?v=" + cacheVersion, function(metadata) {
