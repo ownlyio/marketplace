@@ -183,18 +183,15 @@ let initializePage = () => {
 
             if(contract === titansContractAddress && network === "bsc") {
                 collection = "titans-of-industry";
-                $("#artist-section").load(url + "js/../artist-eugene.html?v=" + cacheVersion);
             } else if(contract === mustachiosContractAddress && network === "eth") {
                 collection = "the-mustachios";
-                $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
             } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
                 collection = "cryptosolitaire";
-                // $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
             } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
                 collection = "inkvadyrz";
-                // $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
             }
 
+            displayArtistSection(collection);
             displayTokens(token, "all", collection);
 
             app.removeClass("d-none");
@@ -274,11 +271,7 @@ let initializePage = () => {
             $(".header-collection").addClass("d-none");
             $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-            if(collection === "titans-of-industry") {
-                $("#artist-section").load(url + "js/../artist-eugene.html?v=" + cacheVersion);
-            } else if(collection === "the-mustachios") {
-                $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
-            }
+            displayArtistSection(collection);
 
             $(".collection-tab[data-collection='" + collection + "']").addClass("active");
 
@@ -388,6 +381,11 @@ let initializeListingPrice = () => {
         .then(function(data) {
             listingPrice = data;
         });
+};
+let displayArtistSection = function(collection) {
+    $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion, function() {
+        $(".artist-container[data-collection='" + collection + "']").removeClass("d-none");
+    });
 };
 let displayTokens = (excludedToken, type, collection, page) => {
     if(collection === "titans-of-industry") {

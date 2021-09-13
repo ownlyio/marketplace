@@ -368,7 +368,7 @@ html {
 
 /*##################################################################*/
 
-#artist-image {
+.artist-image {
     min-width:240px;
     width:240px;
 }
@@ -384,7 +384,7 @@ html {
 }
 
 @media(min-width:576px) {
-    #artist-image {
+    .artist-image {
         min-width:280px;
         width:280px;
     }
@@ -424,7 +424,7 @@ html {
 }
 
 @media(min-width:992px) {
-    #artist-image {
+    .artist-image {
         min-width:320px;
         width:320px;
     }
@@ -446,7 +446,7 @@ html {
 }
 
 @media(min-width:1200px) {
-    #artist-image {
+    .artist-image {
         min-width:360px;
         width:360px;
     }
