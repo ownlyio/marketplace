@@ -39,8 +39,8 @@ let hasMarketplaceEthereumContract = false;
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
-    // if(currentURL.includes("ownly.io/marketplace")) {
-    if(true) {
+    if(currentURL.includes("ownly.io/marketplace")) {
+    // if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -181,12 +181,18 @@ let initializePage = () => {
 
             displayToken(network, contract, token);
 
-            if(contract === titansContractAddress) {
+            if(contract === titansContractAddress && network === "bsc") {
                 collection = "titans-of-industry";
                 $("#artist-section").load(url + "js/../artist-eugene.html?v=" + cacheVersion);
-            } else if(contract === mustachiosContractAddress) {
+            } else if(contract === mustachiosContractAddress && network === "eth") {
                 collection = "the-mustachios";
                 $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
+            } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
+                collection = "cryptosolitaire";
+                // $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
+            } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
+                collection = "inkvadyrz";
+                // $("#artist-section").load(url + "js/../artist-dan.html?v=" + cacheVersion);
             }
 
             displayTokens(token, "all", collection);
@@ -902,10 +908,7 @@ let displayToken = (network, contractAddress, token) => {
     }
 };
 let displayTitanToken = (token) => {
-    titansContract.methods.tokenURI(token).call()
-        .then(function(tokenURI) {
-            displayTokenMetadata(tokenURI, titansContractAddress);
-        });
+    displayTokenMetadata(chainIDBsc, titansContractAddress, token);
 
     marketplaceBinanceContract.methods.fetchMarketItem(titansContractAddress, token).call()
         .then(function(marketItem) {
@@ -916,10 +919,7 @@ let displayTitanToken = (token) => {
         });
 };
 let displayMustachioToken = (token) => {
-    mustachiosContract.methods.tokenURI(token).call()
-        .then(function(tokenURI) {
-            displayTokenMetadata(tokenURI, mustachiosContractAddress, token);
-        });
+    displayTokenMetadata(chainIDEth, mustachiosContractAddress, token);
 
     if(hasMarketplaceEthereumContract) {
         marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
@@ -938,10 +938,7 @@ let displayMustachioToken = (token) => {
     }
 };
 let displayChenInkToken = (token) => {
-    chenInkContract.methods.tokenURI(token).call()
-        .then(function(tokenURI) {
-            displayTokenMetadata(tokenURI, chenInkContractAddress, token);
-        });
+    displayTokenMetadata(chainIDEth, chenInkContractAddress, token);
 
     if(hasMarketplaceEthereumContract) {
         marketplaceEthereumContract.methods.fetchMarketItem(chenInkContractAddress, token).call()
@@ -959,33 +956,41 @@ let displayChenInkToken = (token) => {
             });
     }
 };
-let displayTokenMetadata = function(tokenURI, contractAddress, token) {
-    $.get(tokenURI + "?v=" + cacheVersion, function(metadata) {
-        $("#point-to-bscnetwork-message").addClass("d-none");
+let displayTokenMetadata = function(chainID, contractAddress, token) {
+    let metadataUrl;
+    if(chainID === chainIDBsc && contractAddress === titansContractAddress) {
+        metadataUrl = ownlyAPI + "api/titan/" + token;
+    } else if(chainID === chainIDEth && contractAddress === chenInkContractAddress) {
+        metadataUrl = ownlyAPI + "api/inkvadyr/" + token;
+    } else if(chainID === chainIDEth && contractAddress === mustachiosContractAddress) {
+        metadataUrl = ownlyAPI + "api/mustachio/" + token;
+    }
 
-        $("#token-image").attr("src", metadata.image);
+    $.get(metadataUrl, function(metadata) {
+        $("#token-image").attr("src", metadata.thumbnail);
         $("#token-name").text(metadata.name);
         $("#token-description").text(metadata.description);
         $("#token-contract-address").html('<a href="' + blockchainExplorerBsc + 'address/' + contractAddress + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(contractAddress), 5, 5) + '</a>');
         $("#token-id").text(token);
         $(".create-market-item-confirmation").attr("data-token-id", token);
 
-        $("#token-original-image").attr("href", metadata.asset);
-        $("#token-original-image-preload").attr("src", metadata.asset);
+        $("#token-original-image").attr("href", metadata.image);
+        $("#token-original-image-preload").attr("src", metadata.image);
 
         let addToFavoritesButton = $(".add-to-favorites");
         addToFavoritesButton.attr("data-contract-address", contractAddress);
         addToFavoritesButton.attr("data-token-id", token);
 
+        let attributes = metadata.attributes;
         let content = '';
-        for(let i = 0; i < metadata.attributes.length; i++) {
+        for(let i = 0; i < attributes.length; i++) {
             content += '    <div class="col-md-6 col-xl-4 p-2">';
             content += '        <div class="card bg-light h-100">';
             content += '            <div class="card-body h-100">';
             content += '                <div class="d-flex justify-content-center align-items-center h-100">';
             content += '                    <div class="text-center">';
-            content += '                        <div class="neo-bold font-size-80 mb-1 text-uppercase text-color-7">' + metadata.attributes[i].trait_type + '</div>';
-            content += '                        <div class="font-size-100">' + metadata.attributes[i].value + '</div>';
+            content += '                        <div class="neo-bold font-size-80 mb-1 text-uppercase text-color-7">' + attributes[i].trait_type + '</div>';
+            content += '                        <div class="font-size-100">' + attributes[i].value + '</div>';
             content += '                    </div>';
             content += '                </div>';
             content += '            </div>';
@@ -996,9 +1001,20 @@ let displayTokenMetadata = function(tokenURI, contractAddress, token) {
     });
 };
 let displayTokenDetails = async function(marketItem, token, owner, contractAddress, network) {
+    let chainId;
+    let blockchainExplorer;
+
+    if(network === 'bsc') {
+        chainId = chainIDBsc;
+        blockchainExplorer = blockchainExplorerBsc;
+    } else {
+        chainId = chainIDEth;
+        blockchainExplorer = blockchainExplorerEth;
+    }
+
     $("#token-owner").html('<a href="' + blockchainExplorerBsc + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
 
-    let transaction_hashes = await getTokenTransfers(owner, network, contractAddress, token);
+    let transaction_hashes = await getTokenTransfers(owner, chainId, contractAddress, token);
 
     if(parseInt(marketItem.itemId)) {
         let tokenPrice = $(".token-price");
@@ -1053,17 +1069,17 @@ let displayTokenDetails = async function(marketItem, token, owner, contractAddre
     transfers_content += '      <tbody>';
     for(let j = 0; j < transaction_hashes.length; j++) {
         let price = 0;
-        await $.get("https://api.covalenthq.com/v1/" + chainIDBsc + "/transaction_v2/" + transaction_hashes[j].tx_hash + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+        await $.get("https://api.covalenthq.com/v1/" + chainId + "/transaction_v2/" + transaction_hashes[j].tx_hash + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
             price = web3Bsc.utils.fromWei(data.data.items[0].value, "ether");
         });
 
         transfers_content += '      <tr>';
         transfers_content += '          <td style="vertical-align:middle">' + price + ' BNB</td>';
         transfers_content += '          <td style="vertical-align:middle">';
-        transfers_content += '              <a href="' + blockchainExplorerBsc + 'address/' + transaction_hashes[j].decoded.params[0].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[0].value), 4, 4) + '</a>';
+        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[0].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[0].value), 4, 4) + '</a>';
         transfers_content += '          </td>';
         transfers_content += '          <td style="vertical-align:middle">';
-        transfers_content += '              <a href="' + blockchainExplorerBsc + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
+        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
         transfers_content += '          </td>';
         transfers_content += '          <td style="vertical-align:middle">' + moment(transaction_hashes[j].block_signed_at).format('llll') + '</td>';
         transfers_content += '      </tr>';
@@ -1138,10 +1154,10 @@ let loadRelatedTokens = (excludedToken) => {
     new bootstrap.Carousel($('#related-tokens-container-md'));
     new bootstrap.Carousel($('#related-tokens-container-xs'));
 };
-let getTokenTransfers = async (owner, network, contractAddress, token) => {
+let getTokenTransfers = async (owner, chainId, contractAddress, token) => {
     let transaction_hashes = [];
 
-    await $.get("https://api.covalenthq.com/v1/" + network + "/tokens/" + contractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+    await $.get("https://api.covalenthq.com/v1/" + chainId + "/tokens/" + contractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", async function(data) {
         if(data) {
             for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
                 for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
@@ -1153,9 +1169,7 @@ let getTokenTransfers = async (owner, network, contractAddress, token) => {
                 }
             }
         } else {
-            setTimeout(function() {
-                getTokenTransfers(owner, network, contractAddress, token);
-            });
+            await getTokenTransfers(owner, network, contractAddress, token);
         }
     });
 
@@ -1326,7 +1340,6 @@ $(document).on("click", "#cancel-market-item", async function() {
 });
 
 $(document).on("click", ".create-market-sale-confirmation", function() {
-    console.log(address);
     if(!address) {
         connectToMetamask();
     } else {
