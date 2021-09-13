@@ -282,7 +282,9 @@ let initializePage = () => {
         });
     }
 
-    $(".collection-dropdown-item").attr("href", $(".collection-dropdown-item").attr("href").replace("http://ownlyio.dev-marketplace.test/", url));
+    $(".collection-dropdown-item").each(function() {
+        $(this).attr("href", $(this).attr("href").replace("http://ownlyio.dev-marketplace.test/", url));
+    });
 };
 let connectToMetamask = async () => {
     if(!isConnectedToMetamask) {
