@@ -385,6 +385,11 @@ let initializeListingPrice = () => {
 let displayArtistSection = function(collection) {
     $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion, function() {
         $(".artist-container[data-collection='" + collection + "']").removeClass("d-none");
+
+        Ellipsis({
+            class: '.ellipsis',
+            lines: 3
+        });
     });
 };
 let displayTokens = (excludedToken, type, collection, page) => {
