@@ -1,10 +1,12 @@
 <div class="container pb-5" style="padding-top:80px">
 	<div class="row mb-5" id="token-card">
 		<div class="col-md-6 col-xxl-5 pe-lg-3 pe-xl-4">
-			<a href="" data-fancybox id="token-original-image">
-				<img src="img/thumbnails/token.webp" class="w-100 border-1 shadow-sm" id="token-image" alt="Token" style="border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px" />
-			</a>
-			<img src="" class="d-none" id="token-original-image-preload" alt="Token" />
+			<div id="token-asset-container">
+				<a href="" data-fancybox id="token-original-image">
+					<img src="img/thumbnails/token.webp" class="d-none w-100 border-1 shadow-sm" id="token-image" alt="Token" style="border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px" />
+				</a>
+				<img src="" class="d-none" id="token-original-image-preload" alt="Token" />
+			</div>
 		</div>
 		
 		<div class="col-md-6 col-xxl-7 ps-lg-3 ps-xl-4 mt-4 mt-md-5">
@@ -147,11 +149,11 @@
 							<table>
 								<tr>
 									<td class="neo-bold pe-3 py-1">Token:</td>
-									<td class="py-1">BEP-721</td>
+									<td class="py-1" id="token-type"></td>
 								</tr>
 								<tr>
 									<td class="neo-bold pe-3 py-1">Blockchain:</td>
-									<td class="py-1">Binance Smart Chain</td>
+									<td class="py-1" id="token-network"></td>
 								</tr>
 								<tr>
 									<td class="neo-bold pe-3 py-1">Contract Address:</td>
