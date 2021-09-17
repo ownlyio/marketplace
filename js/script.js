@@ -49,9 +49,9 @@ let hasMarketplacePolygonContract = false;
 
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
-    
-    if(currentURL.includes("ownly.io/marketplace")) {
-    // if(true) {
+
+    // if(currentURL.includes("ownly.io/marketplace")) {
+    if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -456,6 +456,7 @@ let displayTitanTokens = function(excludedToken, type, page) {
                 .then(async function(marketItem) {
                     await titansContract.methods.ownerOf(metadata[i].id).call()
                         .then(async function(owner) {
+                            update_token_transaction(chainIDBsc, titansContractAddress, metadata[i].id, metadata[i].to, owner);
                             await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, titansContractAddress, "bsc");
                         });
                 });
@@ -478,6 +479,7 @@ let displayMustachioTokens = function(excludedToken, type, page) {
                             .then(async function(marketItem) {
                                 await mustachiosContract.methods.ownerOf(metadata[i].id).call()
                                     .then(async function(owner) {
+                                        update_token_transaction(chainIDEth, mustachiosContractAddress, metadata[i].id, metadata[i].to, owner);
                                         await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, mustachiosContractAddress, "eth");
                                     });
                             });
@@ -485,6 +487,7 @@ let displayMustachioTokens = function(excludedToken, type, page) {
                         let marketItem = false;
                         await mustachiosContract.methods.ownerOf(metadata[i].id).call()
                             .then(async function(owner) {
+                                update_token_transaction(chainIDEth, mustachiosContractAddress, metadata[i].id, metadata[i].to, owner);
                                 await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, mustachiosContractAddress, "eth");
                             });
                     }
@@ -506,6 +509,7 @@ let displayCryptosolitaireTokens = function(excludedToken, type, page) {
                         .then(async function(marketItem) {
                             await chenInkContract.methods.ownerOf(metadata[i].id).call()
                                 .then(async function(owner) {
+                                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
                                     await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
                                 });
                         });
@@ -513,6 +517,7 @@ let displayCryptosolitaireTokens = function(excludedToken, type, page) {
                     let marketItem = false;
                     await chenInkContract.methods.ownerOf(metadata[i].id).call()
                         .then(async function(owner) {
+                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
                             await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
                         });
                 }
@@ -533,6 +538,7 @@ let displayInkvadyrzTokens = function(excludedToken, type, page) {
                         .then(async function(marketItem) {
                             await chenInkContract.methods.ownerOf(metadata[i].id).call()
                                 .then(async function(owner) {
+                                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
                                     await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
                                 });
                         });
@@ -540,6 +546,7 @@ let displayInkvadyrzTokens = function(excludedToken, type, page) {
                     let marketItem = false;
                     await chenInkContract.methods.ownerOf(metadata[i].id).call()
                         .then(async function(owner) {
+                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
                             await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
                         });
                 }
@@ -759,15 +766,19 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
 
     let chainId;
     let explorerName;
-    if(web3Bsc.utils.toChecksumAddress(contractAddress) === titansContractAddress) {
+    let blockchainExplorer;
+    if(network === "bsc") {
         chainId = chainIDBsc;
         explorerName = "BscScan";
-    } else if(web3Bsc.utils.toChecksumAddress(contractAddress) === mustachiosContractAddress || web3Bsc.utils.toChecksumAddress(contractAddress) === chenInkContractAddress) {
+        blockchainExplorer = blockchainExplorerBsc;
+    } else if(network === "eth") {
         chainId = chainIDEth;
         explorerName = "Etherscan";
-    } else if(web3Matic.utils.toChecksumAddress(contractAddress) === rewardsContractAddress) {
+        blockchainExplorer = blockchainExplorerEth;
+    } else if(network === "matic") {
         chainId = chainIDMatic;
         explorerName = "PolygonScan";
+        blockchainExplorer = blockchainExplorerMatic;
     }
 
     if(type === "all" || isOwned || isFavorited) {
@@ -835,57 +846,57 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                </div>';
             content += '                <div class="owner d-none">' + owner + '</div>';
         } else {
-            let transaction_hash = "#";
-
-            let getLatestTransaction = function(_contractAddress, _token) {
-                $.get("https://api.covalenthq.com/v1/" + chainId + "/tokens/" + contractAddress + "/nft_transactions/" + _token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-                    if(data) {
-                        let _break = false;
-
-                        for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
-                            for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
-                                if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
-                                    if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
-                                        let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
-                                        let setTransactionHashInterval = setInterval(function() {
-                                            if($("#tokens-container").html() !== "") {
-                                                let transactionHashLink = $(".token-card[data-token-id='" + _token + "'] .transaction-hash");
-
-                                                let blockchainExplorer;
-                                                if(chainId === chainIDEth) {
-                                                    blockchainExplorer = blockchainExplorerEth;
-                                                } else {
-                                                    blockchainExplorer = blockchainExplorerBsc;
-                                                }
-
-                                                transactionHashLink.attr("href", blockchainExplorer + "tx/" + transaction_hash);
-                                                transactionHashLink.removeClass("d-none");
-                                                clearInterval(setTransactionHashInterval);
-                                            }
-                                        }, 1000);
-                                    }
-                                }
-                            }
-
-                            if(_break) {
-                                break;
-                            }
-                        }
-                    } else {
-                        setTimeout(function() {
-                            getLatestTransaction(_contractAddress, _token);
-                        }, 1000);
-                    }
-                });
-            };
-
-            getLatestTransaction(contractAddress, i);
+            // let transaction_hash = "#";
+            //
+            // let getLatestTransaction = function(_contractAddress, _token) {
+            //     $.get("https://api.covalenthq.com/v1/" + chainId + "/tokens/" + contractAddress + "/nft_transactions/" + _token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
+            //         if(data) {
+            //             let _break = false;
+            //
+            //             for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
+            //                 for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
+            //                     if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
+            //                         if(data.data.items[0].nft_transactions[j].log_events[k].decoded.name === "Transfer") {
+            //                             let transaction_hash = data.data.items[0].nft_transactions[j].log_events[k].tx_hash;
+            //                             let setTransactionHashInterval = setInterval(function() {
+            //                                 if($("#tokens-container").html() !== "") {
+            //                                     let transactionHashLink = $(".token-card[data-token-id='" + _token + "'] .transaction-hash");
+            //
+            //                                     let blockchainExplorer;
+            //                                     if(chainId === chainIDEth) {
+            //                                         blockchainExplorer = blockchainExplorerEth;
+            //                                     } else {
+            //                                         blockchainExplorer = blockchainExplorerBsc;
+            //                                     }
+            //
+            //                                     transactionHashLink.attr("href", blockchainExplorer + "tx/" + transaction_hash);
+            //                                     transactionHashLink.removeClass("d-none");
+            //                                     clearInterval(setTransactionHashInterval);
+            //                                 }
+            //                             }, 1000);
+            //                         }
+            //                     }
+            //                 }
+            //
+            //                 if(_break) {
+            //                     break;
+            //                 }
+            //             }
+            //         } else {
+            //             setTimeout(function() {
+            //                 getLatestTransaction(_contractAddress, _token);
+            //             }, 1000);
+            //         }
+            //     });
+            // };
+            //
+            // getLatestTransaction(contractAddress, i);
 
             if(chainId !== chainIDMatic) {
                 content += '                <div class="row align-items-center" style="min-height:69px">';
                 content += '                    <div class="col-6">';
                 content += '                        <div>';
-                content += '                            <a href="' + blockchainExplorerBsc + "tx/" + transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
                 content += '                        </div>';
                 content += '                        <div class="font-size-100 neo-bold">Owner</div>';
                 content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
@@ -1335,6 +1346,16 @@ let getTokenTransfers = async (owner, chainId, contractAddress, token) => {
     });
 
     return transaction_hashes;
+};
+let update_token_transaction = function(chainID, contractAddress, tokenId, owner, currentOwner) {
+    if(!owner || (owner && web3Bsc.utils.toChecksumAddress(owner) !== web3Bsc.utils.toChecksumAddress(currentOwner))) {
+        $.post(ownlyAPI + "api/token_transfer/update_token_transaction", {
+            chain_id: chainID,
+            contract_address: contractAddress,
+            token_id: tokenId,
+            owner: currentOwner
+        });
+    }
 };
 
 window.onerror = function(message, url, lineNumber) {
