@@ -226,6 +226,8 @@ let initializePage = () => {
                 collection = "rewards";
             }
 
+            $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
+
             displayArtistSection(collection === "rewards" ? "the-mustachios" : collection);
             displayTokens(token, "all", collection);
 
@@ -989,6 +991,10 @@ let displayTitanToken = (token) => {
 let displayMustachioToken = (token) => {
     $.get(ownlyAPI + "api/mustachio/" + ((address) ? address : "0") + "/" + mustachiosContractAddress + "/" + token, async function(metadata) {
         displayTokenMetadata(chainIDEth, metadata, mustachiosContractAddress, token);
+
+        $("#additional-assets-container").removeClass("d-none");
+        $("#transparent-bg-mustachio-preload").attr("src", metadata.trans_bg);
+        $("#transparent-bg-mustachio").attr("href", metadata.trans_bg);
 
         if(hasMarketplaceEthereumContract) {
             marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
