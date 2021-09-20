@@ -205,10 +205,12 @@ let initializePage = () => {
     let page = findGetParameter("page");
 
     if(network && contract && token) {
-        pageContent.load(url + "js/../token.html?v=" + cacheVersion, function() {
+        pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
             currentPage = "token";
 
             contract = web3Bsc.utils.toChecksumAddress(contract);
+
+            await updateConnectToWallet();
 
             displayToken(network, contract, token);
 
@@ -220,9 +222,11 @@ let initializePage = () => {
                 collection = "cryptosolitaire";
             } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
                 collection = "inkvadyrz";
+            } else if(contract === rewardsContractAddress && network === "matic") {
+                collection = "rewards";
             }
 
-            displayArtistSection(collection);
+            displayArtistSection(collection === "rewards" ? "the-mustachios" : collection);
             displayTokens(token, "all", collection);
 
             app.removeClass("d-none");
@@ -436,6 +440,7 @@ let displayTokens = (excludedToken, type, collection, page) => {
     } else if(collection === "inkvadyrz") {
         displayInkvadyrzTokens(excludedToken, type, page);
     } else if(collection === "rewards") {
+        console.log("sdsd");
         displayRewardTokens(excludedToken, type, page);
     }
 };
@@ -558,6 +563,7 @@ let displayRewardTokens = function(excludedToken, type, page) {
         generatePagination(rewardTokens, url + '?collection=rewards');
 
         for(let i = 0; i < metadata.length; i++) {
+            console.log(metadata);
             if(hasMarketplacePolygonContract) {
                 marketplacePolygonContract.methods.fetchMarketItem(rewardsContractAddress, metadata[i].id).call()
                     .then(async function(marketItem) {
@@ -965,138 +971,149 @@ let displayToken = (network, contractAddress, token) => {
     }
 };
 let displayTitanToken = (token) => {
-    displayTokenMetadata(chainIDBsc, titansContractAddress, token);
+    $.get(ownlyAPI + "api/titan/" + ((address) ? address : "0") + "/" + titansContractAddress + "/" + token, async function(metadata) {
+        displayTokenMetadata(chainIDBsc, metadata, titansContractAddress, token);
 
-    marketplaceBinanceContract.methods.fetchMarketItem(titansContractAddress, token).call()
-        .then(function(marketItem) {
-            titansContract.methods.ownerOf(token).call()
-                .then(async function(owner) {
-                    displayTokenDetails(marketItem, token, owner, titansContractAddress, "eth");
-                });
-        });
-};
-let displayMustachioToken = (token) => {
-    displayTokenMetadata(chainIDEth, mustachiosContractAddress, token);
-
-    if(hasMarketplaceEthereumContract) {
-        marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
+        marketplaceBinanceContract.methods.fetchMarketItem(titansContractAddress, token).call()
             .then(function(marketItem) {
-                mustachiosContract.methods.ownerOf(token).call()
+                titansContract.methods.ownerOf(token).call()
                     .then(async function(owner) {
-                        displayTokenDetails(marketItem, token, owner, mustachiosContractAddress, "eth");
+                        update_token_transaction(chainIDBsc, titansContractAddress, metadata.id, metadata.to, owner);
+                        displayTokenDetails(metadata, marketItem, token, owner, titansContractAddress, "bsc");
                     });
             });
-    } else {
-        let marketItem = false;
-        mustachiosContract.methods.ownerOf(token).call()
-            .then(async function(owner) {
-                displayTokenDetails(marketItem, token, owner, mustachiosContractAddress, "eth");
-            });
-    }
-};
-let displayChenInkToken = (token) => {
-    displayTokenMetadata(chainIDEth, chenInkContractAddress, token);
-
-    if(hasMarketplaceEthereumContract) {
-        marketplaceEthereumContract.methods.fetchMarketItem(chenInkContractAddress, token).call()
-            .then(function(marketItem) {
-                chenInkContract.methods.ownerOf(token).call()
-                    .then(async function(owner) {
-                        displayTokenDetails(marketItem, token, owner, chenInkContractAddress, "eth");
-                    });
-            });
-    } else {
-        let marketItem = false;
-        chenInkContract.methods.ownerOf(token).call()
-            .then(async function(owner) {
-                displayTokenDetails(marketItem, token, owner, chenInkContractAddress, "eth");
-            });
-    }
-};
-let displayRewardToken = (token) => {
-    displayTokenMetadata(chainIDMatic, rewardsContractAddress, token);
-
-    if(hasMarketplacePolygonContract) {
-        marketplacePolygonContract.methods.fetchMarketItem(rewardsContractAddress, token).call()
-            .then(function(marketItem) {
-                rewardsContract.methods.ownerOf(token).call()
-                    .then(async function(owner) {
-                        displayTokenDetails(marketItem, token, owner, rewardsContractAddress, "matic");
-                    });
-            });
-    } else {
-        let marketItem = false;
-        let owner = "0x768532c218f4f4e6E4960ceeA7F5a7A947a1dd61";
-        // rewardsContract.methods.ownerOf(token).call()
-        //     .then(async function(owner) {
-                displayTokenDetails(marketItem, token, owner, rewardsContractAddress, "matic");
-            // });
-    }
-};
-let displayTokenMetadata = function(chainID, contractAddress, token) {
-    let metadataUrl;
-    if(chainID === chainIDBsc && contractAddress === titansContractAddress) {
-        metadataUrl = ownlyAPI + "api/titan/" + token;
-    } else if(chainID === chainIDEth && contractAddress === chenInkContractAddress) {
-        metadataUrl = ownlyAPI + "api/inkvadyr/" + token;
-    } else if(chainID === chainIDEth && contractAddress === mustachiosContractAddress) {
-        metadataUrl = ownlyAPI + "api/mustachio/" + token;
-    } else if(chainID === chainIDMatic && contractAddress === rewardsContractAddress) {
-        metadataUrl = ownlyAPI + "api/reward/" + token;
-    }
-
-    let content = ''
-
-    $.get(metadataUrl, function(metadata) {
-        if(metadata.thumbnail.includes(".mp4")) {
-            content += '    <div class="w-100 shadow-sm border-1 position-relative bg-color-1 mb-3" style="padding-top:100%; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
-            content += '        <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
-            content += '            <video controls autoPlay loop muted preload class="w-100" id="token-video" style="border-radius:10px">';
-            content += '                <source src="' + metadata.thumbnail + '" type="video/mp4">';
-            content += '            </video>';
-            content += '        </div>';
-            content += '    </div>';
-
-            $("#token-asset-container").html(content);
-        } else {
-            let tokenImage = $("#token-image");
-            tokenImage.attr("src", metadata.thumbnail);
-            tokenImage.removeClass("d-none");
-        }
-
-        $("#token-name").text(metadata.name);
-        $("#token-description").text(metadata.description);
-        $("#token-contract-address").html('<a href="' + blockchainExplorerBsc + 'address/' + contractAddress + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(contractAddress), 5, 5) + '</a>');
-        $("#token-id").text(token);
-        $(".create-market-item-confirmation").attr("data-token-id", token);
-
-        $("#token-original-image").attr("href", metadata.image);
-        $("#token-original-image-preload").attr("src", metadata.image);
-
-        let addToFavoritesButton = $(".add-to-favorites");
-        addToFavoritesButton.attr("data-contract-address", contractAddress);
-        addToFavoritesButton.attr("data-token-id", token);
-
-        let attributes = metadata.attributes;
-        content = '';
-        for(let i = 0; i < attributes.length; i++) {
-            content += '    <div class="col-md-6 col-xl-4 p-2">';
-            content += '        <div class="card bg-light h-100">';
-            content += '            <div class="card-body h-100">';
-            content += '                <div class="d-flex justify-content-center align-items-center h-100">';
-            content += '                    <div class="text-center">';
-            content += '                        <div class="neo-bold font-size-80 mb-1 text-uppercase text-color-7">' + attributes[i].trait_type + '</div>';
-            content += '                        <div class="font-size-100">' + attributes[i].value + '</div>';
-            content += '                    </div>';
-            content += '                </div>';
-            content += '            </div>';
-            content += '        </div>';
-            content += '    </div>';
-        }
-        $("#token-attributes").html(content);
     });
 };
-let displayTokenDetails = async function(marketItem, token, owner, contractAddress, network) {
+let displayMustachioToken = (token) => {
+    $.get(ownlyAPI + "api/mustachio/" + ((address) ? address : "0") + "/" + mustachiosContractAddress + "/" + token, async function(metadata) {
+        displayTokenMetadata(chainIDEth, metadata, mustachiosContractAddress, token);
+
+        if(hasMarketplaceEthereumContract) {
+            marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
+                .then(function(marketItem) {
+                    mustachiosContract.methods.ownerOf(token).call()
+                        .then(async function(owner) {
+                            update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.id, metadata.to, owner);
+                            displayTokenDetails(metadata, marketItem, token, owner, mustachiosContractAddress, "eth");
+                        });
+                });
+        } else {
+            let marketItem = false;
+            mustachiosContract.methods.ownerOf(token).call()
+                .then(async function(owner) {
+                    update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.id, metadata.to, owner);
+                    displayTokenDetails(metadata, marketItem, token, owner, mustachiosContractAddress, "eth");
+                });
+        }
+    });
+};
+let displayChenInkToken = (token) => {
+    $.get(ownlyAPI + "api/cryptosolitaire/" + ((address) ? address : "0") + "/" + chenInkContractAddress + "/" + token, async function(metadata) {
+        displayTokenMetadata(chainIDEth, metadata, chenInkContractAddress, token);
+
+        if(hasMarketplaceEthereumContract) {
+            marketplaceEthereumContract.methods.fetchMarketItem(chenInkContractAddress, token).call()
+                .then(function(marketItem) {
+                    chenInkContract.methods.ownerOf(token).call()
+                        .then(async function(owner) {
+                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata.id, metadata.to, owner);
+                            displayTokenDetails(metadata, marketItem, token, owner, chenInkContractAddress, "eth");
+                        });
+                });
+        } else {
+            let marketItem = false;
+            chenInkContract.methods.ownerOf(token).call()
+                .then(async function(owner) {
+                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata.id, metadata.to, owner);
+                    displayTokenDetails(metadata, marketItem, token, owner, chenInkContractAddress, "eth");
+                });
+        }
+    });
+};
+let displayRewardToken = (token) => {
+    $.get(ownlyAPI + "api/reward/" + ((address) ? address : "0") + "/" + rewardsContractAddress + "/" + token, async function(metadata) {
+        displayTokenMetadata(chainIDMatic, metadata, rewardsContractAddress, token);
+
+        if(hasMarketplacePolygonContract) {
+            marketplacePolygonContract.methods.fetchMarketItem(rewardsContractAddress, token).call()
+                .then(function(marketItem) {
+                    rewardsContract.methods.ownerOf(token).call()
+                        .then(async function(owner) {
+                            update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.id, metadata.to, owner);
+                            displayTokenDetails(metadata, marketItem, token, owner, rewardsContractAddress, "matic");
+                        });
+                });
+        } else {
+            let marketItem = false;
+            let owner = "0x768532c218f4f4e6E4960ceeA7F5a7A947a1dd61";
+            // rewardsContract.methods.ownerOf(token).call()
+            //     .then(async function(owner) {
+                    console.log(metadata);
+                    update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.id, metadata.to, owner);
+                    displayTokenDetails(metadata, marketItem, token, owner, rewardsContractAddress, "matic");
+                // });
+        }
+    });
+};
+let displayTokenMetadata = function(chainID, metadata, contractAddress, token) {
+    content = '';
+    if(metadata.thumbnail.includes(".mp4")) {
+        content += '    <div class="w-100 shadow-sm border-1 position-relative bg-color-1 mb-3" style="padding-top:100%; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
+        content += '        <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
+        content += '            <video controls autoPlay loop muted preload class="w-100" id="token-video" style="border-radius:10px">';
+        content += '                <source src="' + metadata.thumbnail + '" type="video/mp4">';
+        content += '            </video>';
+        content += '        </div>';
+        content += '    </div>';
+
+        $("#token-asset-container").html(content);
+    } else {
+        let tokenImage = $("#token-image");
+        tokenImage.attr("src", metadata.thumbnail);
+        tokenImage.removeClass("d-none");
+    }
+
+    $("#token-name").text(metadata.name);
+    $("#token-description").text(metadata.description);
+    $("#token-contract-address").html('<a href="' + blockchainExplorerBsc + 'address/' + contractAddress + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(contractAddress), 5, 5) + '</a>');
+    $("#token-id").text(token);
+    $(".create-market-item-confirmation").attr("data-token-id", token);
+
+    $("#token-original-image").attr("href", metadata.image);
+    $("#token-original-image-preload").attr("src", metadata.image);
+
+    let addToFavoritesButton = $(".add-to-favorites");
+    addToFavoritesButton.attr("data-contract-address", contractAddress);
+    addToFavoritesButton.attr("data-token-id", token);
+
+    if(metadata.favorite_status) {
+        addToFavoritesButton.find("i").addClass("fas");
+    } else {
+        addToFavoritesButton.find("i").addClass("far");
+    }
+
+    $(".favorites-count").text(metadata.favorite_count);
+
+    let attributes = JSON.parse(metadata.attributes);
+    content = '';
+
+    for(let i = 0; i < attributes.length; i++) {
+        content += '    <div class="col-md-6 col-xl-4 p-2">';
+        content += '        <div class="card bg-light h-100">';
+        content += '            <div class="card-body h-100">';
+        content += '                <div class="d-flex justify-content-center align-items-center h-100">';
+        content += '                    <div class="text-center">';
+        content += '                        <div class="neo-bold font-size-80 mb-1 text-uppercase text-color-7">' + attributes[i].trait_type + '</div>';
+        content += '                        <div class="font-size-100">' + attributes[i].value + '</div>';
+        content += '                    </div>';
+        content += '                </div>';
+        content += '            </div>';
+        content += '        </div>';
+        content += '    </div>';
+    }
+    $("#token-attributes").html(content);
+};
+let displayTokenDetails = async function(metadata, marketItem, token, owner, contractAddress, network) {
     let chainId;
     let blockchainExplorer;
     let token_type;
@@ -1121,8 +1138,6 @@ let displayTokenDetails = async function(marketItem, token, owner, contractAddre
     $("#token-owner").html('<a href="' + blockchainExplorerBsc + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
     $("#token-type").text(token_type);
     $("#token-network").text(token_network);
-
-    let transaction_hashes = await getTokenTransfers(owner, chainId, contractAddress, token);
 
     if(parseInt(marketItem.itemId)) {
         let tokenPrice = $(".token-price");
@@ -1152,7 +1167,7 @@ let displayTokenDetails = async function(marketItem, token, owner, contractAddre
     } else {
         let transactionHash = $(".token-transaction-hash");
 
-        transactionHash.attr("href", blockchainExplorerBsc + "tx/" + transaction_hashes[0].tx_hash);
+        transactionHash.attr("href", blockchainExplorerBsc + "tx/" + metadata.transaction_hash);
         transactionHash.removeClass("d-none");
 
         $(".owner-address").text(shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5));
@@ -1179,30 +1194,16 @@ let displayTokenDetails = async function(marketItem, token, owner, contractAddre
     transfers_content += '          </tr>';
     transfers_content += '      </thead>';
     transfers_content += '      <tbody>';
-    for(let j = 0; j < transaction_hashes.length; j++) {
-        let price = 0;
-        await $.get("https://api.covalenthq.com/v1/" + chainId + "/transaction_v2/" + transaction_hashes[j].tx_hash + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-            price = web3Bsc.utils.fromWei(data.data.items[0].value, "ether");
-        });
-
+    for(let j = 0; j < metadata.transfers.length; j++) {
         transfers_content += '      <tr>';
-        transfers_content += '          <td style="vertical-align:middle">' + price + ' BNB</td>';
-        if(transaction_hashes[j].decoded.name === "Transfer") {
-            transfers_content += '          <td style="vertical-align:middle">';
-            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[0].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[0].value), 4, 4) + '</a>';
-            transfers_content += '          </td>';
-            transfers_content += '          <td style="vertical-align:middle">';
-            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
-            transfers_content += '          </td>';
-        } else {
-            transfers_content += '          <td style="vertical-align:middle">';
-            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[1].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[1].value), 4, 4) + '</a>';
-            transfers_content += '          </td>';
-            transfers_content += '          <td style="vertical-align:middle">';
-            transfers_content += '              <a href="' + blockchainExplorer + 'address/' + transaction_hashes[j].decoded.params[2].value + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(transaction_hashes[j].decoded.params[2].value), 4, 4) + '</a>';
-            transfers_content += '          </td>';
-        }
-        transfers_content += '          <td style="vertical-align:middle">' + moment(transaction_hashes[j].block_signed_at).format('llll') + '</td>';
+        transfers_content += '          <td style="vertical-align:middle">' + parseFloat(metadata.transfers[j].value).toString() + ' ' + metadata.transfers[j].currency + '</td>';
+        transfers_content += '          <td style="vertical-align:middle">';
+        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].from + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].from), 4, 4) + '</a>';
+        transfers_content += '          </td>';
+        transfers_content += '          <td style="vertical-align:middle">';
+        transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].to + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].to), 4, 4) + '</a>';
+        transfers_content += '          </td>';
+        transfers_content += '          <td style="vertical-align:middle">' + moment(metadata.transfers[j].signed_at).format('llll') + '</td>';
         transfers_content += '      </tr>';
     }
     transfers_content += '      </tbody>';
