@@ -569,13 +569,15 @@ let displayRewardTokens = function(excludedToken, type, page) {
                     .then(async function(marketItem) {
                         await rewardsContract.methods.ownerOf(metadata[i].id).call()
                             .then(async function(owner) {
+                                update_token_transaction(chainIDMatic, rewardsContractAddress, metadata[i].id, metadata[i].to, owner);
                                 await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, rewardsContractAddress, "matic");
                             });
                     });
             } else {
                 let marketItem = false;
                 let owner = "0x0000000000000000000000000000000000000000";
-                    await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, rewardsContractAddress, "matic");
+                update_token_transaction(chainIDMatic, rewardsContractAddress, metadata[i].id, metadata[i].to, owner);
+                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, rewardsContractAddress, "matic");
             }
         }
     });
