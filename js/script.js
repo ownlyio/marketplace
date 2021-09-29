@@ -154,6 +154,7 @@ let initializeEnvVariables = () => {
 
     $(".website-home-link").attr("href", url);
     cacheVersion = $("#script").attr("src").split("?v=")[1];
+    $("#app-version").text(cacheVersion);
 };
 let initiate_loading_page = () => {
     loading_interval = setInterval(function() {
@@ -206,9 +207,16 @@ let findGetParameter = (parameterName) => {
 };
 let numberFormat = function(x, decimal) {
     x = parseFloat(x);
-    var parts = x.toFixed(2).toString().split(".");
+    let parts = x;
+
+    if(decimal !== false) {
+        parts = parts.toFixed(decimal)
+    }
+
+    parts = parts.toString().split(".");
+
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    if(decimal) {
+    if(decimal !== 0) {
         return parts.join(".");
     } else {
         return parts[0];
@@ -1236,7 +1244,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         transfers_content += '          <td style="vertical-align:middle">';
         transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].to + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].to), 4, 4) + '</a>';
         transfers_content += '          </td>';
-        transfers_content += '          <td class="text-end" style="vertical-align:middle">' + parseFloat(metadata.transfers[j].value).toString() + ' <img src="img/tokens/' + metadata.transfers[j].currency + '.png" class="me-1" width="20" alt="' + metadata.transfers[j].currency + '" /> (' + metadata.transfers[j].currency + ')</td>';
+        transfers_content += '          <td class="text-end" style="vertical-align:middle">' + numberFormat(parseFloat(metadata.transfers[j].value).toString(), false) + ' <img src="img/tokens/' + metadata.transfers[j].currency + '.png" class="me-1" width="20" alt="' + metadata.transfers[j].currency + '" /> (' + metadata.transfers[j].currency + ')</td>';
         transfers_content += '          <td style="vertical-align:middle">' + moment(metadata.transfers[j].signed_at).format('llll') + '</td>';
         transfers_content += '      </tr>';
     }
@@ -1361,23 +1369,23 @@ let update_buying_token = async function() {
 
                 let buyingPriceContainerBnbToOwn = $(".buying-price-container[data-currency='BNB-OWN']");
                 buyingPriceContainerBnbToOwn.find(".bnb-price").text(web3Bsc.utils.fromWei(price, "ether"));
-                buyingPriceContainerBnbToOwn.find(".own-price").text(numberFormat(ownPrice, true));
+                buyingPriceContainerBnbToOwn.find(".own-price").text(numberFormat(ownPrice, 2));
 
                 let discountedOwnPrice = ((BigInt(amounts[0]) * BigInt(8)) / BigInt(10)).toString();
 
-                $("#discounted-own-price").text(numberFormat(web3Bsc.utils.fromWei(discountedOwnPrice, "ether"), true));
+                $("#discounted-own-price").text(numberFormat(web3Bsc.utils.fromWei(discountedOwnPrice, "ether"), 2));
                 $("#discounted-own-price").attr("data-price", discountedOwnPrice);
 
                 buyingPriceContainerBnbToOwn.removeClass("d-none");
             });
     } else if(currency === "BNB" && token === "BNB") {
-        $("#bnb-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), true));
+        $("#bnb-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 2));
         $(".buying-price-container[data-currency='BNB-BNB']").removeClass("d-none");
     } else if(currency === "OWN" && token === "OWN") {
-        $("#own-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), true));
+        $("#own-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 2));
         $(".buying-price-container[data-currency='OWN-OWN']").removeClass("d-none");
     } else if(currency === "OWN" && token === "BNB") {
-        $("#own-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), true));
+        $("#own-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 2));
         $(".buying-price-container[data-currency='OWN-OWN']").removeClass("d-none");
     }
 
