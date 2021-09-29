@@ -1090,7 +1090,7 @@ let displayRewardToken = (token) => {
     });
 };
 let displayTokenMetadata = function(chainID, metadata, contractAddress, token) {
-    content = '';
+    let content = '';
     if(metadata.thumbnail.includes(".mp4")) {
         content += '    <div class="w-100 shadow-sm border-1 position-relative bg-color-1 mb-3" style="padding-top:100%; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
         content += '        <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
@@ -1221,22 +1221,22 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
     let transfers_content = '   <thead>';
     transfers_content += '          <tr>';
-    transfers_content += '              <th style="vertical-align:middle">Price</th>';
     transfers_content += '              <th style="vertical-align:middle">From</th>';
     transfers_content += '              <th style="vertical-align:middle">To</th>';
+    transfers_content += '              <th style="vertical-align:middle">Price</th>';
     transfers_content += '              <th style="vertical-align:middle; min-width:110px">Date</th>';
     transfers_content += '          </tr>';
     transfers_content += '      </thead>';
     transfers_content += '      <tbody>';
     for(let j = 0; j < metadata.transfers.length; j++) {
         transfers_content += '      <tr>';
-        transfers_content += '          <td style="vertical-align:middle">' + parseFloat(metadata.transfers[j].value).toString() + ' ' + metadata.transfers[j].currency + '</td>';
         transfers_content += '          <td style="vertical-align:middle">';
         transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].from + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].from), 4, 4) + '</a>';
         transfers_content += '          </td>';
         transfers_content += '          <td style="vertical-align:middle">';
         transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].to + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].to), 4, 4) + '</a>';
         transfers_content += '          </td>';
+        transfers_content += '          <td class="text-end" style="vertical-align:middle">' + parseFloat(metadata.transfers[j].value).toString() + ' <img src="img/tokens/' + metadata.transfers[j].currency + '.png" class="me-1" width="20" alt="' + metadata.transfers[j].currency + '" /> (' + metadata.transfers[j].currency + ')</td>';
         transfers_content += '          <td style="vertical-align:middle">' + moment(metadata.transfers[j].signed_at).format('llll') + '</td>';
         transfers_content += '      </tr>';
     }
