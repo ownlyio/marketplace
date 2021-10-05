@@ -129,7 +129,7 @@ let initializeEnvVariables = () => {
         marketplacePolygonAbi = [];
 
         rpcEndpointEth = "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161";
-        rpcEndpointBsc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+        rpcEndpointBsc = "https://data-seed-prebsc-2-s2.binance.org:8545/";
         rpcEndpointMatic = "https://rpc-mumbai.matic.today";
 
         blockchainExplorerEth = "https://rinkeby.etherscan.io/";
@@ -783,6 +783,7 @@ let displayFavoritedTokens = async function() {
     }
 };
 let formatTokenCards = async function(excludedToken, type, i, marketItem, metadata, owner, contractAddress, network) {
+    console.log(owner);
     let isOwned = type === "owned" && address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address);
 
     let isFavorited = false;
