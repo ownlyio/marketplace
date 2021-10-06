@@ -1341,11 +1341,6 @@ let getTokenTransfers = async (owner, chainId, contractAddress, token) => {
     return transaction_hashes;
 };
 let update_token_transaction = function(chainID, contractAddress, tokenId, owner, currentOwner) {
-    console.log(owner);
-    console.log(web3Bsc.utils.toChecksumAddress(owner));
-    console.log(web3Bsc.utils.toChecksumAddress(currentOwner));
-    console.log("");
-
     if(!owner || (owner && web3Bsc.utils.toChecksumAddress(owner) !== web3Bsc.utils.toChecksumAddress(currentOwner))) {
         $.post(ownlyAPI + "api/token_transfer/update_token_transaction", {
             chain_id: chainID,
