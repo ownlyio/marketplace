@@ -233,6 +233,7 @@ let initializePage = () => {
     let profile = findGetParameter("profile");
     let tab = findGetParameter("tab");
     let page = findGetParameter("page");
+    let sales = findGetParameter("sales");
 
     if(network && contract && token) {
         pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
@@ -321,6 +322,11 @@ let initializePage = () => {
                 });
             }
 
+            app.removeClass("d-none");
+        });
+    } else if(sales) {
+        pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
+            displaySales(page);
             app.removeClass("d-none");
         });
     } else if(collection || !collection) {
@@ -1391,6 +1397,51 @@ let update_buying_token = async function() {
 
     buyingPriceLoadingContainer.addClass("d-none");
 };
+let displaySales = function(page) {
+    $.get(ownlyAPI + "api/sales" + ((page) ? ("?page=" + page) : ""), async function(data) {
+        content = '';
+
+        $("#annual-sales-year").val(data.annual_date.year);
+        $("#monthly-sales-year").val(data.monthly_date.year);
+        $("#monthly-sales-month").val(data.monthly_date.month);
+
+        $("#annual-sales-own").text(numberFormat(data.annual_sales.own, 2));
+        $("#annual-sales-eth").text(numberFormat(data.annual_sales.eth, 2));
+        $("#annual-sales-bnb").text(numberFormat(data.annual_sales.bnb, 2));
+
+        $("#monthly-sales-own").text(numberFormat(data.monthly_sales.own, 2));
+        $("#monthly-sales-eth").text(numberFormat(data.monthly_sales.eth, 2));
+        $("#monthly-sales-bnb").text(numberFormat(data.monthly_sales.bnb, 2));
+
+        let sales = data.pagination;
+
+        for(let i = 0; i < sales.data.length; i++) {
+            content += '    <tr>';
+            content += '        <td class="align-middle" style="min-width:100px">' + sales.data[i].formatted_date + '</td>';
+            content += '        <td class="align-middle">' + sales.data[i].collection + '</td>';
+            content += '        <td class="align-middle">' + sales.data[i].name + '</td>';
+            content += '        <td class="align-middle text-end">' + sales.data[i].token_id + '</td>';
+            content += '        <td class="align-middle">';
+            content += '            <div class="d-flex justify-content-end align-items-center">';
+            content += '                <div class="pe-1">' + numberFormat(parseFloat(sales.data[i].value).toFixed(4), false) + '</div>';
+            content += '                <div class="pe-1"><img src="img/tokens/' + sales.data[i].currency + '.png" width="20" alt="' + sales.data[i].currency + '"></div>';
+            content += '                <div class="font-size-80">(' + sales.data[i].currency + ')</div>';
+            content += '            </div>';
+            content += '        </td>';
+            content += '        <td class="align-middle">';
+            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 3) + '</a>';
+            content += '        </td>';
+            content += '    </tr>';
+        }
+
+        generatePagination(sales, url + '?sales=1');
+
+        $("#sales-row-items").html(content);
+
+        $("#sales-loading").addClass("d-none");
+        $("#sales-container").removeClass("d-none");
+    });
+};
 
 window.onerror = function(message, url, lineNumber) {
     return false;
@@ -1813,8 +1864,60 @@ $(document).on("submit", "#account-settings-form", async function(e) {
     }
 });
 
-$(document).on("click", ".select-price-current", async function(e) {
+$(document).on("click", ".select-price-current", async function() {
     $("#price-currency img").attr("src", $(this).data("image"));
     $("#price-currency span").text($(this).data("currency"));
     $("#price-currency").val($(this).data("currency"));
+});
+
+$(document).on("change", ".sales-date", async function() {
+    let page = findGetParameter("page");
+
+    $.get(ownlyAPI + "api/sales" + ((page) ? ("?page=" + page) : ""), {
+        annual_year: $("#annual-sales-year").val(),
+        monthly_year: $("#monthly-sales-year").val(),
+        monthly_month: $("#monthly-sales-month").val(),
+    }, async function(data) {
+        content = '';
+        console.log(data.annual_date.year);
+        $("#annual-sales-year").val(data.annual_date.year);
+        $("#monthly-sales-year").val(data.monthly_date.year);
+        $("#monthly-sales-month").val(data.monthly_date.month);
+
+        $("#annual-sales-own").text(numberFormat(data.annual_sales.own, 2));
+        $("#annual-sales-eth").text(numberFormat(data.annual_sales.eth, 2));
+        $("#annual-sales-bnb").text(numberFormat(data.annual_sales.bnb, 2));
+
+        $("#monthly-sales-own").text(numberFormat(data.monthly_sales.own, 2));
+        $("#monthly-sales-eth").text(numberFormat(data.monthly_sales.eth, 2));
+        $("#monthly-sales-bnb").text(numberFormat(data.monthly_sales.bnb, 2));
+
+        let sales = data.pagination;
+
+        for(let i = 0; i < sales.data.length; i++) {
+            content += '    <tr>';
+            content += '        <td class="align-middle" style="min-width:100px">' + sales.data[i].formatted_date + '</td>';
+            content += '        <td class="align-middle">' + sales.data[i].collection + '</td>';
+            content += '        <td class="align-middle">' + sales.data[i].name + '</td>';
+            content += '        <td class="align-middle text-end">' + sales.data[i].token_id + '</td>';
+            content += '        <td class="align-middle">';
+            content += '            <div class="d-flex justify-content-end align-items-center">';
+            content += '                <div class="pe-1">' + numberFormat(sales.data[i].value.toFixed(4), false) + '</div>';
+            content += '                <div class="pe-1"><img src="img/tokens/' + sales.data[i].currency + '.png" width="20" alt="' + sales.data[i].currency + '"></div>';
+            content += '                <div class="font-size-80">(' + sales.data[i].currency + ')</div>';
+            content += '            </div>';
+            content += '        </td>';
+            content += '        <td class="align-middle">';
+            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 5) + '</a>';
+            content += '        </td>';
+            content += '    </tr>';
+        }
+
+        generatePagination(sales, url + '?sales=1');
+
+        $("#sales-row-items").html(content);
+
+        $("#sales-loading").addClass("d-none");
+        $("#sales-container").removeClass("d-none");
+    });
 });

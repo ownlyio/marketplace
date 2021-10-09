@@ -141,10 +141,17 @@ html {
     text-decoration: underline;
 }
 .link-color-3 {
-    color:#16b99a;
+    color: #16b99a;
 }
 .link-color-3:hover {
     color: #13a187;
+    text-decoration: underline;
+}
+.link-color-4 {
+    color:#147ca0;
+}
+.link-color-4:hover {
+    color: #106587;
     text-decoration: underline;
 }
 .btn-custom-1 {
