@@ -926,16 +926,18 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     let col_xl = "col-xl-4";
     let padding_top = "100%";
     let description_height = "51px";
+    let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress)) {
         col_xl = "col-xl-6";
         padding_top = "70%";
         description_height = "34px";
+        link = "#";
     }
 
     if(type === "all" || isOwned || isFavorited) {
         content += '    <div class="col-md-6 ' + col_xl + ' mb-5 pb-md-3 px-md-4">';
         content += '        <div class="token-card" data-token-id="' + i + '">';
-        content += '            <a href="?network=' + network + '&contract=' + contractAddress + '&token=' + i + '" class="link">';
+        content += '            <a href="' + link + '" class="link">';
         if(metadata.thumbnail.includes(".mp4")) {
             content += '            <div class="w-100 shadow-sm border-1 position-relative mb-3" style="padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
             content += '                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
@@ -951,7 +953,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         content += '            <div class="d-flex flex-column justify-content-between h-100">';
         content += '                <div class="d-flex justify-content-between">';
         content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
-        content += '                        <a href="?contract=' + contractAddress + '&token=' + i + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
+        content += '                        <a href="' + link + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
         content += '                    </div>';
         content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
         content += '                        <div class="">';
