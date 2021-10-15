@@ -244,6 +244,26 @@ html {
     border:3px solid #305e83;
     color:#ffffff;
 }
+.btn-custom-11 {
+    background-color: #5a3800;
+    border:3px solid #5a3800;
+    color:#ffffff;
+}
+.btn-custom-11:hover, .btn-custom-11:active, .btn-custom-11:focus, .btn-custom-11.active {
+    background-color: #402700;
+    border:3px solid #402700;
+    color:#ffffff;
+}
+.btn-custom-12 {
+    background-color: #9300a8;
+    border:3px solid #9300a8;
+    color:#ffffff;
+}
+.btn-custom-12:hover, .btn-custom-12:active, .btn-custom-12:focus, .btn-custom-12.active {
+    background-color: #9300a8;
+    border:3px solid #9300a8;
+    color:#ffffff;
+}
 .bg-color-1 {
     background-color:#f3f3f3!important;
 }
@@ -300,6 +320,9 @@ html {
 }
 .bg-color-19 {
     background-color:#e3965c!important;
+}
+.bg-color-20 {
+    background-color:#9300a8!important;
 }
 .letter-spacing-5 {
     letter-spacing:0.05em;
