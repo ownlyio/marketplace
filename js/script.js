@@ -354,7 +354,7 @@ let initializePage = () => {
     } else if(collection || !collection) {
         pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
             if(!collection) {
-                collection = "the-mustachios";
+                collection = "genesis-block";
             }
 
             currentPage = "home";
