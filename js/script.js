@@ -925,12 +925,10 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
 
     let col_xl = "col-xl-4";
     let padding_top = "100%";
-    let description_height = "51px";
     let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress)) {
         col_xl = "col-xl-6";
         padding_top = "70%";
-        description_height = "34px";
         link = "#";
     }
 
@@ -969,7 +967,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         } else {
             content += '            <div class="font-size-110 mb-2 pb-1">Multiple Editions</div>';
         }
-        content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:' + description_height + '; max-height:' + description_height + '">' + metadata.description + '</div>';
+        content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:51px; max-height:51px">' + metadata.description + '</div>';
 
         // Bruteforce display for genesis block
         if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress)) {
