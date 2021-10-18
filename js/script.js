@@ -1679,9 +1679,9 @@ let loadNFTSales = function(page) {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: data.graph.labels,
                 datasets: [{
-                    label: 'OWN',
+                    label: 'OWN (per million)',
                     data: data.graph.own,
                     backgroundColor: [
                         'rgba(22,185,154,0.3)'
