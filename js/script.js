@@ -1083,6 +1083,9 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     }
 };
 let generatePagination = function(pagination, pageUrl) {
+    let paginationContainer = $("#pagination-container");
+    paginationContainer.addClass("d-none");
+
     if(pagination.last_page > 1) {
         let interval = 2;
         let from = pagination.current_page - interval;
@@ -1139,7 +1142,6 @@ let generatePagination = function(pagination, pageUrl) {
         content += '        </nav>';
         content += '    </div>';
 
-        let paginationContainer = $("#pagination-container");
         paginationContainer.html(content);
         paginationContainer.removeClass("d-none");
     }
@@ -1589,22 +1591,52 @@ let update_buying_token = async function() {
     buyingPriceLoadingContainer.addClass("d-none");
 };
 let displaySales = function(page) {
-    $.get(ownlyAPI + "api/sales" + ((page) ? ("?page=" + page) : ""), async function(data) {
-        content = '';
+    loadNFTSales();
+};
+let loadNFTSales = function(page) {
+    $(".sales-date").prop("disabled", true);
 
-        $("#annual-sales-year").val(data.annual_date.year);
-        $("#monthly-sales-year").val(data.monthly_date.year);
-        $("#monthly-sales-month").val(data.monthly_date.month);
+    let periodical = $("#periodical").val();
 
-        $("#annual-sales-own").text(numberFormat(data.annual_sales.own, 2));
-        $("#annual-sales-eth").text(numberFormat(data.annual_sales.eth, 2));
-        $("#annual-sales-bnb").text(numberFormat(data.annual_sales.bnb, 2));
+    let salesYear = $("#sales-year");
+    let salesQuarter = $("#sales-quarter");
+    let salesMonth = $("#sales-month");
 
-        $("#monthly-sales-own").text(numberFormat(data.monthly_sales.own, 2));
-        $("#monthly-sales-eth").text(numberFormat(data.monthly_sales.eth, 2));
-        $("#monthly-sales-bnb").text(numberFormat(data.monthly_sales.bnb, 2));
+    let year = salesYear.val();
+    let quarter = salesQuarter.val();
+    let month = salesMonth.val();
+
+    salesQuarter.closest("div").addClass("d-none");
+    salesMonth.closest("div").addClass("d-none");
+
+    if(periodical === "Quarterly") {
+        salesQuarter.closest("div").removeClass("d-none");
+    } else if(periodical === "Monthly") {
+        salesMonth.closest("div").removeClass("d-none");
+    }
+
+    $.get(ownlyAPI + "api/sales" + ((page) ? ("?page=" + page) : ""), {
+        periodical: periodical,
+        year: year,
+        quarter: quarter,
+        month: month,
+    }, async function(data) {
+        console.log(data);
+        $("#sales-year").val(data.date.year);
+
+        if(periodical === "Quarterly") {
+            $("#sales-quarter").val(data.date.month);
+        } else if(periodical === "Monthly") {
+            $("#sales-month").val(data.date.month);
+        }
+
+        $("#sales-own").text(numberFormat(data.sales_per_token.own, 2));
+        $("#sales-eth").text(numberFormat(data.sales_per_token.eth, 2));
+        $("#sales-bnb").text(numberFormat(data.sales_per_token.bnb, 2));
 
         let sales = data.pagination;
+
+        content = '';
 
         for(let i = 0; i < sales.data.length; i++) {
             content += '    <tr>';
@@ -1620,34 +1652,37 @@ let displaySales = function(page) {
             content += '            </div>';
             content += '        </td>';
             content += '        <td class="align-middle">';
-            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 3) + '</a>';
+            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 5) + '</a>';
             content += '        </td>';
             content += '    </tr>';
         }
 
-        generatePagination(sales, url + '?sales=1');
+        if(sales.data.length === 0) {
+            content += '    <tr>';
+            content += '        <td class="text-center" colspan="6">No Data</td>';
+            content += '    </tr>';
+        }
 
-        var ctx = document.getElementById('myChart');
-        var myChart = new Chart(ctx, {
+        generatePagination(sales, url + '?sales');
+
+        $("#sales-chart-container").html('<canvas id="sales-chart" class="w-100" style="max-height:400px"></canvas>');
+
+        let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        // if(periodical === "Quarterly") {
+        //     let quarters = [['January', 'February', 'March'], ['April', 'May', 'June'], ['July', 'August', 'September'], ['October', 'November', 'December']];
+        //     labels = quarters[parseInt(quarter)-1];
+        // } else if(periodical === "Monthly") {
+        //
+        // }
+
+        let ctx = document.getElementById('sales-chart');
+        new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December',
-                ],
+                labels: labels,
                 datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                    label: 'OWN',
+                    data: data.graph.own,
                     backgroundColor: [
                         'rgba(22,185,154,0.3)'
                     ],
@@ -1658,13 +1693,25 @@ let displaySales = function(page) {
                     tension: 0.3,
                     borderWidth: 2
                 },{
-                    label: '# of Votes',
-                    data: [12, 3, 3, 5, 2, 3, 23, 19, 54, 5, 2, 3],
+                    label: 'ETH',
+                    data: data.graph.eth,
                     backgroundColor: [
-                        'rgba(22,185,154,0.3)'
+                        'rgba(73,79,124,0.3)'
                     ],
                     borderColor: [
-                        '#16b99a'
+                        '#494f7c'
+                    ],
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2
+                },{
+                    label: 'BNB',
+                    data: data.graph.bnb,
+                    backgroundColor: [
+                        'rgba(243,187,50,0.3)'
+                    ],
+                    borderColor: [
+                        '#f3bb32'
                     ],
                     fill: true,
                     tension: 0.3,
@@ -1684,6 +1731,8 @@ let displaySales = function(page) {
 
         $("#sales-loading").addClass("d-none");
         $("#sales-container").removeClass("d-none");
+
+        $(".sales-date").prop("disabled", false);
     });
 };
 
@@ -2117,51 +2166,9 @@ $(document).on("click", ".select-price-current", async function() {
 $(document).on("change", ".sales-date", async function() {
     let page = findGetParameter("page");
 
-    $.get(ownlyAPI + "api/sales" + ((page) ? ("?page=" + page) : ""), {
-        annual_year: $("#annual-sales-year").val(),
-        monthly_year: $("#monthly-sales-year").val(),
-        monthly_month: $("#monthly-sales-month").val(),
-    }, async function(data) {
-        content = '';
-        console.log(data.annual_date.year);
-        $("#annual-sales-year").val(data.annual_date.year);
-        $("#monthly-sales-year").val(data.monthly_date.year);
-        $("#monthly-sales-month").val(data.monthly_date.month);
 
-        $("#annual-sales-own").text(numberFormat(data.annual_sales.own, 2));
-        $("#annual-sales-eth").text(numberFormat(data.annual_sales.eth, 2));
-        $("#annual-sales-bnb").text(numberFormat(data.annual_sales.bnb, 2));
+});
 
-        $("#monthly-sales-own").text(numberFormat(data.monthly_sales.own, 2));
-        $("#monthly-sales-eth").text(numberFormat(data.monthly_sales.eth, 2));
-        $("#monthly-sales-bnb").text(numberFormat(data.monthly_sales.bnb, 2));
-
-        let sales = data.pagination;
-
-        for(let i = 0; i < sales.data.length; i++) {
-            content += '    <tr>';
-            content += '        <td class="align-middle" style="min-width:100px">' + sales.data[i].formatted_date + '</td>';
-            content += '        <td class="align-middle">' + sales.data[i].collection + '</td>';
-            content += '        <td class="align-middle">' + sales.data[i].name + '</td>';
-            content += '        <td class="align-middle text-end">' + sales.data[i].token_id + '</td>';
-            content += '        <td class="align-middle">';
-            content += '            <div class="d-flex justify-content-end align-items-center">';
-            content += '                <div class="pe-1">' + numberFormat(sales.data[i].value.toFixed(4), false) + '</div>';
-            content += '                <div class="pe-1"><img src="img/tokens/' + sales.data[i].currency + '.png" width="20" alt="' + sales.data[i].currency + '"></div>';
-            content += '                <div class="font-size-80">(' + sales.data[i].currency + ')</div>';
-            content += '            </div>';
-            content += '        </td>';
-            content += '        <td class="align-middle">';
-            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 5) + '</a>';
-            content += '        </td>';
-            content += '    </tr>';
-        }
-
-        generatePagination(sales, url + '?sales=1');
-
-        $("#sales-row-items").html(content);
-
-        $("#sales-loading").addClass("d-none");
-        $("#sales-container").removeClass("d-none");
-    });
+$(document).on("change", ".sales-date", async function() {
+    loadNFTSales();
 });
