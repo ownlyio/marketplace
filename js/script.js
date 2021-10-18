@@ -970,7 +970,9 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:51px; max-height:51px">' + metadata.description + '</div>';
 
         // Bruteforce display for genesis block
-        if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress)) {
+        let soldGenesisBlock = [3];
+
+        if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && !soldGenesisBlock.includes(i)) {
             let genesisBlockPrice = 1.5;
             if(i >= 1 && i <= 3) {
                 genesisBlockPrice = 0.5;
@@ -1618,6 +1620,59 @@ let displaySales = function(page) {
         }
 
         generatePagination(sales, url + '?sales=1');
+
+        var ctx = document.getElementById('myChart');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December',
+                ],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(22,185,154,0.3)'
+                    ],
+                    borderColor: [
+                        '#16b99a'
+                    ],
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2
+                },{
+                    label: '# of Votes',
+                    data: [12, 3, 3, 5, 2, 3, 23, 19, 54, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(22,185,154,0.3)'
+                    ],
+                    borderColor: [
+                        '#16b99a'
+                    ],
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
         $("#sales-row-items").html(content);
 

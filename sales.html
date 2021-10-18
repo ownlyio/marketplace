@@ -69,7 +69,7 @@
 											<option value="2021">2021</option>
 										</select>
 										
-										<select class="form-select font-size-70 py-1 sales-date" id="monthly-sales-month" style="background-color:rgba(0,0,0,0)">
+										<select class="form-select font-size-70 py-1 sales-date" id="monthly-sales-month" style="background-color:rgba(0,0,0,0); min-width:110px">
 											<option value="01">January</option>
 											<option value="02">February</option>
 											<option value="03">March</option>
@@ -105,6 +105,10 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		
+		<div class="mb-5 d-none">
+			<canvas id="myChart" class="w-100" style="max-height:400px"></canvas>
 		</div>
 		
 		<h4 class="mb-3">NFT Sales</h4>
