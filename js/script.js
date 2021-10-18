@@ -1043,6 +1043,12 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                             content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
                         }
                     }
+
+                    // Bruteforce display for genesis block
+                    if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
+                        content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                    }
+
                     content += '                    </div>';
                     content += '                </div>';
                 }
