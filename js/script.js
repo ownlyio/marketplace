@@ -1423,15 +1423,16 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         $("#create-market-sale-container .text-end").html(content);
         $("#create-market-sale-container").removeClass("d-none");
     } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(token)) {
-        let genesisBlockPrice = 0.1;
+        let sagesRantCollectiblePrice = 0.1;
 
         let tokenPrice = $(".token-price");
-        tokenPrice.html(genesisBlockPrice + " ETH");
+        tokenPrice.html(sagesRantCollectiblePrice + " ETH");
 
         $(".token-price-currency").attr("src", "img/tokens/ETH.png");
 
-        let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
 
+        $("#create-market-sale-container .fw-bold").html("Bid Price:");
         $("#create-market-sale-container .text-end").html(content);
         $("#create-market-sale-container").removeClass("d-none");
     } else {
