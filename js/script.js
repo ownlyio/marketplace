@@ -971,8 +971,9 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
 
         // Bruteforce display for genesis block
         let soldGenesisBlock = [3];
+        let soldSagesRantCollectible = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
 
-        if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && !soldGenesisBlock.includes(i)) {
+        if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(i)) {
             let genesisBlockPrice = 1.5;
             if(i >= 1 && i <= 3) {
                 genesisBlockPrice = 0.5;
@@ -993,7 +994,24 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + genesisBlockPrice + ' ETH</div>';
             content += '                    </div>';
             content += '                    <div class="col-6 button-container">';
-            content += '                        <a href="https://opensea.io/assets/0x2c51af2916eb9cf6392768158eaa39306779ee85/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+            content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+            content += '                    </div>';
+            content += '                </div>';
+        } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(i)) {
+            let sagesRantCollectiblePrice = 0.1;
+
+            content += '                <div class="row align-items-center">';
+            content += '                    <div class="col-6">';
+            content += '                        <div class="d-flex align-items-end mb-1">';
+            content += '                            <div class="font-size-100 font-size-md-110">Bid Price:</div>';
+            content += '                            <div class="ps-2 ms-1">';
+            content += '                                <img src="img/tokens/ETH.png" width="30" />';
+            content += '                            </div>';
+            content += '                        </div>';
+            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + sagesRantCollectiblePrice + ' ETH</div>';
+            content += '                    </div>';
+            content += '                    <div class="col-6 button-container">';
+            content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
             content += '                    </div>';
             content += '                </div>';
         } else {
@@ -1383,6 +1401,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
+    let soldSagesRantCollectible = [];
 
     if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(token)) {
         let genesisBlockPrice = 1.5;
@@ -1393,6 +1412,18 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         } else if(token >= 7 && token <= 8) {
             genesisBlockPrice = 1;
         }
+
+        let tokenPrice = $(".token-price");
+        tokenPrice.html(genesisBlockPrice + " ETH");
+
+        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+
+        let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+
+        $("#create-market-sale-container .text-end").html(content);
+        $("#create-market-sale-container").removeClass("d-none");
+    } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(token)) {
+        let genesisBlockPrice = 0.1;
 
         let tokenPrice = $(".token-price");
         tokenPrice.html(genesisBlockPrice + " ETH");
