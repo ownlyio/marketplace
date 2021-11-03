@@ -362,7 +362,7 @@ html {
 }
 
 #pills-account-settings-tab {
-    background-color:#ffffff;
+    background-color:#f4f1ec;
     color:#bc3326;
     font-weight:bold;
 }
@@ -372,7 +372,7 @@ html {
     font-weight:normal;
 }
 #pills-owned-tab {
-    background-color:#ffffff;
+    background-color:#f4f1ec;
     color:#147ca0;
     font-weight:bold;
 }
@@ -382,7 +382,7 @@ html {
     font-weight:normal;
 }
 #pills-favorites-tab {
-    background-color:#ffffff;
+    background-color:#f4f1ec;
     color:#16b99a;
     font-weight:bold;
 }

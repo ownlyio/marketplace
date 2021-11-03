@@ -300,7 +300,7 @@ let initializePage = () => {
 
                 await updateConnectToWallet();
 
-                displayOwnedTokens();
+                displayOwnedTokens(page);
             } else if(tab === "favorites") {
                 currentPage = "profile:favorites";
 
@@ -716,98 +716,56 @@ let displayMustachioTokens = function(excludedToken, type, page) {
             });
         });
 };
-let displayOwnedTokens = async function() {
-    let ownedTokens = [];
+let displayOwnedTokens = async function(page) {
+    $.get(ownlyAPI + "api/owned_tokens/" + ((address) ? address : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
+        content = '';
 
-    try {
-        await $.get("https://api.covalenthq.com/v1/" + chainIDBsc + "/address/" + address + "/balances_v2/?nft=true&no-nft-fetch=true&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-            for(let i = 0; i < data.data.items.length; i++) {
-                if(data.data.items[i].contract_address && web3Bsc.utils.toChecksumAddress(data.data.items[i].contract_address) === titansContractAddress) {
-                    if(data.data.items[i].nft_data) {
-                        for(let j = 0; j < data.data.items[i].nft_data.length; j++) {
-                            ownedTokens.push({
-                                contractAddress: titansContractAddress,
-                                tokenId: data.data.items[i].nft_data[j].token_id
-                            });
-                        }
-                    }
-                }
-            }
-        });
-    } catch(error) {}
+        let metadata = ownedTokens.data;
 
-    try {
-        await $.get("https://api.covalenthq.com/v1/" + chainIDEth + "/address/" + address + "/balances_v2/?nft=true&no-nft-fetch=true&key=ckey_994c8fdd549f44fa9b2b27f59a0", function(data) {
-            for(let i = 0; i < data.data.items.length; i++) {
-                if(data.data.items[i].contract_address && web3Bsc.utils.toChecksumAddress(data.data.items[i].contract_address) === mustachiosContractAddress) {
-                    if(data.data.items[i].nft_data) {
-                        for(let j = 0; j < data.data.items[i].nft_data.length; j++) {
-                            ownedTokens.push({
-                                contractAddress: mustachiosContractAddress,
-                                tokenId: data.data.items[i].nft_data[j].token_id
-                            });
-                        }
-                    }
-                }
-            }
-        });
-    } catch(error) {}
+        generatePagination(ownedTokens, url + '?profile=' + address + "&tab=owned");
 
-    content = '';
+        for(let i = 0; i < metadata.length; i++) {
+            console.log(metadata[i].chain_id);
 
-    for(let i = 0; i < ownedTokens.length; i++) {
-        if(web3Bsc.utils.toChecksumAddress(ownedTokens[i].contractAddress) === titansContractAddress) {
-            marketplaceBinanceContract.methods.fetchMarketItem(ownedTokens[i].contractAddress, ownedTokens[i].tokenId).call()
-                .then(async function(marketItem) {
-                    await titansContract.methods.tokenURI(ownedTokens[i].tokenId).call()
-                        .then(async function(tokenURI) {
-                            await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                                await titansContract.methods.ownerOf(ownedTokens[i].tokenId).call()
-                                    .then(async function(owner) {
-                                        await formatTokenCards(null, "owned", ownedTokens.length, ownedTokens[i].tokenId, marketItem, metadata, owner, ownedTokens[i].contractAddress, "bsc");
-                                    });
-                            });
-                        });
-                });
-        } else if(web3Bsc.utils.toChecksumAddress(ownedTokens[i].contractAddress) === mustachiosContractAddress) {
-            if(hasMarketplaceEthereumContract) {
-                marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contractAddress, ownedTokens[i].tokenId).call()
+            if(parseInt(metadata[i].chain_id) === chainIDBsc) {
+                marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
-                        await mustachiosContract.methods.tokenURI(ownedTokens[i].tokenId).call()
-                            .then(async function(tokenURI) {
-                                await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                                    await mustachiosContract.methods.ownerOf(ownedTokens[i].tokenId).call()
-                                        .then(async function(owner) {
-                                            await formatTokenCards(null, "owned", ownedTokens.length, ownedTokens[i].tokenId, marketItem, metadata, owner, ownedTokens[i].contractAddress, "eth");
-                                        });
-                                });
-                            });
+                        await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "bsc");
                     });
-            } else {
-                let marketItem = false;
-                await mustachiosContract.methods.tokenURI(ownedTokens[i].tokenId).call()
-                    .then(async function(tokenURI) {
-                        await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                            await mustachiosContract.methods.ownerOf(ownedTokens[i].tokenId).call()
-                                .then(async function(owner) {
-                                    await formatTokenCards(null, "owned", ownedTokens.length, ownedTokens[i].tokenId, marketItem, metadata, owner, ownedTokens[i].contractAddress, "eth");
-                                });
+            } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
+                if(hasMarketplaceEthereumContract) {
+                    marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                        .then(async function(marketItem) {
+                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
                         });
-                    });
+                } else {
+                    let marketItem = false;
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                }
+            } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
+                if(hasMarketplacePolygonContract) {
+                    marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                        .then(async function(marketItem) {
+                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                        });
+                } else {
+                    let marketItem = false;
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                }
             }
         }
-    }
 
-    if(ownedTokens.length === 0) {
-        content += '    <div class="d-flex flex-column align-items-center py-5">';
-        content += '        <div class="mb-4">';
-        content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
-        content += '        </div>';
-        content += '        <div>You haven\'t owned any tokens from our collections yet.<div>';
-        content += '    </div>';
+        if(metadata.length === 0) {
+            content += '    <div class="d-flex flex-column align-items-center py-5">';
+            content += '        <div class="mb-4">';
+            content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
+            content += '        </div>';
+            content += '        <div>You haven\'t owned any tokens from our collections yet.<div>';
+            content += '    </div>';
+        }
 
         $("#owned-tokens-container").html(content);
-    }
+    });
 };
 let displayFavoritedTokens = async function() {
     let favoritedTokens = [];
@@ -1133,6 +1091,10 @@ let generatePagination = function(pagination, pageUrl) {
             content += '                </a>';
             content += '            </li>';
         }
+
+        console.log(pagination);
+        console.log(from);
+        console.log(to);
 
         for(let i = from; i <= to; i++) {
             let current_page = pagination.current_page === i;
