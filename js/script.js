@@ -725,8 +725,6 @@ let displayOwnedTokens = async function(page) {
         generatePagination(ownedTokens, url + '?profile=' + address + "&tab=owned");
 
         for(let i = 0; i < metadata.length; i++) {
-            console.log(metadata[i].chain_id);
-
             if(parseInt(metadata[i].chain_id) === chainIDBsc) {
                 marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
@@ -768,79 +766,59 @@ let displayOwnedTokens = async function(page) {
     });
 };
 let displayFavoritedTokens = async function() {
-    let favoritedTokens = [];
+    $.post(ownlyAPI + "api/get-market-item-user-favorites", {
+        address: address
+    }, async function(favoritedTokens) {
+        content = '';
 
-    await $.post(ownlyAPI + "api/get-market-item-user-favorites", {
-        address: ethereum.selectedAddress,
-        contract_addresses: [
-            titansContractAddress,
-            mustachiosContractAddress,
-            chenInkContractAddress,
-            genesisBlockContractAddress,
-            sagesRantContractAddress,
-            rewardsContractAddress
-        ]
-    }, function(data) {
-        favoritedTokens = data.favorites;
+        let metadata = favoritedTokens.data;
+
+        generatePagination(favoritedTokens, url + '?profile=' + address + "&tab=favorites");
+
+        console.log(metadata);
+
+        for(let i = 0; i < metadata.length; i++) {
+            if(parseInt(metadata[i].chain_id) === chainIDBsc) {
+                marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
+                    .then(async function(marketItem) {
+                        await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "bsc");
+                    });
+            } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
+                if(hasMarketplaceEthereumContract) {
+                    marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                        .then(async function(marketItem) {
+                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                        });
+                } else {
+                    let marketItem = false;
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                }
+            } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
+                if(hasMarketplacePolygonContract) {
+                    marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                        .then(async function(marketItem) {
+                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                        });
+                } else {
+                    let marketItem = false;
+                    await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                }
+            }
+
+            if(favoritedTokens.length === 0) {
+                content += '    <div class="d-flex flex-column align-items-center py-5">';
+                content += '        <div class="mb-4">';
+                content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
+                content += '        </div>';
+                content += '        <div>You haven\'t added any favorite tokens yet.<div>';
+                content += '    </div>';
+            }
+
+            $("#favorite-tokens-container").html(content);
+        }
     }).fail(function(error) {
         console.log(error);
     });
-
-    content = '';
-
-    for(let i = 0; i < favoritedTokens.length; i++) {
-        if(web3Bsc.utils.toChecksumAddress(favoritedTokens[i].contract_address) === titansContractAddress) {
-            marketplaceBinanceContract.methods.fetchMarketItem(favoritedTokens[i].contract_address, favoritedTokens[i].token_id).call()
-                .then(async function(marketItem) {
-                    await titansContract.methods.tokenURI(favoritedTokens[i].token_id).call()
-                        .then(async function(tokenURI) {
-                            await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                                await titansContract.methods.ownerOf(favoritedTokens[i].token_id).call()
-                                    .then(async function(owner) {
-                                        await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address, "bsc");
-                                    });
-                            });
-                        });
-                });
-        } else if(web3Bsc.utils.toChecksumAddress(favoritedTokens[i].contract_address) === mustachiosContractAddress) {
-            if(hasMarketplaceEthereumContract) {
-                marketplaceEthereumContract.methods.fetchMarketItem(favoritedTokens[i].contract_address, favoritedTokens[i].token_id).call()
-                    .then(async function(marketItem) {
-                        await mustachiosContract.methods.tokenURI(favoritedTokens[i].token_id).call()
-                            .then(async function(tokenURI) {
-                                await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                                    await mustachiosContract.methods.ownerOf(favoritedTokens[i].token_id).call()
-                                        .then(async function(owner) {
-                                            await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address, "eth");
-                                        });
-                                });
-                            });
-                    });
-            } else {
-                let marketItem = false;
-                await mustachiosContract.methods.tokenURI(favoritedTokens[i].token_id).call()
-                    .then(async function(tokenURI) {
-                        await $.get(tokenURI + "?v=" + cacheVersion, async function(metadata) {
-                            await mustachiosContract.methods.ownerOf(favoritedTokens[i].token_id).call()
-                                .then(async function(owner) {
-                                    await formatTokenCards(null, "favorites", favoritedTokens.length, favoritedTokens[i].token_id, marketItem, metadata, owner, favoritedTokens[i].contract_address, "eth");
-                                });
-                        });
-                    });
-            }
-        }
-    }
-
-    if(favoritedTokens.length === 0) {
-        content += '    <div class="d-flex flex-column align-items-center py-5">';
-        content += '        <div class="mb-4">';
-        content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
-        content += '        </div>';
-        content += '        <div>You haven\'t added any favorite tokens yet.<div>';
-        content += '    </div>';
-
-        $("#favorite-tokens-container").html(content);
-    }
 };
 let formatTokenCards = async function(excludedToken, type, i, marketItem, metadata, owner, contractAddress, network) {
     let isOwned = type === "owned" && address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address);
