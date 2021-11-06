@@ -147,7 +147,7 @@ let initializeEnvVariables = () => {
         marketplacePolygonAbi = [];
 
         rpcEndpointEth = "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161";
-        rpcEndpointBsc = "https://data-seed-prebsc-2-s2.binance.org:8545/";
+        rpcEndpointBsc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         rpcEndpointMatic = "https://rpc-mumbai.matic.today";
 
         blockchainExplorerEth = "https://rinkeby.etherscan.io/";
@@ -300,7 +300,7 @@ let initializePage = () => {
 
                 await updateConnectToWallet();
 
-                displayOwnedTokens(page);
+                displayOwnedTokens(profile, page);
             } else if(tab === "favorites") {
                 currentPage = "profile:favorites";
 
@@ -309,7 +309,7 @@ let initializePage = () => {
                 $("#pills-favorites-tab").addClass("active");
                 $("#favorites-container").removeClass("d-none");
 
-                displayFavoritedTokens();
+                displayFavoritedTokens(profile, page);
             } else {
                 currentPage = "profile:settings";
 
@@ -716,39 +716,39 @@ let displayMustachioTokens = function(excludedToken, type, page) {
             });
         });
 };
-let displayOwnedTokens = async function(page) {
-    $.get(ownlyAPI + "api/owned_tokens/" + ((address) ? address : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
+let displayOwnedTokens = async function(profile, page) {
+    $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
         content = '';
 
         let metadata = ownedTokens.data;
 
-        generatePagination(ownedTokens, url + '?profile=' + address + "&tab=owned");
+        generatePagination(ownedTokens, url + '?profile=' + profile + "&tab=owned");
 
         for(let i = 0; i < metadata.length; i++) {
             if(parseInt(metadata[i].chain_id) === chainIDBsc) {
                 marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
-                        await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "bsc");
+                        await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
                     marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
                     marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                 }
             }
         }
@@ -765,43 +765,41 @@ let displayOwnedTokens = async function(page) {
         $("#owned-tokens-container").html(content);
     });
 };
-let displayFavoritedTokens = async function() {
-    $.post(ownlyAPI + "api/get-market-item-user-favorites", {
-        address: address
+let displayFavoritedTokens = async function(profile, page) {
+    $.post(ownlyAPI + "api/get-market-item-user-favorites" + ((page) ? ("?page=" + page) : ""), {
+        address: profile
     }, async function(favoritedTokens) {
         content = '';
 
         let metadata = favoritedTokens.data;
 
-        generatePagination(favoritedTokens, url + '?profile=' + address + "&tab=favorites");
-
-        console.log(metadata);
+        generatePagination(favoritedTokens, url + '?profile=' + profile + "&tab=favorites");
 
         for(let i = 0; i < metadata.length; i++) {
             if(parseInt(metadata[i].chain_id) === chainIDBsc) {
                 marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
-                        await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "bsc");
+                        await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
                     marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
                     marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], address, metadata[i].contract_address, "eth");
+                    await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                 }
             }
 
@@ -1070,10 +1068,6 @@ let generatePagination = function(pagination, pageUrl) {
             content += '            </li>';
         }
 
-        console.log(pagination);
-        console.log(from);
-        console.log(to);
-
         for(let i = from; i <= to; i++) {
             let current_page = pagination.current_page === i;
 
@@ -1114,7 +1108,6 @@ let displayToken = (network, contractAddress, token) => {
     } else if(contractAddress === rewardsContractAddress && network === "matic") {
         displayRewardToken(token);
     } else if(contractAddress === genesisBlockContractAddress && network === "eth") {
-        console.log("sdsd");
         displayGenesisBlockToken(token);
     } else if(contractAddress === sagesRantContractAddress && network === "eth") {
         displaySagesRantToken(token);
@@ -1248,7 +1241,6 @@ let displayRewardToken = (token) => {
             let owner = "0x768532c218f4f4e6E4960ceeA7F5a7A947a1dd61";
             // rewardsContract.methods.ownerOf(token).call()
             //     .then(async function(owner) {
-                    console.log(metadata);
                     update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, rewardsContractAddress, "matic");
                 // });
@@ -1519,7 +1511,6 @@ let getTokenTransfers = async (owner, chainId, contractAddress, token) => {
 
     await $.get("https://api.covalenthq.com/v1/" + chainId + "/tokens/" + contractAddress + "/nft_transactions/" + token + "/?&key=ckey_994c8fdd549f44fa9b2b27f59a0", async function(data) {
         if(data) {
-            console.log(data);
             for(let j = 0; j < data.data.items[0].nft_transactions.length; j++) {
                 for(let k = 0; k < data.data.items[0].nft_transactions[j].log_events.length; k++) {
                     if(data.data.items[0].nft_transactions[j].log_events[k].decoded) {
@@ -1591,7 +1582,6 @@ let displaySales = function(page) {
     loadNFTSales(page);
 };
 let loadNFTSales = function(page) {
-    console.log(page);
     $(".sales-date").prop("disabled", true);
 
     let periodical = $("#periodical").val();
