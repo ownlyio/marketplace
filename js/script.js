@@ -316,7 +316,7 @@ let initializePage = () => {
                 $("#pills-account-settings-tab").addClass("active");
                 $("#account-settings-container").removeClass("d-none");
 
-                displayAccountDetails(profile);
+                // displayAccountDetails(profile);
             }
 
             app.removeClass("d-none");
@@ -1571,7 +1571,7 @@ let displayAccountDetails = function(profile) {
     }).done(async function(response) {
         let accountSettingsForm = $("#account-settings-form");
 
-        if(accountSettingsForm) {
+        if(accountSettingsForm.length) {
             if(response.data.photo) {
                 accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
             } else {
@@ -1580,6 +1580,8 @@ let displayAccountDetails = function(profile) {
                 content += '    </svg>';
 
                 accountSettingsForm.find("#photo-container").html(content);
+
+                jdenticon.update(".jdenticon", address.toString());
             }
 
             accountSettingsForm.find("[name='username']").val(response.data.name);
