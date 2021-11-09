@@ -264,6 +264,16 @@ html {
     border:3px solid #9300a8;
     color:#ffffff;
 }
+.btn-custom-13 {
+    background-color:#ffffff;
+    color:#d44e28;
+    border:2px solid #d44e28;
+}
+.btn-custom-13:hover, .btn-custom-13:active, .btn-custom-13:focus {
+    background-color:#ffffff;
+    color:#d44e28;
+    border:2px solid #d44e28;
+}
 .bg-color-1 {
     background-color:#f3f3f3!important;
 }

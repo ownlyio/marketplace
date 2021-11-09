@@ -316,32 +316,7 @@ let initializePage = () => {
                 $("#pills-account-settings-tab").addClass("active");
                 $("#account-settings-container").removeClass("d-none");
 
-                let form_data = new FormData();
-                form_data.append('address', profile);
-
-                $.ajax({
-                    url: ownlyAPI + "api/get-account-settings",
-                    method: "POST",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data
-                }).done(async function(response) {
-                    let accountSettingsForm = $("#account-settings-form");
-
-                    accountSettingsForm.find("[name='username']").val(response.data.name);
-                    accountSettingsForm.find("[name='email_address']").val(response.data.email);
-                    accountSettingsForm.find("[name='bio']").val(response.data.bio);
-
-                    await updateConnectToWallet();
-
-                    if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
-                        accountSettingsForm.find("input").prop("disabled", false);
-                        accountSettingsForm.find("[type='submit']").removeClass("d-none");
-                    }
-                }).fail(function(error) {
-                    console.log(error);
-                });
+                displayAccountDetails(profile);
             }
 
             app.removeClass("d-none");
@@ -427,9 +402,11 @@ let updateConnectToWallet = async () => {
         let accountAddress = $("#account-address");
 
         let content = ' <div class="d-flex align-items-center">';
-        content += '        <canvas data-jdenticon-value="" class="jdenticon" width="35" height="35" style="border-radius:50%; border:2px solid #aaaaaa">';
-        content += '            Fallback text or image for browsers not supporting inline svg.';
-        content += '        </canvas>';
+        content += '        <div class="background-image-cover" id="profile-photo" style="width:35px; height:35px; border-radius:50%; border:1px solid #aaaaaa">';
+        content += '            <svg data-jdenticon-value="" class="jdenticon w-100 h-100" style="border-radius:50%">';
+        content += '                Fallback text or image for browsers not supporting inline svg.';
+        content += '            </svg>';
+        content += '        </div>';
         content += '        <span class="font-size-90 ps-2">' + shortenAddress(web3Bsc.utils.toChecksumAddress(address), 5, 5) + "&nbsp;" + '</span>';
         content += '    </div>';
 
@@ -438,7 +415,9 @@ let updateConnectToWallet = async () => {
 
         jdenticon.update(".jdenticon", address.toString());
 
-        $("#account-address").attr("href", "?profile=" + address);
+        accountAddress.attr("href", "?profile=" + address);
+
+        displayAccountDetails(address);
     } else {
         $("#account-address").addClass("d-none");
         $("#connect-to-metamask-container").removeClass("d-none");
@@ -1578,6 +1557,52 @@ let update_buying_token = async function() {
 
     buyingPriceLoadingContainer.addClass("d-none");
 };
+let displayAccountDetails = function(profile) {
+    let form_data = new FormData();
+    form_data.append('address', profile);
+
+    $.ajax({
+        url: ownlyAPI + "api/get-account-settings",
+        method: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data
+    }).done(async function(response) {
+        let accountSettingsForm = $("#account-settings-form");
+
+        if(accountSettingsForm) {
+            if(response.data.photo) {
+                accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+            } else {
+                let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+                content += '        Fallback text or image for browsers not supporting inline svg.';
+                content += '    </svg>';
+
+                accountSettingsForm.find("#photo-container").html(content);
+            }
+
+            accountSettingsForm.find("[name='username']").val(response.data.name);
+            accountSettingsForm.find("[name='email_address']").val(response.data.email);
+            accountSettingsForm.find("[name='bio']").val(response.data.bio);
+
+            if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
+                accountSettingsForm.find("input").prop("disabled", false);
+                accountSettingsForm.find("[type='submit']").removeClass("d-none");
+                accountSettingsForm.find(".action-btn").removeClass("d-none");
+            }
+        }
+
+        if(response.data.photo) {
+            let profilePhoto = $("#profile-photo");
+
+            profilePhoto.html("");
+            profilePhoto.css("background-image", "url(" + response.data.photo + ")");
+        }
+    }).fail(function(error) {
+        console.log(error);
+    });
+};
 let displaySales = function(page) {
     loadNFTSales(page);
 };
@@ -2117,6 +2142,52 @@ $(document).on("click", ".add-to-favorites", async function() {
     }
 });
 
+$(document).on("click", ".select-price-current", async function() {
+    $("#price-currency img").attr("src", $(this).data("image"));
+    $("#price-currency span").text($(this).data("currency"));
+    $("#price-currency").val($(this).data("currency"));
+});
+
+$(document).on("change", ".sales-date", async function() {
+    let page = findGetParameter("page");
+
+
+});
+
+$(document).on("change", ".sales-date", async function() {
+    loadNFTSales();
+});
+
+// PROFILE
+
+$(document).on("click", "#select-photo", function() {
+    $("input[name='photo']").trigger("click");
+});
+
+$(document).on("change", "input[name='photo']", function() {
+    let reader = new FileReader();
+
+    reader.onload = function(event) {
+        let img = new Image();
+
+        img.onload = function() {
+            let photoContainer = $("#photo-container");
+
+            photoContainer.html("");
+            photoContainer.css("background-image", "url('" + img.src + "')");
+        };
+
+        img.src = event.target.result;
+    };
+
+    if($(this)[0].files.length) {
+        reader.readAsDataURL($(this)[0].files[0]);
+        $(".field-error-message[data-name='asa_certificate']").addClass("d-none");
+    } else {
+        $("#photo-container").css("background-image", "initial");
+    }
+});
+
 $(document).on("submit", "#account-settings-form", async function(e) {
     e.preventDefault();
 
@@ -2143,6 +2214,8 @@ $(document).on("submit", "#account-settings-form", async function(e) {
             processData: false,
             data: form_data
         }).done(function(response) {
+            displayAccountDetails(ethereum.selectedAddress);
+
             $("#modal-success .message").text("Saving changes successful");
             $("#modal-success").modal("show");
         }).fail(function(error) {
@@ -2154,18 +2227,3 @@ $(document).on("submit", "#account-settings-form", async function(e) {
     }
 });
 
-$(document).on("click", ".select-price-current", async function() {
-    $("#price-currency img").attr("src", $(this).data("image"));
-    $("#price-currency span").text($(this).data("currency"));
-    $("#price-currency").val($(this).data("currency"));
-});
-
-$(document).on("change", ".sales-date", async function() {
-    let page = findGetParameter("page");
-
-
-});
-
-$(document).on("change", ".sales-date", async function() {
-    loadNFTSales();
-});

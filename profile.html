@@ -14,9 +14,9 @@
 			</ul>
 			
 			<div class="d-none" id="account-settings-container">
-				<div class="row">
-					<div class="col-lg-6">
-						<form id="account-settings-form">
+				<form id="account-settings-form">
+					<div class="row">
+						<div class="col-lg-6">
 							<div class="mb-4 mb-lg-5">
 								<label class="neo-bold mb-2" for="username">Username</label>
 								<input type="text" class="form-control py-2 py-lg-3 px-3" name="username" placeholder="Enter Username" id="username" style="border-width:2px" required disabled />
@@ -33,11 +33,23 @@
 							</div>
 							
 							<div class="mb-4 mb-lg-5">
-								<button type="submit" class="btn btn-custom-6 py-2 py-lg-3 px-5 d-none" style="border-radius:29px">Save Changes</button>
+								<button type="submit" class="btn btn-custom-6 py-2 py-lg-3 px-5 action-btn d-none" style="border-radius:29px">Save Changes</button>
 							</div>
-						</form>
+						</div>
+						
+						<div class="col-lg-6">
+							<div class="mx-5 px-5">
+								<div class="mx-5 px-4">
+									<div class="w-100 background-image-cover rounded-circle mb-4 position-relative bg-white" id="photo-container" style="padding-top:100%; border:3px solid #aaaaaa"></div>
+									<div class="text-center">
+										<input type="file" class="d-none" name="photo" accept="image/*" />
+										<button type="button" class="btn btn-custom-13 px-5 action-btn d-none" id="select-photo" style="border-radius:29px">Select Photo</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			
 			<div class="d-none" id="owned-container">
