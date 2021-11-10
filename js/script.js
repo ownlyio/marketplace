@@ -159,13 +159,14 @@ let initializeEnvVariables = () => {
         chainIDMatic = 80001;
 
         url = "https://ownly.market/";
-        ownlyAPI = "https://ownly.tk/";
+        ownlyAPI = "http://ownly-api.test/";
     }
 
     if(currentURL.includes("ownlyio.dev-marketplace.test")) {
         url = "http://ownlyio.dev-marketplace.test/";
-        ownlyAPI = "http://ownly-api.test/";
     }
+
+    ownlyAPI = "https://ownly.tk/";
 
     sparkSwapContractAddress = "0xeB98E6e5D34c94F56708133579abB8a6A2aC2F26";
     sparkSwapContractAbi = [{"inputs":[{"internalType":"address","name":"_factory","type":"address"},{"internalType":"address","name":"_WETH","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsIn","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"name":"quote","outputs":[{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETHSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermitSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETHSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
@@ -817,27 +818,6 @@ let displayFavoritedTokens = async function(profile, page) {
     });
 };
 let formatTokenCards = async function(excludedToken, type, i, marketItem, metadata, owner, contractAddress, network) {
-    let isOwned = type === "owned" && address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address);
-
-    let isFavorited = false;
-    if(type === "favorites") {
-        if(ethereum.selectedAddress) {
-            await $.post(ownlyAPI + "api/get-market-item-favorites", {
-                address: ethereum.selectedAddress,
-                contract_address: contractAddress,
-                token_id: i
-            }, function(data) {
-                if(data.status) {
-                    isFavorited = true;
-                }
-            }).fail(function(error) {
-                console.log(error);
-            });
-        }
-    }
-
-    isFavorited = type === "favorites" && isFavorited;
-
     let chainId;
     let explorerName;
     let blockchainExplorer;
@@ -864,164 +844,162 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         // link = "#";
     }
 
-    if(type === "all" || isOwned || isFavorited) {
-        content += '    <div class="col-md-6 ' + col_xl + ' mb-5 pb-md-3 px-md-4">';
-        content += '        <div class="token-card" data-token-id="' + i + '">';
-        content += '            <a href="' + link + '" class="link">';
-        if(metadata.thumbnail.includes(".mp4")) {
-            content += '            <div class="w-100 shadow-sm border-1 position-relative mb-3" style="padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
-            content += '                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
-            content += '                    <div>';
-            content += '                        <video autoplay loop muted preload class="w-100" style="border-radius:10px"><source src="' + metadata.thumbnail + '" type="video/mp4"></video>';
-            content += '                    </div>';
-            content += '                </div>';
-            content += '            </div>';
-        } else {
-            content += '            <div class="w-100 background-image-contain token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.thumbnail + '\'); padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px"></div>';
-        }
-        content += '            </a>';
-        content += '            <div class="d-flex flex-column justify-content-between h-100">';
-        content += '                <div class="d-flex justify-content-between">';
-        content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
-        content += '                        <a href="' + link + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
-        content += '                    </div>';
-        content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
-        content += '                        <div class="">';
-        content += '                            <button class="btn add-to-favorites p-0 m-0" data-contract-address="' + contractAddress + '" data-token-id="' + i +'" data-status="' + ((metadata.favorite_status) ? 1 : 0) + '" style="width:24px; height:24px; border-radius:50%; box-shadow: none">';
-        content += '                                <i class="' + ((metadata.favorite_status) ? 'fas' : 'far') + ' fa-heart font-size-140 text-color-1"></i>';
-        content += '                            </button>';
-        content += '                        </div>';
-        content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">' + metadata.favorite_count + '</div>';
+    content += '    <div class="col-md-6 ' + col_xl + ' mb-5 pb-md-3 px-md-4">';
+    content += '        <div class="token-card" data-token-id="' + i + '">';
+    content += '            <a href="' + link + '" class="link">';
+    if(metadata.thumbnail.includes(".mp4")) {
+        content += '            <div class="w-100 shadow-sm border-1 position-relative mb-3" style="padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
+        content += '                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
+        content += '                    <div>';
+        content += '                        <video autoplay loop muted preload class="w-100" style="border-radius:10px"><source src="' + metadata.thumbnail + '" type="video/mp4"></video>';
         content += '                    </div>';
         content += '                </div>';
-        if(metadata.supply === undefined || metadata.supply === 1) {
-            content += '            <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
-        } else {
-            content += '            <div class="font-size-110 mb-2 pb-1">Multiple Editions</div>';
+        content += '            </div>';
+    } else {
+        content += '            <div class="w-100 background-image-contain token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.thumbnail + '\'); padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px"></div>';
+    }
+    content += '            </a>';
+    content += '            <div class="d-flex flex-column justify-content-between h-100">';
+    content += '                <div class="d-flex justify-content-between">';
+    content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
+    content += '                        <a href="' + link + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
+    content += '                    </div>';
+    content += '                    <div class="d-flex align-items-center py-1 ps-3 add-to-favorites-container">';
+    content += '                        <div class="">';
+    content += '                            <button class="btn add-to-favorites p-0 m-0" data-contract-address="' + contractAddress + '" data-token-id="' + i +'" data-status="' + ((metadata.favorite_status) ? 1 : 0) + '" style="width:24px; height:24px; border-radius:50%; box-shadow: none">';
+    content += '                                <i class="' + ((metadata.favorite_status) ? 'fas' : 'far') + ' fa-heart font-size-140 text-color-1"></i>';
+    content += '                            </button>';
+    content += '                        </div>';
+    content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">' + metadata.favorite_count + '</div>';
+    content += '                    </div>';
+    content += '                </div>';
+    if(metadata.supply === undefined || metadata.supply === 1) {
+        content += '            <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
+    } else {
+        content += '            <div class="font-size-110 mb-2 pb-1">Multiple Editions</div>';
+    }
+    content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:51px; max-height:51px">' + metadata.description + '</div>';
+
+    // Bruteforce display for genesis block
+    let soldGenesisBlock = [3];
+    let soldSagesRantCollectible = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+
+    if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(i)) {
+        let genesisBlockPrice = 1.5;
+        if(i >= 1 && i <= 3) {
+            genesisBlockPrice = 0.5;
+        } else if(i >= 4 && i <= 6) {
+            genesisBlockPrice = 0.8;
+        } else if(i >= 7 && i <= 8) {
+            genesisBlockPrice = 1;
         }
-        content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:51px; max-height:51px">' + metadata.description + '</div>';
 
-        // Bruteforce display for genesis block
-        let soldGenesisBlock = [3];
-        let soldSagesRantCollectible = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+        content += '                <div class="row align-items-center">';
+        content += '                    <div class="col-6">';
+        content += '                        <div class="d-flex align-items-end mb-1">';
+        content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
+        content += '                            <div class="ps-2 ms-1">';
+        content += '                                <img src="img/tokens/ETH.png" width="30" />';
+        content += '                            </div>';
+        content += '                        </div>';
+        content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + genesisBlockPrice + ' ETH</div>';
+        content += '                    </div>';
+        content += '                    <div class="col-6 button-container">';
+        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        content += '                    </div>';
+        content += '                </div>';
+    } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(i)) {
+        let sagesRantCollectiblePrice = 0.1;
 
-        if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(i)) {
-            let genesisBlockPrice = 1.5;
-            if(i >= 1 && i <= 3) {
-                genesisBlockPrice = 0.5;
-            } else if(i >= 4 && i <= 6) {
-                genesisBlockPrice = 0.8;
-            } else if(i >= 7 && i <= 8) {
-                genesisBlockPrice = 1;
-            }
-
+        content += '                <div class="row align-items-center">';
+        content += '                    <div class="col-6">';
+        content += '                        <div class="d-flex align-items-end mb-1">';
+        content += '                            <div class="font-size-100 font-size-md-110">Bid Price:</div>';
+        content += '                            <div class="ps-2 ms-1">';
+        content += '                                <img src="img/tokens/ETH.png" width="30" />';
+        content += '                            </div>';
+        content += '                        </div>';
+        content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + sagesRantCollectiblePrice + ' ETH</div>';
+        content += '                    </div>';
+        content += '                    <div class="col-6 button-container">';
+        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
+        content += '                    </div>';
+        content += '                </div>';
+    } else {
+        if(parseInt(marketItem.itemId)) {
             content += '                <div class="row align-items-center">';
             content += '                    <div class="col-6">';
             content += '                        <div class="d-flex align-items-end mb-1">';
             content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-            content += '                            <div class="ps-2 ms-1">';
-            content += '                                <img src="img/tokens/ETH.png" width="30" />';
-            content += '                            </div>';
-            content += '                        </div>';
-            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + genesisBlockPrice + ' ETH</div>';
-            content += '                    </div>';
-            content += '                    <div class="col-6 button-container">';
-            content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
-            content += '                    </div>';
-            content += '                </div>';
-        } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(i)) {
-            let sagesRantCollectiblePrice = 0.1;
-
-            content += '                <div class="row align-items-center">';
-            content += '                    <div class="col-6">';
-            content += '                        <div class="d-flex align-items-end mb-1">';
-            content += '                            <div class="font-size-100 font-size-md-110">Bid Price:</div>';
-            content += '                            <div class="ps-2 ms-1">';
-            content += '                                <img src="img/tokens/ETH.png" width="30" />';
-            content += '                            </div>';
-            content += '                        </div>';
-            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + sagesRantCollectiblePrice + ' ETH</div>';
-            content += '                    </div>';
-            content += '                    <div class="col-6 button-container">';
-            content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
-            content += '                    </div>';
-            content += '                </div>';
-        } else {
-            if(parseInt(marketItem.itemId)) {
-                content += '                <div class="row align-items-center">';
-                content += '                    <div class="col-6">';
-                content += '                        <div class="d-flex align-items-end mb-1">';
-                content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-                if(marketItem.currency === "OWN") {
-                    content += '                        <div class="ps-2 ms-1">';
-                    content += '                            <img src="img/ownly/own-token.png" width="30" />';
-                    content += '                        </div>';
-                } else if(marketItem.currency === "BNB") {
-                    content += '                        <div class="ps-2 ms-1">';
-                    content += '                            <img src="img/bnb/bnb.webp" width="30" />';
-                    content += '                        </div>';
-                }
+            if(marketItem.currency === "OWN") {
+                content += '                        <div class="ps-2 ms-1">';
+                content += '                            <img src="img/ownly/own-token.png" width="30" />';
                 content += '                        </div>';
-                content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
-                content += '                    </div>';
-                if(contractAddress === titansContractAddress) {
-                    content += '                <div class="col-6 button-container">';
-                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                        content += '                <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-                    } else {
-                        content += '                <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
-                    }
-                }
-                content += '                    </div>';
-                content += '                </div>';
-                content += '                <div class="owner d-none">' + owner + '</div>';
-            } else {
-                if(chainId !== chainIDMatic) {
-                    content += '                <div class="row align-items-center" style="min-height:69px">';
-                    content += '                    <div class="col-6">';
-                    content += '                        <div>';
-                    content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
-                    content += '                        </div>';
-                    content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                    content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
-                    content += '                    </div>';
-                    content += '                    <div class="col-6">';
-                    if(contractAddress === titansContractAddress) {
-                        if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                            content += '                <button class="btn btn-custom-4 w-100 font-size-100 font-size-md-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-                        } else {
-                            content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
-                        }
-                    }
-
-                    // Bruteforce display for genesis block
-                    if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
-                    }
-
-                    content += '                    </div>';
-                    content += '                </div>';
+            } else if(marketItem.currency === "BNB") {
+                content += '                        <div class="ps-2 ms-1">';
+                content += '                            <img src="img/bnb/bnb.webp" width="30" />';
+                content += '                        </div>';
+            }
+            content += '                        </div>';
+            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
+            content += '                    </div>';
+            if(contractAddress === titansContractAddress) {
+                content += '                <div class="col-6 button-container">';
+                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                    content += '                <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                } else {
+                    content += '                <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
                 }
             }
-        }
-        content += '            </div>';
-        content += '        </div>';
-        content += '    </div>';
+            content += '                    </div>';
+            content += '                </div>';
+            content += '                <div class="owner d-none">' + owner + '</div>';
+        } else {
+            if(chainId !== chainIDMatic) {
+                content += '                <div class="row align-items-center" style="min-height:69px">';
+                content += '                    <div class="col-6">';
+                content += '                        <div>';
+                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                content += '                        </div>';
+                content += '                        <div class="font-size-100 neo-bold">Owner</div>';
+                content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
+                content += '                    </div>';
+                content += '                    <div class="col-6">';
+                if(contractAddress === titansContractAddress) {
+                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                        content += '                <button class="btn btn-custom-4 w-100 font-size-100 font-size-md-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                    } else {
+                        content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                    }
+                }
 
-        if(address && owner.toLowerCase() === address.toLowerCase()) {
-            $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
-        }
+                // Bruteforce display for genesis block
+                if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
+                    content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                }
 
-        if(currentPage === "token") {
-            Ellipsis({
-                class: '.token-description-truncated',
-                lines: 3
-            });
-
-            setTimeout(function() {
-                loadRelatedTokens(excludedToken);
-            }, 1000);
+                content += '                    </div>';
+                content += '                </div>';
+            }
         }
+    }
+    content += '            </div>';
+    content += '        </div>';
+    content += '    </div>';
+
+    if(address && owner.toLowerCase() === address.toLowerCase()) {
+        $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
+    }
+
+    if(currentPage === "token") {
+        Ellipsis({
+            class: '.token-description-truncated',
+            lines: 3
+        });
+
+        setTimeout(function() {
+            loadRelatedTokens(excludedToken);
+        }, 1000);
     }
 
     if(type === "all") {
