@@ -316,7 +316,7 @@ let initializePage = () => {
                 $("#pills-account-settings-tab").addClass("active");
                 $("#account-settings-container").removeClass("d-none");
 
-                // displayAccountDetails(profile);
+                displayAccountDetails(profile, 'guest');
             }
 
             app.removeClass("d-none");
@@ -417,7 +417,7 @@ let updateConnectToWallet = async () => {
 
         accountAddress.attr("href", "?profile=" + address);
 
-        displayAccountDetails(address);
+        displayAccountDetails(address, 'logged');
     } else {
         $("#account-address").addClass("d-none");
         $("#connect-to-metamask-container").removeClass("d-none");
@@ -1557,7 +1557,7 @@ let update_buying_token = async function() {
 
     buyingPriceLoadingContainer.addClass("d-none");
 };
-let displayAccountDetails = function(profile) {
+let displayAccountDetails = function(profile, type) {
     let form_data = new FormData();
     form_data.append('address', profile);
 
@@ -1569,9 +1569,9 @@ let displayAccountDetails = function(profile) {
         processData: false,
         data: form_data
     }).done(async function(response) {
-        let accountSettingsForm = $("#account-settings-form");
+        if(type === "guest") {
+            let accountSettingsForm = $("#account-settings-form");
 
-        if(accountSettingsForm.length) {
             if(response.data.photo) {
                 accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
             } else {
@@ -1593,13 +1593,21 @@ let displayAccountDetails = function(profile) {
                 accountSettingsForm.find("[type='submit']").removeClass("d-none");
                 accountSettingsForm.find(".action-btn").removeClass("d-none");
             }
-        }
+        } else {
+            if(response.data.photo) {
+                let profilePhoto = $("#profile-photo");
 
-        if(response.data.photo) {
-            let profilePhoto = $("#profile-photo");
+                profilePhoto.html("");
+                profilePhoto.css("background-image", "url(" + response.data.photo + ")");
+            } else {
+                let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+                content += '        Fallback text or image for browsers not supporting inline svg.';
+                content += '    </svg>';
 
-            profilePhoto.html("");
-            profilePhoto.css("background-image", "url(" + response.data.photo + ")");
+                accountSettingsForm.find("#photo-container").html(content);
+
+                jdenticon.update(".jdenticon", address.toString());
+            }
         }
     }).fail(function(error) {
         console.log(error);
@@ -2216,7 +2224,7 @@ $(document).on("submit", "#account-settings-form", async function(e) {
             processData: false,
             data: form_data
         }).done(function(response) {
-            displayAccountDetails(ethereum.selectedAddress);
+            displayAccountDetails(ethereum.selectedAddress, 'logged');
 
             $("#modal-success .message").text("Saving changes successful");
             $("#modal-success").modal("show");
