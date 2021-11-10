@@ -59,8 +59,8 @@ let hasMarketplacePolygonContract = false;
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
-    if(currentURL.includes("ownly.market")) {
-    // if(true) {
+    // if(currentURL.includes("ownly.market")) {
+    if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -414,7 +414,7 @@ let updateConnectToWallet = async () => {
         accountAddress.html(content);
         accountAddress.removeClass("d-none");
 
-        jdenticon.update(".jdenticon", address.toString());
+        jdenticon.update("#profile-photo .jdenticon", address.toString());
 
         accountAddress.attr("href", "?profile=" + address);
 
@@ -429,7 +429,7 @@ let updateConnectToWallet = async () => {
             processData: false,
             data: form_data
         }).done(async function(response) {
-            if(response.data.photo) {
+            if(response.data && response.data.photo) {
                 let profilePhoto = $("#profile-photo");
 
                 profilePhoto.html("");
@@ -753,11 +753,11 @@ let displayOwnedTokens = async function(profile, page) {
         }
 
         if(metadata.length === 0) {
-            content += '    <div class="d-flex flex-column align-items-center py-5">';
+            content += '    <div class="d-flex flex-column align-items-center py-5 mb-5">';
             content += '        <div class="mb-4">';
             content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
             content += '        </div>';
-            content += '        <div>You haven\'t owned any tokens from our collections yet.<div>';
+            content += '        <div>No owned tokens from our collections yet.<div>';
             content += '    </div>';
         }
 
@@ -801,18 +801,18 @@ let displayFavoritedTokens = async function(profile, page) {
                     await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                 }
             }
-
-            if(favoritedTokens.length === 0) {
-                content += '    <div class="d-flex flex-column align-items-center py-5">';
-                content += '        <div class="mb-4">';
-                content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
-                content += '        </div>';
-                content += '        <div>You haven\'t added any favorite tokens yet.<div>';
-                content += '    </div>';
-            }
-
-            $("#favorite-tokens-container").html(content);
         }
+
+        if(metadata.length === 0) {
+            content += '    <div class="d-flex flex-column align-items-center py-5 mb-5">';
+            content += '        <div class="mb-4">';
+            content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
+            content += '        </div>';
+            content += '        <div>No added favorite tokens yet.<div>';
+            content += '    </div>';
+        }
+
+        $("#favorite-tokens-container").html(content);
     }).fail(function(error) {
         console.log(error);
     });
@@ -959,10 +959,10 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                 content += '                <div class="row align-items-center" style="min-height:69px">';
                 content += '                    <div class="col-6">';
                 content += '                        <div>';
-                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
                 content += '                        </div>';
                 content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                content += '                        <div class="font-size-90 owner-address"><a href="">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
+                content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
                 content += '                    </div>';
                 content += '                    <div class="col-6">';
                 if(contractAddress === titansContractAddress) {
@@ -1568,9 +1568,57 @@ let displayProfilePage = function(profile, page, type) {
     }).done(async function(response) {
         let accountSettingsForm = $("#account-settings-form");
 
-        if(response.data.photo) {
-            accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
-            $("#profile-photo-container").css("background-image", "url(" + response.data.photo + ")");
+        if(response.data) {
+            if(response.data.photo) {
+                accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+                $("#profile-photo-container").css("background-image", "url(" + response.data.photo + ")");
+            } else {
+                let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+                content += '        Fallback text or image for browsers not supporting inline svg.';
+                content += '    </svg>';
+
+                accountSettingsForm.find("#photo-container").html(content);
+                $("#profile-photo-container").html(content);
+
+                jdenticon.update(".jdenticon", profile);
+            }
+
+            if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
+                accountSettingsForm.find("[name='username']").val(response.data.name);
+                accountSettingsForm.find("[name='email_address']").val(response.data.email);
+                accountSettingsForm.find("[name='bio']").val(response.data.bio);
+
+                accountSettingsForm.find("input").prop("disabled", false);
+                accountSettingsForm.find("[type='submit']").removeClass("d-none");
+                accountSettingsForm.find(".action-btn").removeClass("d-none");
+
+                if(type === "owned") {
+                    displayOwnedTokens(profile, page);
+                } else if(type === "favorited") {
+                    displayFavoritedTokens(profile, page);
+                }
+            } else {
+                $("#profile-name").text(response.data.name);
+                $("#profile-wallet").text(shortenAddress(profile, 5, 5));
+                $("#profile-bio").text(response.data.bio);
+
+                $("#profile-guest-view").removeClass("d-none");
+
+                await updateConnectToWallet();
+
+                $("#pills-account-settings-tab").addClass("d-none");
+
+                if(type === "owned") {
+                    $("#pills-owned-tab").addClass("active");
+                    $("#pills-account-settings-tab").removeClass("active");
+                    $("#owned-container").removeClass("d-none");
+                    $("#account-settings-container").addClass("d-none");
+
+                    displayOwnedTokens(profile, page);
+                } else if(type === "favorited") {
+                    displayFavoritedTokens(profile, page);
+                }
+            }
         } else {
             let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
             content += '        Fallback text or image for browsers not supporting inline svg.';
@@ -1580,26 +1628,10 @@ let displayProfilePage = function(profile, page, type) {
             $("#profile-photo-container").html(content);
 
             jdenticon.update(".jdenticon", profile);
-        }
 
-        if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
-            accountSettingsForm.find("[name='username']").val(response.data.name);
-            accountSettingsForm.find("[name='email_address']").val(response.data.email);
-            accountSettingsForm.find("[name='bio']").val(response.data.bio);
-
-            accountSettingsForm.find("input").prop("disabled", false);
-            accountSettingsForm.find("[type='submit']").removeClass("d-none");
-            accountSettingsForm.find(".action-btn").removeClass("d-none");
-
-            if(type === "owned") {
-                displayOwnedTokens(profile, page);
-            } else if(type === "favorited") {
-                displayFavoritedTokens(profile, page);
-            }
-        } else {
-            $("#profile-name").text(response.data.name);
+            $("#profile-name").html("<i>Name not set</i>");
             $("#profile-wallet").text(shortenAddress(profile, 5, 5));
-            $("#profile-bio").text(response.data.bio);
+            $("#profile-bio").html("<i>Bio not set</i>");
 
             $("#profile-guest-view").removeClass("d-none");
 
