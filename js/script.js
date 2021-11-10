@@ -300,7 +300,7 @@ let initializePage = () => {
 
                 await updateConnectToWallet();
 
-                displayOwnedTokens(profile, page);
+                displayProfilePage(profile, page, 'owned');
             } else if(tab === "favorites") {
                 currentPage = "profile:favorites";
 
@@ -309,7 +309,7 @@ let initializePage = () => {
                 $("#pills-favorites-tab").addClass("active");
                 $("#favorites-container").removeClass("d-none");
 
-                displayFavoritedTokens(profile, page);
+                displayProfilePage(profile, page, 'favorited');
             } else {
                 currentPage = "profile:settings";
 
@@ -318,46 +318,8 @@ let initializePage = () => {
 
                 await updateConnectToWallet();
 
-                let form_data = new FormData();
-                form_data.append('address', profile);
-
-                $.ajax({
-                    url: ownlyAPI + "api/get-account-settings",
-                    method: "POST",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data
-                }).done(async function(response) {
-                    let accountSettingsForm = $("#account-settings-form");
-
-                    if(response.data.photo) {
-                        accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
-                    } else {
-                        let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
-                        content += '        Fallback text or image for browsers not supporting inline svg.';
-                        content += '    </svg>';
-
-                        accountSettingsForm.find("#photo-container").html(content);
-
-                        jdenticon.update(".jdenticon", profile);
-                    }
-
-                    accountSettingsForm.find("[name='username']").val(response.data.name);
-                    accountSettingsForm.find("[name='email_address']").val(response.data.email);
-                    accountSettingsForm.find("[name='bio']").val(response.data.bio);
-
-                    if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
-                        accountSettingsForm.find("input").prop("disabled", false);
-                        accountSettingsForm.find("[type='submit']").removeClass("d-none");
-                        accountSettingsForm.find(".action-btn").removeClass("d-none");
-                    }
-                }).fail(function(error) {
-                    console.log(error);
-                });
+                displayProfilePage(profile, page, 'owned');
             }
-
-            app.removeClass("d-none");
         });
     } else if(sales) {
         pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
@@ -1614,9 +1576,9 @@ let update_buying_token = async function() {
 
     buyingPriceLoadingContainer.addClass("d-none");
 };
-let displayAccountDetails = function(accountAddress, type) {
+let displayProfilePage = function(profile, page, type) {
     let form_data = new FormData();
-    form_data.append('address', accountAddress);
+    form_data.append('address', profile);
 
     $.ajax({
         url: ownlyAPI + "api/get-account-settings",
@@ -1628,49 +1590,58 @@ let displayAccountDetails = function(accountAddress, type) {
     }).done(async function(response) {
         let accountSettingsForm = $("#account-settings-form");
 
-        if(type === "guest") {
-            if(!address) {
-                await updateConnectToWallet();
-            } else {
-                if(response.data.photo) {
-                    accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
-                } else {
-                    let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
-                    content += '        Fallback text or image for browsers not supporting inline svg.';
-                    content += '    </svg>';
+        if(response.data.photo) {
+            accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+            $("#profile-photo-container").css("background-image", "url(" + response.data.photo + ")");
+        } else {
+            let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+            content += '        Fallback text or image for browsers not supporting inline svg.';
+            content += '    </svg>';
 
-                    accountSettingsForm.find("#photo-container").html(content);
+            accountSettingsForm.find("#photo-container").html(content);
+            $("#profile-photo-container").html(content);
 
-                    console.log(accountAddress);
-                    jdenticon.update(".jdenticon", accountAddress);
-                }
+            jdenticon.update(".jdenticon", profile);
+        }
 
-                accountSettingsForm.find("[name='username']").val(response.data.name);
-                accountSettingsForm.find("[name='email_address']").val(response.data.email);
-                accountSettingsForm.find("[name='bio']").val(response.data.bio);
+        if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
+            accountSettingsForm.find("[name='username']").val(response.data.name);
+            accountSettingsForm.find("[name='email_address']").val(response.data.email);
+            accountSettingsForm.find("[name='bio']").val(response.data.bio);
 
-                if(address && web3Bsc.utils.toChecksumAddress(accountAddress) === web3Bsc.utils.toChecksumAddress(address)) {
-                    accountSettingsForm.find("input").prop("disabled", false);
-                    accountSettingsForm.find("[type='submit']").removeClass("d-none");
-                    accountSettingsForm.find(".action-btn").removeClass("d-none");
-                }
+            accountSettingsForm.find("input").prop("disabled", false);
+            accountSettingsForm.find("[type='submit']").removeClass("d-none");
+            accountSettingsForm.find(".action-btn").removeClass("d-none");
+
+            if(type === "owned") {
+                displayOwnedTokens(profile, page);
+            } else if(type === "favorited") {
+                displayFavoritedTokens(profile, page);
             }
         } else {
-            if(response.data.photo) {
-                let profilePhoto = $("#profile-photo");
+            $("#profile-name").text(response.data.name);
+            $("#profile-wallet").text(shortenAddress(profile, 5, 5));
+            $("#profile-bio").text(response.data.bio);
 
-                profilePhoto.html("");
-                profilePhoto.css("background-image", "url(" + response.data.photo + ")");
-            } else {
-                let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
-                content += '        Fallback text or image for browsers not supporting inline svg.';
-                content += '    </svg>';
+            $("#profile-guest-view").removeClass("d-none");
 
-                accountSettingsForm.find("#photo-container").html(content);
+            await updateConnectToWallet();
 
-                jdenticon.update(".jdenticon", accountAddress.toString());
+            $("#pills-account-settings-tab").addClass("d-none");
+
+            if(type === "owned") {
+                $("#pills-owned-tab").addClass("active");
+                $("#pills-account-settings-tab").removeClass("active");
+                $("#owned-container").removeClass("d-none");
+                $("#account-settings-container").addClass("d-none");
+
+                displayOwnedTokens(profile, page);
+            } else if(type === "favorited") {
+                displayFavoritedTokens(profile, page);
             }
         }
+
+        $("#app").removeClass("d-none");
     }).fail(function(error) {
         console.log(error);
     });
