@@ -962,7 +962,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                 content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
                 content += '                        </div>';
                 content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                content += '                        <div class="font-size-90 owner-address">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
+                content += '                        <div class="font-size-90 owner-address"><a href="">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</div>';
                 content += '                    </div>';
                 content += '                    <div class="col-6">';
                 if(contractAddress === titansContractAddress) {
@@ -2235,7 +2235,12 @@ $(document).on("submit", "#account-settings-form", async function(e) {
             processData: false,
             data: form_data
         }).done(function(response) {
-            displayAccountDetails(ethereum.selectedAddress, 'logged');
+            if(response.data.name) {
+                let profilePhoto = $("#profile-photo");
+
+                profilePhoto.html("");
+                profilePhoto.css("background-image", "url(" + response.data.photo + ")");
+            }
 
             $("#modal-success .message").text("Saving changes successful");
             $("#modal-success").modal("show");
