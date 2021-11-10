@@ -316,7 +316,45 @@ let initializePage = () => {
                 $("#pills-account-settings-tab").addClass("active");
                 $("#account-settings-container").removeClass("d-none");
 
-                displayAccountDetails(profile, 'guest');
+                await updateConnectToWallet();
+
+                let form_data = new FormData();
+                form_data.append('address', profile);
+
+                $.ajax({
+                    url: ownlyAPI + "api/get-account-settings",
+                    method: "POST",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data
+                }).done(async function(response) {
+                    let accountSettingsForm = $("#account-settings-form");
+
+                    if(response.data.photo) {
+                        accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+                    } else {
+                        let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+                        content += '        Fallback text or image for browsers not supporting inline svg.';
+                        content += '    </svg>';
+
+                        accountSettingsForm.find("#photo-container").html(content);
+
+                        jdenticon.update(".jdenticon", profile);
+                    }
+
+                    accountSettingsForm.find("[name='username']").val(response.data.name);
+                    accountSettingsForm.find("[name='email_address']").val(response.data.email);
+                    accountSettingsForm.find("[name='bio']").val(response.data.bio);
+
+                    if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
+                        accountSettingsForm.find("input").prop("disabled", false);
+                        accountSettingsForm.find("[type='submit']").removeClass("d-none");
+                        accountSettingsForm.find(".action-btn").removeClass("d-none");
+                    }
+                }).fail(function(error) {
+                    console.log(error);
+                });
             }
 
             app.removeClass("d-none");
@@ -417,7 +455,26 @@ let updateConnectToWallet = async () => {
 
         accountAddress.attr("href", "?profile=" + address);
 
-        displayAccountDetails(address, 'logged');
+        let form_data = new FormData();
+        form_data.append('address', address);
+
+        $.ajax({
+            url: ownlyAPI + "api/get-account-settings",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data
+        }).done(async function(response) {
+            if(response.data.photo) {
+                let profilePhoto = $("#profile-photo");
+
+                profilePhoto.html("");
+                profilePhoto.css("background-image", "url(" + response.data.photo + ")");
+            }
+        }).fail(function(error) {
+            console.log(error);
+        });
     } else {
         $("#account-address").addClass("d-none");
         $("#connect-to-metamask-container").removeClass("d-none");
@@ -1557,9 +1614,9 @@ let update_buying_token = async function() {
 
     buyingPriceLoadingContainer.addClass("d-none");
 };
-let displayAccountDetails = function(profile, type) {
+let displayAccountDetails = function(accountAddress, type) {
     let form_data = new FormData();
-    form_data.append('address', profile);
+    form_data.append('address', accountAddress);
 
     $.ajax({
         url: ownlyAPI + "api/get-account-settings",
@@ -1569,29 +1626,34 @@ let displayAccountDetails = function(profile, type) {
         processData: false,
         data: form_data
     }).done(async function(response) {
+        let accountSettingsForm = $("#account-settings-form");
+
         if(type === "guest") {
-            let accountSettingsForm = $("#account-settings-form");
-
-            if(response.data.photo) {
-                accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+            if(!address) {
+                await updateConnectToWallet();
             } else {
-                let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
-                content += '        Fallback text or image for browsers not supporting inline svg.';
-                content += '    </svg>';
+                if(response.data.photo) {
+                    accountSettingsForm.find("#photo-container").css('background-image', 'url(' + response.data.photo + ')');
+                } else {
+                    let content = ' <svg data-jdenticon-value="" class="jdenticon position-absolute" style="width:100%; height:100%; border-radius:50%; top:0; left:0">';
+                    content += '        Fallback text or image for browsers not supporting inline svg.';
+                    content += '    </svg>';
 
-                accountSettingsForm.find("#photo-container").html(content);
+                    accountSettingsForm.find("#photo-container").html(content);
 
-                jdenticon.update(".jdenticon", address.toString());
-            }
+                    console.log(accountAddress);
+                    jdenticon.update(".jdenticon", accountAddress);
+                }
 
-            accountSettingsForm.find("[name='username']").val(response.data.name);
-            accountSettingsForm.find("[name='email_address']").val(response.data.email);
-            accountSettingsForm.find("[name='bio']").val(response.data.bio);
+                accountSettingsForm.find("[name='username']").val(response.data.name);
+                accountSettingsForm.find("[name='email_address']").val(response.data.email);
+                accountSettingsForm.find("[name='bio']").val(response.data.bio);
 
-            if(address && web3Bsc.utils.toChecksumAddress(profile) === web3Bsc.utils.toChecksumAddress(address)) {
-                accountSettingsForm.find("input").prop("disabled", false);
-                accountSettingsForm.find("[type='submit']").removeClass("d-none");
-                accountSettingsForm.find(".action-btn").removeClass("d-none");
+                if(address && web3Bsc.utils.toChecksumAddress(accountAddress) === web3Bsc.utils.toChecksumAddress(address)) {
+                    accountSettingsForm.find("input").prop("disabled", false);
+                    accountSettingsForm.find("[type='submit']").removeClass("d-none");
+                    accountSettingsForm.find(".action-btn").removeClass("d-none");
+                }
             }
         } else {
             if(response.data.photo) {
@@ -1606,7 +1668,7 @@ let displayAccountDetails = function(profile, type) {
 
                 accountSettingsForm.find("#photo-container").html(content);
 
-                jdenticon.update(".jdenticon", address.toString());
+                jdenticon.update(".jdenticon", accountAddress.toString());
             }
         }
     }).fail(function(error) {
