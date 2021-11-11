@@ -1716,8 +1716,12 @@ let loadNFTSales = function(page) {
         for(let i = 0; i < sales.data.length; i++) {
             content += '    <tr>';
             content += '        <td class="align-middle" style="min-width:100px">' + sales.data[i].formatted_date + '</td>';
-            content += '        <td class="align-middle">' + sales.data[i].collection + '</td>';
-            content += '        <td class="align-middle">' + sales.data[i].name + '</td>';
+            content += '        <td class="align-middle">';
+            content += '            <a class="link-color-4 text-decoration-none" href="' + sales.data[i].collection_url + '">' + sales.data[i].collection + '</a>';
+            content += '        </td>';
+            content += '        <td class="align-middle">';
+            content += '            <a class="link-color-4 text-decoration-none" href="' + sales.data[i].token_url + '">' + sales.data[i].name + '</a>';
+            content += '        </td>';
             content += '        <td class="align-middle text-end">' + sales.data[i].token_id + '</td>';
             content += '        <td class="align-middle">';
             content += '            <div class="d-flex justify-content-end align-items-center">';
@@ -1727,7 +1731,7 @@ let loadNFTSales = function(page) {
             content += '            </div>';
             content += '        </td>';
             content += '        <td class="align-middle">';
-            content += '            <a class="link-color-4" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 5) + '</a>';
+            content += '            <a class="link-color-4 text-decoration-none" href="' + sales.data[i].transaction_link + '" target="_blank">' + shortenAddress(sales.data[i].transaction_hash, 5, 5) + '</a>';
             content += '        </td>';
             content += '    </tr>';
         }
