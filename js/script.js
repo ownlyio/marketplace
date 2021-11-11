@@ -1633,18 +1633,11 @@ let displayProfilePage = function(profile, page, type) {
             $("#profile-wallet").text(shortenAddress(profile, 5, 5));
             $("#profile-bio").html("<i>Bio not set</i>");
 
-            $("#profile-guest-view").removeClass("d-none");
-
-            await updateConnectToWallet();
-
-            $("#pills-account-settings-tab").addClass("d-none");
+            accountSettingsForm.find("input").prop("disabled", false);
+            accountSettingsForm.find("[type='submit']").removeClass("d-none");
+            accountSettingsForm.find(".action-btn").removeClass("d-none");
 
             if(type === "owned") {
-                $("#pills-owned-tab").addClass("active");
-                $("#pills-account-settings-tab").removeClass("active");
-                $("#owned-container").removeClass("d-none");
-                $("#account-settings-container").addClass("d-none");
-
                 displayOwnedTokens(profile, page);
             } else if(type === "favorited") {
                 displayFavoritedTokens(profile, page);
