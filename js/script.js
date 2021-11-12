@@ -55,12 +55,13 @@ let isConnectedToMetamask = false;
 let content;
 let hasMarketplaceEthereumContract = false;
 let hasMarketplacePolygonContract = false;
+let searchTimeout;
 
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
-    if(currentURL.includes("ownly.market")) {
-    // if(true) {
+    // if(currentURL.includes("ownly.market")) {
+    if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -147,7 +148,7 @@ let initializeEnvVariables = () => {
         marketplacePolygonAbi = [];
 
         rpcEndpointEth = "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161";
-        rpcEndpointBsc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+        rpcEndpointBsc = "https://data-seed-prebsc-2-s2.binance.org:8545/";
         rpcEndpointMatic = "https://rpc-mumbai.matic.today";
 
         blockchainExplorerEth = "https://rinkeby.etherscan.io/";
@@ -2225,6 +2226,78 @@ $(document).on("change", ".sales-date", async function() {
     loadNFTSales();
 });
 
+$(document).on("input", "#search-field", function() {
+    let search = $(this).val();
+    let searchSuggestionsContainer = $("#search-suggestions-container");
+
+    if(search.length > 1) {
+        let content = ' <div class="card">';
+        content += '        <div class="card-body">';
+        content += '            <div class="d-flex justify-content-center align-items-center">';
+        content += '                <div class="spinner-grow background-image-cover bg-transparent me-2" style="width:1.5rem; height:1.5rem; background-image:url(\'img/ownly/own-token.png\')" role="status">';
+        content += '                    <span class="visually-hidden">Loading...</span>';
+        content += '                </div>';
+        content += '                <div class="font-size-80">Loading</div>';
+        content += '            </div>';
+        content += '        </div>';
+        content += '    </div>';
+
+        searchSuggestionsContainer.html(content);
+        searchSuggestionsContainer.removeClass("d-none");
+
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(function() {
+            $.get(ownlyAPI + "api/search?value=" + search, async function(result) {
+                result = result.data;
+
+                content = '     <div class="list-group overflow-auto" style="max-height:400px">';
+                for(let i = 0; i < result.length; i++) {
+                    content += '    <a href="' + result[i].token_url + '" class="list-group-item list-group-item-action">';
+                    content += '        <div class="d-flex align-items-center">';
+                    content += '            <div class="pe-3" style="min-width:55px; width:55px">';
+                    content += '                <div class="background-image-contain bg-color-1" style="padding-top:100%; border:1px solid #dddddd; background-image:url(\'' + result[i].thumbnail + '\')"></div>';
+                    content += '            </div>';
+                    content += '            <div class="flex-fill">';
+                    content += '                <div class="text-color-7 font-size-80 mb-1">' + result[i].collection + '</div>';
+                    content += '                <div class="d-flex w-100 justify-content-between align-items-center">';
+                    content += '                    <div class="font-size-90 pe-4">' + result[i].name + '</div>';
+                    content += '                    <div class="text-color-7 font-size-70">ID:&nbsp;' + result[i].id + '</div>';
+                    content += '                </div>';
+                    content += '            </div>';
+                    content += '         </div>';
+                    content += '    </a>';
+                }
+                content += '    </div>';
+
+                if(result.length === 0) {
+                    content = '     <div class="card">';
+                    content += '        <div class="card-body">';
+                    content += '            <div class="text-center">';
+                    content += '                <div class="font-size-80">No Result Found</div>';
+                    content += '            </div>';
+                    content += '        </div>';
+                    content += '    </div>';
+                }
+
+                searchSuggestionsContainer.html(content);
+            });
+        }, 1000);
+    } else {
+        searchSuggestionsContainer.addClass("d-none");
+    }
+});
+
+$(document).on("click", 'html', function(e) {
+    if($(e.target).closest('#search-field').length || $(e.target).closest('#search-suggestions-container').length) {
+        if($("#search-field").val().length > 1) {
+            $("#search-suggestions-container").removeClass("d-none");
+        }
+    } else {
+        $("#search-suggestions-container").addClass("d-none");
+    }
+});
+
 // PROFILE
 
 $(document).on("click", "#select-photo", function() {
@@ -2288,7 +2361,7 @@ $(document).on("submit", "#account-settings-form", async function(e) {
                 profilePhoto.css("background-image", "url(" + response.data.photo + ")");
             }
 
-            $("#modal-success .message").text("Saving changes successful");
+            $("#modal-success .message").text("Changes Saved");
             $("#modal-success").modal("show");
         }).fail(function(error) {
             console.log(error);
@@ -2298,4 +2371,3 @@ $(document).on("submit", "#account-settings-form", async function(e) {
         });
     }
 });
-

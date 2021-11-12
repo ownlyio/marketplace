@@ -421,6 +421,26 @@ html {
     background-color: #147ca0;
 }
 
+/* This will work on Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #606060 #f3f3f3;
+}
+
+/* Targtes on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f3f3f3;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #606060;
+    border-radius: 4px;
+}
+
 /*##################################################################*/
 
 .artist-image {
