@@ -386,8 +386,10 @@ let connectToMetamask = async () => {
     }
 };
 let updateConnectToWallet = async () => {
-    let accounts = await web3Bsc.eth.getAccounts();
-    address = (accounts.length > 0) ? accounts[0] : false;
+    // let accounts = await web3Eth.eth.getAccounts();
+    // address = (accounts.length > 0) ? accounts[0] : false;
+    //
+    // console.log(address);
 
     if(!address) {
         try {
@@ -661,7 +663,6 @@ let displayRewardTokens = function(excludedToken, type, page) {
         generatePagination(rewardTokens, url + '?collection=rewards');
 
         for(let i = 0; i < metadata.length; i++) {
-            console.log(metadata);
             if(hasMarketplacePolygonContract) {
                 marketplacePolygonContract.methods.fetchMarketItem(rewardsContractAddress, metadata[i].id).call()
                     .then(async function(marketItem) {
@@ -833,8 +834,6 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         explorerName = "PolygonScan";
         blockchainExplorer = blockchainExplorerMatic;
     }
-
-    console.log(owner);
 
     let col_xl = "col-xl-4";
     let padding_top = "100%";
