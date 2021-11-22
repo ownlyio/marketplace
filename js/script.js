@@ -2286,7 +2286,7 @@ $(document).on("submit", ".newsletter-form", function(e) {
     let newsletter_form = $(this);
     newsletter_form.find("[type='submit']").prop("disabled", true);
 
-    let data = new FormData();
+    let data = new FormData(newsletter_form[0]);
 
     $.ajax({
         url: "https://ownly.tk/api/store-mustachio-subscriber",
