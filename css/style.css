@@ -474,6 +474,9 @@ html {
 .mustachios-text {
     width:80%;
 }
+#market-label {
+    letter-spacing:0.63em;
+}
 
 @media(min-width:576px) {
     .artist-image {
@@ -494,6 +497,9 @@ html {
     }
     .mustachios-text {
         width:70%;
+    }
+    #market-label {
+        letter-spacing:0.54em;
     }
 }
 
