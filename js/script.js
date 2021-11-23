@@ -1403,6 +1403,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
     let soldSagesRantCollectible = [];
+    let soldOwnlyHouseOfArt = [];
 
     if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(token)) {
         let genesisBlockPrice = 1.5;
@@ -1434,6 +1435,17 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
 
         $("#create-market-sale-container .fw-bold").html("Bid Price:");
+        $("#create-market-sale-container .text-end").html(content);
+        $("#create-market-sale-container").removeClass("d-none");
+    } else if(contractAddress === ownlyHouseOfArtContractAddress && !soldOwnlyHouseOfArt.includes(token)) {
+        let tokenPrice = $(".token-price");
+        tokenPrice.html("1 ETH");
+
+        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+
+        let content = '<a href="https://opensea.io/assets/' + ownlyHouseOfArtContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+
+        $("#create-market-sale-container .fw-bold").html("Price:");
         $("#create-market-sale-container .text-end").html(content);
         $("#create-market-sale-container").removeClass("d-none");
     } else {
