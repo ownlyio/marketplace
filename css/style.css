@@ -547,6 +547,9 @@ html {
     #ene-left-side {
         margin-top:-30px;
     }
+    .succeeding-artists {
+        margin-top:100px;
+    }
 }
 
 @media(min-width:1200px) {

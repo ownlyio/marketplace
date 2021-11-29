@@ -345,7 +345,7 @@ let initializePage = () => {
             $(".header-collection").addClass("d-none");
             $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-            if(collection === "rewards" || collection === "oha") {
+            if(collection === "rewards") {
                 $("#artist-section").addClass("d-none");
             } else {
                 displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
@@ -505,6 +505,10 @@ let initializeListingPrice = () => {
 let displayArtistSection = function(collection) {
     $("#artist-section").load(url + "js/../artist.html?v=" + cacheVersion, function() {
         $(".artist-container[data-collection='" + collection + "']").removeClass("d-none");
+
+        if(collection === "oha") {
+            $("#meet-the-artist-text").text("MEET THE ARTISTS");
+        }
 
         Ellipsis({
             class: '.ellipsis',
