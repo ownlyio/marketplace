@@ -1938,7 +1938,7 @@ let pad_zeroes = (number) => {
 };
 let start_countdown = () => {
     $.ajax({
-        url: "https://ownly.tk/api/get-remaining-time/2021-12-03%2009:00:00",
+        url: "https://ownly.tk/api/get-remaining-time/2021-12-03%2007:07:00",
         // url: "http://ownly-api.test/api/get-remaining-time/2021-09-30%2009:00:00",
         method: "GET"
     }).done(function(remaining_time) {
@@ -1972,6 +1972,8 @@ let start_countdown = () => {
                 $("#seconds").text("00");
 
                 clearInterval(x);
+
+                $("#countdown").addClass("invisible");
             }
         }, 500);
     }).fail(function(error) {
