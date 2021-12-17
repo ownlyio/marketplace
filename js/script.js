@@ -390,7 +390,7 @@ let connectToMetamask = async () => {
                 ethereum.on('chainChanged', (_chainId) => window.location.reload());
 
                 web3Bsc = new Web3(ethereum);
-
+                console.log("sdsd");
                 initializeContracts();
 
                 return true;
@@ -1438,6 +1438,11 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     $("#token-type").text(token_type);
     $("#token-network").text(token_network);
 
+    let transferTokenShowModal = $("#transfer-token-show-modal");
+    transferTokenShowModal.attr("data-chain-id", chainId);
+    transferTokenShowModal.attr("data-contract-address", contractAddress);
+    transferTokenShowModal.attr("data-token-id", token);
+
     if(web3Bsc.utils.toChecksumAddress(address) === owner) {
         $("#transfer-token-container").removeClass("d-none");
         initializeTooltip();
@@ -2424,12 +2429,6 @@ $(document).on("click", ".select-price-current", async function() {
 });
 
 $(document).on("change", ".sales-date", async function() {
-    let page = findGetParameter("page");
-
-
-});
-
-$(document).on("change", ".sales-date", async function() {
     loadNFTSales();
 });
 
@@ -2505,66 +2504,90 @@ $(document).on("click", 'html', function(e) {
     }
 });
 
-$(document).on("click", "#transfer-token-show-modal", function() {
-    let search = $(this).val();
-    let searchSuggestionsContainer = $("#search-suggestions-container");
+$(document).on("click", "#transfer-token-show-modal", async function() {
+    $("#modal-transfer-token").modal("show");
+});
 
-    if(search.length > 1) {
-        let content = ' <div class="card">';
-        content += '        <div class="card-body">';
-        content += '            <div class="d-flex justify-content-center align-items-center">';
-        content += '                <div class="spinner-grow background-image-cover bg-transparent me-2" style="width:1.5rem; height:1.5rem; background-image:url(\'img/ownly/own-token.png\')" role="status">';
-        content += '                    <span class="visually-hidden">Loading...</span>';
-        content += '                </div>';
-        content += '                <div class="font-size-80">Loading</div>';
-        content += '            </div>';
-        content += '        </div>';
-        content += '    </div>';
+$(document).on("click", "#transfer-token", async function() {
+    let transferRecipientAddress = $("#transfer-recipient-address").val();
 
-        searchSuggestionsContainer.html(content);
-        searchSuggestionsContainer.removeClass("d-none");
+    let transferTokenShowModal = $("#transfer-token-show-modal");
+    let contractAddress = transferTokenShowModal.attr("data-contract-address");
+    let tokenId = transferTokenShowModal.attr("data-token-id");
+    let tokenChainId = parseInt(transferTokenShowModal.attr("data-chain-id"));
 
-        clearTimeout(searchTimeout);
+    isConnectedToMetamask = await connectToMetamask();
+    if(isConnectedToMetamask) {
+        let _chainID = await web3Bsc.eth.getChainId();
 
-        searchTimeout = setTimeout(function() {
-            $.get(ownlyAPI + "api/search?value=" + search, async function(result) {
-                result = result.data;
+        if(tokenChainId !== _chainID) {
+            let message = '';
 
-                content = '     <div class="list-group overflow-auto" style="max-height:400px">';
-                for(let i = 0; i < result.length; i++) {
-                    content += '    <a href="' + result[i].token_url + '" class="list-group-item list-group-item-action">';
-                    content += '        <div class="d-flex align-items-center">';
-                    content += '            <div class="pe-3" style="min-width:55px; width:55px">';
-                    content += '                <div class="background-image-contain bg-color-1" style="padding-top:100%; border:1px solid #dddddd; background-image:url(\'' + result[i].thumbnail + '\')"></div>';
-                    content += '            </div>';
-                    content += '            <div class="flex-fill">';
-                    content += '                <div class="text-color-7 font-size-80 mb-1">' + result[i].collection + '</div>';
-                    content += '                <div class="d-flex w-100 justify-content-between align-items-center">';
-                    content += '                    <div class="font-size-90 pe-4">' + result[i].name + '</div>';
-                    content += '                    <div class="text-color-7 font-size-70">ID:&nbsp;' + result[i].id + '</div>';
-                    content += '                </div>';
-                    content += '            </div>';
-                    content += '         </div>';
-                    content += '    </a>';
-                }
-                content += '    </div>';
+            if(tokenChainId === 1 || tokenChainId === 4) {
+                message = 'You are currently on the wrong network. Please connect to Ethereum Mainnet';
+            } else if(tokenChainId === 56 || tokenChainId === 97) {
+                message = 'You are currently on the wrong network. Please connect to Binance Smart Chain';
+            } else if(tokenChainId === 137 || tokenChainId === 80001) {
+                message = 'You are currently on the wrong network. Please connect to Polygon Network';
+            }
 
-                if(result.length === 0) {
-                    content = '     <div class="card">';
-                    content += '        <div class="card-body">';
-                    content += '            <div class="text-center">';
-                    content += '                <div class="font-size-80">No Result Found</div>';
-                    content += '            </div>';
-                    content += '        </div>';
-                    content += '    </div>';
-                }
+            $("#modal-transfer-token").modal("hide");
 
-                searchSuggestionsContainer.html(content);
-            });
-        }, 1000);
+            $("#modal-wrong-network-2 .message").text(message);
+            $("#modal-wrong-network-2").modal("show");
+
+            return 0;
+        }
     } else {
-        searchSuggestionsContainer.addClass("d-none");
+        return 0;
     }
+
+    if(!web3Bsc.utils.isAddress(transferRecipientAddress)) {
+        $("#invalid-recipient-wallet-address-container").removeClass("d-none");
+
+        setTimeout(function() {
+            $("#invalid-recipient-wallet-address-container").addClass("d-none");
+        }, 5000);
+
+        return 0;
+    }
+
+    let nftContract;
+
+    if(contractAddress === titansContractAddress && (tokenChainId === 56 || tokenChainId === 97)) {
+        nftContract = titansContract;
+    } else if(contractAddress === mustachiosContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
+        nftContract = mustachiosContract;
+    } else if(contractAddress === chenInkContractAddress && (tokenChainId === 1 || tokenChainId === 4) && tokenId <= 53) {
+        nftContract = chenInkContract;
+    } else if(contractAddress === chenInkContractAddress && (tokenChainId === 1 || tokenChainId === 4) && tokenId >= 54) {
+        nftContract = chenInkContract;
+    } else if(contractAddress === rewardsContractAddress && (tokenChainId === 137 || tokenChainId === 80001)) {
+        nftContract = rewardsContract;
+    } else if(contractAddress === genesisBlockContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
+        nftContract = genesisBlockContract;
+    } else if(contractAddress === sagesRantContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
+        nftContract = sagesRantContract;
+    } else if(contractAddress === ownlyHouseOfArtContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
+        nftContract = ownlyHouseOfArtContract;
+    }
+
+    $("#modal-transfer-token").modal("hide");
+
+    nftContract.methods.safeTransferFrom(address, transferRecipientAddress, tokenId)
+        .send({
+            from: web3Bsc.utils.toChecksumAddress(address)
+        }).on('transactionHash', function(transactionHash){
+            $("#modal-processing").modal("show");
+        }).on('error', function(error){
+            $("#modal-processing").modal("hide");
+
+            $("#modal-error .message").text(error.code + ": " + error.message);
+            $("#modal-error").modal("show");
+        }).then(function(receipt) {
+            $("#modal-processing").modal("hide");
+            location.reload();
+        });
 });
 
 // PROFILE

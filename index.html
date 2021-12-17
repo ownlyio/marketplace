@@ -552,6 +552,53 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="modal fade" id="modal-wrong-network-2" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered modal-sm">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="text-center mt-3 mb-3">
+								<i class="fas fa-exclamation-circle font-size-400 text-color-3"></i>
+							</div>
+							<h5 class="w-100 font-size-100 text-center message"></h5>
+						</div>
+						<div class="modal-footer justify-content-center">
+							<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Okay</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="modal-transfer-token" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-body py-4">
+							<div class="text-center mt-3 mb-3">
+								<i class="fas fa-gift font-size-400 text-color-5"></i>
+							</div>
+							
+							<h5 class="w-100 font-size-130 text-center neo-bold mb-3">Transfer Token</h5>
+							
+							<div class="font-size-90 mb-1">Transfer Recipient Wallet Address</div>
+							<input type="text" class="form-control" id="transfer-recipient-address" placeholder="e.g. 0x7ef4..." />
+							
+							<div class="alert alert-danger mt-3 mb-0 d-none" id="invalid-recipient-wallet-address-container">
+								<div class="d-flex align-items-center">
+									<div class="pe-3">
+										<i class="fas fa-exclamation-circle font-size-150"></i>
+									</div>
+									<div>Invalid Wallet Address</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal-footer justify-content-center">
+							<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-custom-4 px-4" id="transfer-token">Transfer</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	
@@ -564,6 +611,6 @@
 	<script src="js/moment.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js" async integrity="sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/" crossorigin="anonymous"></script>
-	<script src="js/script.js?v=3.6.2" id="script"></script>
+	<script src="js/script.js?v=3.6.3" id="script"></script>
 </body>
 </html>
