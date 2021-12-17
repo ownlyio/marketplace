@@ -218,6 +218,12 @@ let close_loading_page = () => {
 
     clearInterval(loading_interval);
 };
+let initializeTooltip = function() {
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+};
 let findGetParameter = (parameterName) => {
     let result = null,
         tmp = [];
@@ -1400,9 +1406,42 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         token_type = "ERC-1155";
     }
 
+    let tokenCollectionName = $("#token-collection-name");
+
+    if(contractAddress === titansContractAddress && network === "bsc") {
+        tokenCollectionName.text("Titans of Industry");
+        tokenCollectionName.attr("href", "?collection=titans-of-industry");
+    } else if(contractAddress === mustachiosContractAddress && network === "eth") {
+        tokenCollectionName.text("The Mustachios");
+        tokenCollectionName.attr("href", "?collection=the-mustachios");
+    } else if(contractAddress === chenInkContractAddress && network === "eth" && token <= 53) {
+        tokenCollectionName.text("CryptoSolitaire");
+        tokenCollectionName.attr("href", "?collection=cryptosolitaire");
+    } else if(contractAddress === chenInkContractAddress && network === "eth" && token >= 54) {
+        tokenCollectionName.text("Inkvadyrz");
+        tokenCollectionName.attr("href", "?collection=inkvadyrz");
+    } else if(contractAddress === rewardsContractAddress && network === "matic") {
+        tokenCollectionName.text("Ownly Rewards");
+        tokenCollectionName.attr("href", "?collection=rewards");
+    } else if(contractAddress === genesisBlockContractAddress && network === "eth") {
+        tokenCollectionName.text("Genesis Block");
+        tokenCollectionName.attr("href", "?collection=genesis-block");
+    } else if(contractAddress === sagesRantContractAddress && network === "eth") {
+        tokenCollectionName.text("The Sages Rant Collectibles");
+        tokenCollectionName.attr("href", "?collection=the-sages-rant-collectibles");
+    } else if(contractAddress === ownlyHouseOfArtContractAddress && network === "eth") {
+        tokenCollectionName.text("Ownly House of Art");
+        tokenCollectionName.attr("href", "?collection=oha");
+    }
+
     $("#token-owner").html('<a href="' + blockchainExplorerBsc + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
     $("#token-type").text(token_type);
     $("#token-network").text(token_network);
+
+    if(web3Bsc.utils.toChecksumAddress(address) === owner) {
+        $("#transfer-token-container").removeClass("d-none");
+        initializeTooltip();
+    }
 
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
@@ -2466,6 +2505,67 @@ $(document).on("click", 'html', function(e) {
     }
 });
 
+$(document).on("click", "#transfer-token-show-modal", function() {
+    let search = $(this).val();
+    let searchSuggestionsContainer = $("#search-suggestions-container");
+
+    if(search.length > 1) {
+        let content = ' <div class="card">';
+        content += '        <div class="card-body">';
+        content += '            <div class="d-flex justify-content-center align-items-center">';
+        content += '                <div class="spinner-grow background-image-cover bg-transparent me-2" style="width:1.5rem; height:1.5rem; background-image:url(\'img/ownly/own-token.png\')" role="status">';
+        content += '                    <span class="visually-hidden">Loading...</span>';
+        content += '                </div>';
+        content += '                <div class="font-size-80">Loading</div>';
+        content += '            </div>';
+        content += '        </div>';
+        content += '    </div>';
+
+        searchSuggestionsContainer.html(content);
+        searchSuggestionsContainer.removeClass("d-none");
+
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(function() {
+            $.get(ownlyAPI + "api/search?value=" + search, async function(result) {
+                result = result.data;
+
+                content = '     <div class="list-group overflow-auto" style="max-height:400px">';
+                for(let i = 0; i < result.length; i++) {
+                    content += '    <a href="' + result[i].token_url + '" class="list-group-item list-group-item-action">';
+                    content += '        <div class="d-flex align-items-center">';
+                    content += '            <div class="pe-3" style="min-width:55px; width:55px">';
+                    content += '                <div class="background-image-contain bg-color-1" style="padding-top:100%; border:1px solid #dddddd; background-image:url(\'' + result[i].thumbnail + '\')"></div>';
+                    content += '            </div>';
+                    content += '            <div class="flex-fill">';
+                    content += '                <div class="text-color-7 font-size-80 mb-1">' + result[i].collection + '</div>';
+                    content += '                <div class="d-flex w-100 justify-content-between align-items-center">';
+                    content += '                    <div class="font-size-90 pe-4">' + result[i].name + '</div>';
+                    content += '                    <div class="text-color-7 font-size-70">ID:&nbsp;' + result[i].id + '</div>';
+                    content += '                </div>';
+                    content += '            </div>';
+                    content += '         </div>';
+                    content += '    </a>';
+                }
+                content += '    </div>';
+
+                if(result.length === 0) {
+                    content = '     <div class="card">';
+                    content += '        <div class="card-body">';
+                    content += '            <div class="text-center">';
+                    content += '                <div class="font-size-80">No Result Found</div>';
+                    content += '            </div>';
+                    content += '        </div>';
+                    content += '    </div>';
+                }
+
+                searchSuggestionsContainer.html(content);
+            });
+        }, 1000);
+    } else {
+        searchSuggestionsContainer.addClass("d-none");
+    }
+});
 
 // PROFILE
 
