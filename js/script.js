@@ -59,12 +59,13 @@ let content;
 let hasMarketplaceEthereumContract = false;
 let hasMarketplacePolygonContract = false;
 let searchTimeout;
+let mainWalletAddress;
 
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
 
-    if(currentURL.includes("ownly.market")) {
-    // if(true) {
+    // if(currentURL.includes("ownly.market")) {
+    if(true) {
         titansContractAddress = "0x804efc52BFa9B85A86219c191d51147566f3B327";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
@@ -119,6 +120,7 @@ let initializeEnvVariables = () => {
 
         url = "https://ownly.market/";
         ownlyAPI = "https://ownly.tk/";
+        mainWalletAddress = "0x672b733C5350034Ccbd265AA7636C3eBDDA2223B";
     } else {
         titansContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
         titansContractAbi = [{"inputs":[{"internalType":"address","name":"admin_","type":"address"},{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"createToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
@@ -170,6 +172,7 @@ let initializeEnvVariables = () => {
 
         url = "http://ownlyio.dev-marketplace.test/";
         ownlyAPI = "http://ownly-api.test/";
+        mainWalletAddress = "0x768532c218f4f4e6E4960ceeA7F5a7A947a1dd61";
     }
 
     sparkSwapContractAddress = "0xeB98E6e5D34c94F56708133579abB8a6A2aC2F26";
@@ -947,57 +950,28 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     let soldSagesRantCollectible = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
     let soldOwnlyHouseOfArt = [];
 
-    if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(i)) {
-        let genesisBlockPrice = 1.5;
-        if(i >= 1 && i <= 3) {
-            genesisBlockPrice = 0.5;
-        } else if(i >= 4 && i <= 6) {
-            genesisBlockPrice = 0.8;
-        } else if(i >= 7 && i <= 8) {
-            genesisBlockPrice = 1;
+    if(owner === mainWalletAddress && network === "eth") {
+        let price = 0;
+
+        try {
+            await $.get("https://api.opensea.io/api/v1/asset/" + contractAddress + "/" + i, async function(data) {
+                if(data && data.orders && data.orders.length > 0) {
+                    price = web3Bsc.utils.fromWei(data.orders[0].base_price, "ether");
+                }
+            });
+        } catch (error) {}
+
+        content += '                <div class="row align-items-center">';
+        content += '                    <div class="col-6">';
+        if(price > 0) {
+            content += '                    <div class="d-flex align-items-end mb-1">';
+            content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
+            content += '                        <div class="ps-2 ms-1">';
+            content += '                            <img src="img/tokens/ETH.png" width="30" />';
+            content += '                        </div>';
+            content += '                    </div>';
+            content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
         }
-
-        content += '                <div class="row align-items-center">';
-        content += '                    <div class="col-6">';
-        content += '                        <div class="d-flex align-items-end mb-1">';
-        content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-        content += '                            <div class="ps-2 ms-1">';
-        content += '                                <img src="img/tokens/ETH.png" width="30" />';
-        content += '                            </div>';
-        content += '                        </div>';
-        content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + genesisBlockPrice + ' ETH</div>';
-        content += '                    </div>';
-        content += '                    <div class="col-6 button-container">';
-        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
-        content += '                    </div>';
-        content += '                </div>';
-    } else if(contractAddress === sagesRantContractAddress && !soldSagesRantCollectible.includes(i)) {
-        let sagesRantCollectiblePrice = 0.1;
-
-        content += '                <div class="row align-items-center">';
-        content += '                    <div class="col-6">';
-        content += '                        <div class="d-flex align-items-end mb-1">';
-        content += '                            <div class="font-size-100 font-size-md-110">Bid Price:</div>';
-        content += '                            <div class="ps-2 ms-1">';
-        content += '                                <img src="img/tokens/ETH.png" width="30" />';
-        content += '                            </div>';
-        content += '                        </div>';
-        content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + sagesRantCollectiblePrice + ' ETH</div>';
-        content += '                    </div>';
-        content += '                    <div class="col-6 button-container">';
-        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
-        content += '                    </div>';
-        content += '                </div>';
-    } else if(contractAddress === ownlyHouseOfArtContractAddress && !soldOwnlyHouseOfArt.includes(i)) {
-        content += '                <div class="row align-items-center">';
-        content += '                    <div class="col-6">';
-        content += '                        <div class="d-flex align-items-end mb-1">';
-        content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-        content += '                            <div class="ps-2 ms-1">';
-        content += '                                <img src="img/tokens/ETH.png" width="30" />';
-        content += '                            </div>';
-        content += '                        </div>';
-        content += '                        <div class="font-size-160 font-size-md-180 neo-black">1 ETH</div>';
         content += '                    </div>';
         content += '                    <div class="col-6 button-container">';
         content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
@@ -1166,7 +1140,7 @@ let displayToken = (network, contractAddress, token) => {
     } else if(contractAddress === sagesRantContractAddress && network === "eth") {
         displaySagesRantToken(token);
     } else if(contractAddress === ownlyHouseOfArtContractAddress && network === "eth") {
-        displayownlyHouseOfArtToken(token);
+        displayOwnlyHouseOfArtToken(token);
     }
 };
 let displayTitanToken = (token) => {
@@ -1256,7 +1230,7 @@ let displaySagesRantToken = (token) => {
         }
     });
 };
-let displayownlyHouseOfArtToken = (token) => {
+let displayOwnlyHouseOfArtToken = (token) => {
     $.get(ownlyAPI + "api/oha-token/" + ((address) ? address : "0") + "/" + ownlyHouseOfArtContractAddress + "/" + token, async function(metadata) {
         displayTokenMetadata(chainIDEth, metadata, ownlyHouseOfArtContractAddress, token);
 
@@ -1453,7 +1427,15 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     let soldSagesRantCollectible = [];
     let soldOwnlyHouseOfArt = [];
 
-    if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(token)) {
+    if(contractAddress === chenInkContractAddress && token >= 1 && token <= 53) {
+        $(".token-price").html("");
+        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+
+        let content = '<a href="https://opensea.io/assets/' + chenInkContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+
+        $("#create-market-sale-container .text-end").html(content);
+        $("#create-market-sale-container").removeClass("d-none");
+    } else if(contractAddress === genesisBlockContractAddress && !soldGenesisBlock.includes(token)) {
         let genesisBlockPrice = 1.5;
         if(token >= 1 && token <= 3) {
             genesisBlockPrice = 0.5;
