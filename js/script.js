@@ -1417,7 +1417,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     transferTokenShowModal.attr("data-contract-address", contractAddress);
     transferTokenShowModal.attr("data-token-id", token);
 
-    if(web3Bsc.utils.toChecksumAddress(address) === owner) {
+    if(address && web3Bsc.utils.toChecksumAddress(address) === owner) {
         $("#transfer-token-container").removeClass("d-none");
         initializeTooltip();
     }
