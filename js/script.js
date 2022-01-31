@@ -484,7 +484,7 @@ let initializeWeb3 = async () => {
     web3Eth = new Web3(rpcEndpointEth);
     web3Matic = new Web3(rpcEndpointMatic);
 
-    let getLiquidityStakingData = function(address, staking_type, page) {
+    let getStakingData = function(address, staking_type, page) {
         $.get("https://api.covalenthq.com/v1/56/address/" + address + "/transactions_v2/?quote-currency=USD&format=JSON&block-signed-at-asc=true&no-logs=false&page-number=" + page + "&key=ckey_994c8fdd549f44fa9b2b27f59a0", async function(data) {
             let events = ["Staked", "RewardPaid"];
 
@@ -558,15 +558,15 @@ let initializeWeb3 = async () => {
 
                 if(data.data.pagination.has_more) {
                     setTimeout(function() {
-                        getLiquidityStakingData(address, staking_type, page++);
+                        getStakingData(address, staking_type, page + 1);
                     }, 5000);
                 }
             }
         });
     }
 
-    getLiquidityStakingData("0xda687D1d31392B957166f6C16E508b484f3A70cb", "liquidity", 0);
-    getLiquidityStakingData("0x5950060609b2037330c16491aa9f2cd3ed6db154", "pool-based",  0);
+    getStakingData("0xda687D1d31392B957166f6C16E508b484f3A70cb", "liquidity", 0);
+    getStakingData("0x5950060609b2037330c16491aa9f2cd3ed6db154", "pool-based",  0);
 };
 let initializeContracts = () => {
     titansContract = new web3Bsc.eth.Contract(titansContractAbi, titansContractAddress);
