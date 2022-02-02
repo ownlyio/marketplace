@@ -527,28 +527,36 @@ let initializeWeb3 = async () => {
                         if(staking_type === "liquidity") {
                             stakingContract.methods.earned(earners[i]).call()
                                 .then(function(earned) {
-                                    $.post(ownlyAPI + "api/update-staking-earnings", {
-                                        staking: address,
-                                        address: earners[i],
-                                        earned: earned
-                                    }, function(data) {
+                                    stakingContract.methods.balanceOf(earners[i]).call()
+                                        .then(function(staked) {
+                                            $.post(ownlyAPI + "api/update-staking-earnings", {
+                                                staking: address,
+                                                address: earners[i],
+                                                earned: earned,
+                                                staked: staked
+                                            }, function(data) {
 
-                                    }).fail(function(error) {
-                                        console.log(error);
-                                    });
+                                            }).fail(function(error) {
+                                                console.log(error);
+                                            });
+                                        });
                                 });
                         } else if(staking_type === "pool-based") {
                             stakingContract.methods.pendingReward(earners[i]).call()
                                 .then(function(earned) {
-                                    $.post(ownlyAPI + "api/update-staking-earnings", {
-                                        staking: address,
-                                        address: earners[i],
-                                        earned: earned
-                                    }, function(data) {
+                                    stakingContract.methods.userInfo(earners[i]).call()
+                                        .then(function(staked) {
+                                            $.post(ownlyAPI + "api/update-staking-earnings", {
+                                                staking: address,
+                                                address: earners[i],
+                                                earned: earned,
+                                                staked: staked[0]
+                                            }, function(data) {
 
-                                    }).fail(function(error) {
-                                        console.log(error);
-                                    });
+                                            }).fail(function(error) {
+                                                console.log(error);
+                                            });
+                                        });
                                 });
                         }
                     }
