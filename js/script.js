@@ -64,6 +64,8 @@ let hasMarketplacePolygonContract = false;
 let searchTimeout;
 let mainWalletAddress;
 let marketItemsEth;
+let localStorage;
+let tokensContainerInitialContent;
 
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
@@ -179,6 +181,8 @@ let initializeEnvVariables = () => {
     $(".website-home-link").attr("href", url);
     cacheVersion = $("#script").attr("src").split("?v=")[1];
     $("#app-version").text(cacheVersion);
+
+    localStorage = window.localStorage;
 };
 let initiate_loading_page = () => {
     loading_interval = setInterval(function() {
@@ -342,20 +346,16 @@ let initializePage = () => {
         });
     } else if(collection || !collection) {
         pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
+            tokensContainerInitialContent = $("#tokens-container").html();
+            initializeTooltip();
+
             if(!collection) {
                 collection = "oha";
             }
 
             currentPage = "home";
 
-            if(collection === "titans-of-industry") {
-                network = "bsc"
-            } else if(collection === "rewards") {
-                network = "matic"
-            } else {
-                network = "eth"
-            }
-
+            network = getCollectionNetwork(collection);
             displayTokens(network, 0, "all", collection, page);
 
             $(".header-collection").addClass("d-none");
@@ -656,14 +656,32 @@ let displayTokens = async (network, excludedToken, type, collection, page) => {
 
         collectionContract = new web3[network].eth.Contract(JSON.parse(data.collection.abi), data.collection.contract_address);
 
+        let view = (localStorage.getItem("view")) ? localStorage.getItem("view") : 'large-grid';
+        $(".change-token-view").removeClass("active");
+        $(".change-token-view[value='" + view + "']").addClass("active");
+        $("#view-options-container").removeClass("d-none");
+
         for(let i = 0; i < metadata.length; i++) {
             marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].id).call()
                 .then(async function(marketItem) {
-                    console.log(collectionContract.methods);
                     await collectionContract.methods.ownerOf(metadata[i].token_id).call()
                         .then(async function(owner) {
                             update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata[i].token_id, metadata[i].to, owner);
-                            await formatTokenCards(excludedToken, type, metadata[i].token_id, marketItem, metadata[i], owner, data.collection.contract_address, network);
+                            let content = await formatTokenCards(excludedToken, type, metadata[i].token_id, marketItem, metadata[i], owner, data.collection.contract_address, network);
+
+                            if(view === "list") {
+                                content = generateListView(content);
+                            }
+
+                            $("#loading-container").addClass("d-none");
+
+                            if(type === "all") {
+                                $("#tokens-container").html($("#tokens-container").html() + content);
+                            } else if(type === "owned") {
+                                $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+                            } else if(type === "favorites") {
+                                $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
+                            }
                         });
                 });
         }
@@ -1047,18 +1065,29 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         blockchainExplorer = blockchainExplorerMatic;
     }
 
-    let col_xl = "col-xl-4";
-    let padding_top = "100%";
-    let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
-    if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress)) {
-        col_xl = "col-xl-6";
-        padding_top = "70%";
-        // link = "#";
+    let view = localStorage.getItem('view');
+    if(!view) {
+        view = "large-grid";
+        localStorage.setItem('view', view);
     }
 
-    content += '    <div class="col-md-6 ' + col_xl + ' mb-5 pb-md-3 px-md-4">';
+    let grid = "col-sm-6 col-xl-4";
+    let fontSize = "font-size-100";
+    let descriptionHeight = "min-height:51px; max-height:51px";
+    if(view === "small-grid") {
+        grid = "col-6 col-sm-4 col-xl-3"
+        fontSize = "font-size-80";
+        descriptionHeight = "min-height:43px; max-height:43px";
+    } else if(view === "list") {
+        grid = "col-xl-4"
+    }
+
+    let padding_top = "100%";
+    let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
+
+    let content = '    <div class="' + grid + ' ' + fontSize + ' mb-5 pb-md-3 px-lg-4">';
     content += '        <div class="token-card" data-token-id="' + i + '">';
-    content += '            <a href="' + link + '" class="link">';
+    content += '            <a href="' + link + '" class="link token-image-link">';
     if(metadata.thumbnail.includes(".mp4")) {
         content += '            <div class="w-100 shadow-sm border-1 position-relative mb-3" style="padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px">';
         content += '                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="position:absolute; top:0; left:0">';
@@ -1071,7 +1100,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         content += '            <div class="w-100 background-image-contain token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.thumbnail + '\'); padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px"></div>';
     }
     content += '            </a>';
-    content += '            <div class="d-flex flex-column justify-content-between h-100">';
+    content += '            <div class="d-flex flex-column justify-content-between h-100 token-header">';
     content += '                <div class="d-flex justify-content-between">';
     content += '                    <div class="d-flex align-items-center mb-1" style="min-height:61px">';
     content += '                        <a href="' + link + '" class="font-size-160 neo-bold token-name link text-color-6 text-decoration-none">' + metadata.name + '</a>';
@@ -1085,104 +1114,109 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     content += '                        <div class="ps-2 font-size-90 text-color-1 favorites-count">' + metadata.favorite_count + '</div>';
     content += '                    </div>';
     content += '                </div>';
+    content += '            </div>';
+    content += '            <div class="token-body">';
     if(metadata.supply === undefined || metadata.supply === 1) {
         content += '            <div class="font-size-110 mb-2 pb-1">1 of 1 - Single Edition</div>';
     } else {
         content += '            <div class="font-size-110 mb-2 pb-1">Multiple Editions</div>';
     }
-    content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="min-height:51px; max-height:51px">' + metadata.description + '</div>';
+    content += '                <div class="font-size-90 mb-4 token-description-truncated overflow-hidden" style="' + descriptionHeight + '">' + metadata.description + '</div>';
+    content += '            </div>';
 
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
 
-    // if(owner === mainWalletAddress && network === "eth") {
-    //     let price = 0;
-    //
-    //     try {
-    //         await $.get("https://api.opensea.io/api/v1/asset/" + contractAddress + "/" + i, async function(data) {
-    //             if(data && data.orders && data.orders.length > 0) {
-    //                 price = web3Bsc.utils.fromWei(data.orders[0].base_price, "ether");
-    //             }
-    //         });
-    //     } catch (error) {}
-    //
-    //     content += '                <div class="row align-items-center">';
-    //     content += '                    <div class="col-6">';
-    //     if(price > 0) {
-    //         content += '                    <div class="d-flex align-items-end mb-1">';
-    //         content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
-    //         content += '                        <div class="ps-2 ms-1">';
-    //         content += '                            <img src="img/tokens/ETH.png" width="30" />';
-    //         content += '                        </div>';
-    //         content += '                    </div>';
-    //         content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
-    //     }
-    //     content += '                    </div>';
-    //     content += '                    <div class="col-6 button-container">';
-    //     content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
-    //     content += '                    </div>';
-    //     content += '                </div>';
-    // } else {
-    //     if(parseInt(marketItem.itemId)) {
-    //         content += '                <div class="row align-items-center">';
-    //         content += '                    <div class="col-6">';
-    //         content += '                        <div class="d-flex align-items-end mb-1">';
-    //         content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-    //         if(marketItem.currency === "OWN") {
-    //             content += '                        <div class="ps-2 ms-1">';
-    //             content += '                            <img src="img/ownly/own-token.png" width="30" />';
-    //             content += '                        </div>';
-    //         } else if(marketItem.currency === "BNB") {
-    //             content += '                        <div class="ps-2 ms-1">';
-    //             content += '                            <img src="img/bnb/bnb.webp" width="30" />';
-    //             content += '                        </div>';
-    //         }
-    //         content += '                        </div>';
-    //         content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
-    //         content += '                    </div>';
-    //         if(contractAddress === titansContractAddress) {
-    //             content += '                <div class="col-6 button-container">';
-    //             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-    //                 content += '                <button class="btn btn-custom-3 w-100 font-size-100 font-size-md-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-    //             } else {
-    //                 content += '                <button class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
-    //             }
-    //         }
-    //         content += '                    </div>';
-    //         content += '                </div>';
-    //         content += '                <div class="owner d-none">' + owner + '</div>';
-    //     } else {
-    //         if(chainId !== chainIDMatic) {
-    //             content += '                <div class="row align-items-center" style="min-height:69px">';
-    //             content += '                    <div class="col-6">';
-    //             content += '                        <div>';
-    //             content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
-    //             content += '                        </div>';
-    //             content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-    //             content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
-    //             content += '                    </div>';
-    //             content += '                    <div class="col-6">';
-    //             if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
-    //                 if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-    //                     content += '                <button class="btn btn-custom-4 w-100 font-size-100 font-size-md-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-    //                 } else {
-    //                     content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
-    //                 }
-    //             }
-    //
-    //             // Bruteforce display for genesis block
-    //             if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-    //                 content += '                <div class="w-100 font-size-100 font-size-md-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
-    //             }
-    //
-    //             content += '                    </div>';
-    //             content += '                </div>';
-    //         }
-    //     }
-    // }
-    // content += '            </div>';
-    // content += '        </div>';
-    // content += '    </div>';
+    content += '            <div class="token-footer">';
+    if(owner === mainWalletAddress && network === "eth") {
+        let price = 0;
+
+        try {
+            await $.get("https://api.opensea.io/api/v1/asset/" + contractAddress + "/" + i, async function(data) {
+                if(data && data.orders && data.orders.length > 0) {
+                    price = web3Bsc.utils.fromWei(data.orders[0].base_price, "ether");
+                }
+            });
+        } catch (error) {}
+
+        content += '                <div class="row align-items-center">';
+        content += '                    <div class="col-6">';
+        if(price > 0) {
+            content += '                    <div class="d-flex align-items-end mb-1">';
+            content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
+            content += '                        <div class="ps-2 ms-1">';
+            content += '                            <img src="img/tokens/ETH.png" width="30" />';
+            content += '                        </div>';
+            content += '                    </div>';
+            content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
+        }
+        content += '                    </div>';
+        content += '                    <div class="col-6 button-container">';
+        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        content += '                    </div>';
+        content += '                </div>';
+    } else {
+        if(parseInt(marketItem.itemId)) {
+            content += '                <div class="row align-items-center">';
+            content += '                    <div class="col-6">';
+            content += '                        <div class="d-flex align-items-end mb-1">';
+            content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
+            if(marketItem.currency === "OWN") {
+                content += '                        <div class="ps-2 ms-1">';
+                content += '                            <img src="img/ownly/own-token.png" width="30" />';
+                content += '                        </div>';
+            } else if(marketItem.currency === "BNB") {
+                content += '                        <div class="ps-2 ms-1">';
+                content += '                            <img src="img/bnb/bnb.webp" width="30" />';
+                content += '                        </div>';
+            }
+            content += '                        </div>';
+            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
+            content += '                    </div>';
+            if(contractAddress === titansContractAddress) {
+                content += '                <div class="col-6 button-container">';
+                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                } else {
+                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
+                }
+            }
+            content += '                    </div>';
+            content += '                </div>';
+            content += '                <div class="owner d-none">' + owner + '</div>';
+        } else {
+            if(chainId !== chainIDMatic) {
+                content += '                <div class="row align-items-center" style="min-height:69px">';
+                content += '                    <div class="col-6">';
+                content += '                        <div>';
+                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                content += '                        </div>';
+                content += '                        <div class="font-size-100 neo-bold">Owner</div>';
+                content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
+                content += '                    </div>';
+                content += '                    <div class="col-6">';
+                if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
+                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                        content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                    } else {
+                        content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                    }
+                }
+
+                // Bruteforce display for genesis block
+                if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
+                    content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                }
+
+                content += '                    </div>';
+                content += '                </div>';
+            }
+        }
+    }
+    content += '                </div>';
+    content += '            </div>';
+    content += '        </div>';
+    content += '    </div>';
 
     if(address && owner.toLowerCase() === address.toLowerCase()) {
         $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
@@ -1199,13 +1233,26 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         }, 1000);
     }
 
-    if(type === "all") {
-        $("#tokens-container").html(content);
-    } else if(type === "owned") {
-        $("#owned-tokens-container").html(content);
-    } else if(type === "favorites") {
-        $("#favorite-tokens-container").html(content);
-    }
+    return content;
+};
+let generateListView = function(content) {
+    let temp = $("#temp");
+    temp.html(content);
+
+    content = '     <div class="col-12 mb-4 font-size-100 font-size-md-100">';
+    content += '        <div class="d-flex align-items-start align-items-md-center">';
+    content += '            <div class="mt-2 list-token-image-container">' + temp.find(".token-image-link").html() + '</div>';
+    content += '            <div class="px-4">';
+    content += '                <div class="">' + temp.find(".token-header").html() + '</div>';
+    content += '                <div class="row align-items-center">';
+    content += '                    <div class="col-12 col-md-6 pe-4 list-token-body">' + temp.find(".token-body").html() + '</div>';
+    content += '                    <div class="col-12 col-md-6 ps-4">' + temp.find(".token-footer").html() + '</div>';
+    content += '                </div>';
+    content += '            </div>';
+    content += '        </div>';
+    content += '    </div>';
+
+    return content;
 };
 let generatePagination = function(pagination, pageUrl) {
     let paginationContainer = $("#pagination-container");
@@ -2152,6 +2199,19 @@ let start_countdown = () => {
         console.log(error);
     });
 };
+let getCollectionNetwork = (collection) => {
+    let network;
+
+    if(collection === "titans-of-industry") {
+        network = "bsc"
+    } else if(collection === "rewards") {
+        network = "matic"
+    } else {
+        network = "eth"
+    }
+
+    return network;
+};
 
 let test = function() {
     let web3test = new Web3("https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
@@ -2716,6 +2776,29 @@ $(document).on("click", "#transfer-token", async function() {
             $("#modal-processing").modal("hide");
             location.reload();
         });
+});
+
+$(document).on("click", ".change-token-view", function() {
+    let view = $(this).val();
+
+    if(localStorage.getItem("view") !== view) {
+        localStorage.setItem("view", view);
+
+        $(".change-token-view").removeClass("active");
+        $(".change-token-view[value='" + view + "']").addClass("active");
+
+        let collection = findGetParameter("collection");
+        let page = findGetParameter("page");
+
+        if(!collection) {
+            collection = "oha";
+        }
+
+        let network = getCollectionNetwork(collection);
+
+        $("#tokens-container").html(tokensContainerInitialContent);
+        displayTokens(network, 0, "all", collection, page);
+    }
 });
 
 // PROFILE

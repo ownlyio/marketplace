@@ -288,6 +288,16 @@ html {
     color:#d44e28;
     border:2px solid #d44e28;
 }
+.btn-custom-13 {
+    background-color:#f4f1ec;
+    color:#000000;
+    border:2px solid #dbd8d5;
+}
+.btn-custom-13:hover, .btn-custom-13:active, .btn-custom-13:focus, .btn-custom-13.active {
+    background-color: #dbd8d5;
+    color: #000000;
+    border:2px solid #dbd8d5;
+}
 .bg-color-1 {
     background-color:#f3f3f3!important;
 }
@@ -477,6 +487,12 @@ html {
 #market-label {
     letter-spacing:0.63em;
 }
+.list-token-image-container {
+    min-width:90px;
+}
+.list-token-body {
+    border-right:0;
+}
 
 @media(min-width:576px) {
     .artist-image {
@@ -501,6 +517,9 @@ html {
     #market-label {
         letter-spacing:0.54em;
     }
+    .list-token-image-container {
+        min-width:110px;
+    }
 }
 
 @media(min-width:768px) {
@@ -518,6 +537,12 @@ html {
     }
     .mustachios-text {
         width:60%;
+    }
+    .list-token-image-container {
+        min-width:160px;
+    }
+    .list-token-body {
+        border-right:1px solid #aaaaaa;
     }
 }
 
