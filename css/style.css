@@ -467,6 +467,15 @@ html {
     background-color: #606060;
     border-radius: 4px;
 }
+#property-filter-items .form-check-input:checked {
+    background-color: #147ca0;
+    border-color: #147ca0;
+}
+.property-filter-selected-item {
+    border-radius:20px;
+    border:2px solid #147ca0;
+    color: #147ca0;
+}
 
 /*##################################################################*/
 

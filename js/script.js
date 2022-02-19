@@ -357,6 +357,7 @@ let initializePage = () => {
 
             network = getCollectionNetwork(collection);
             displayTokens(network, 0, "all", collection, page);
+            displayCollectionProperties(collection);
 
             $(".header-collection").addClass("d-none");
             $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
@@ -686,264 +687,36 @@ let displayTokens = async (network, excludedToken, type, collection, page) => {
                 });
         }
     });
-
-    // await $.get(ownlyAPI + "api/get-market-items/" + chainId, async function(_marketItems) {
-    //     marketItemsEth = _marketItems;
-    // });
-
-    // if(collection === "titans-of-industry") {
-    //     displayTitanTokens(excludedToken, type, page);
-    // } else if(collection === "the-mustachios") {
-    //     displayMustachioTokens(excludedToken, type, page);
-    // } else if(collection === "cryptosolitaire") {
-    //     displayCryptosolitaireTokens(excludedToken, type, page);
-    // } else if(collection === "inkvadyrz") {
-    //     displayInkvadyrzTokens(excludedToken, type, page);
-    // } else if(collection === "rewards") {
-    //     displayRewardTokens(excludedToken, type, page);
-    // } else if(collection === "genesis-block") {
-    //     displayGenesisBlockTokens(excludedToken, type, page);
-    // } else if(collection === "the-sages-rant-collectibles") {
-    //     displaySagesRantCollectibles(excludedToken, type, page);
-    // } else if(collection === "oha") {
-    //     displayOwnlyHouseOfArtTokens(excludedToken, type, page);
-    // }
 };
-let displayTitanTokens = function(excludedToken, type, page) {
-    $.get(ownlyAPI + "api/titans/" + ((address) ? address : "0") + "/" + titansContractAddress + ((page) ? ("?page=" + page) : ""), async function(titans) {
-        content = '';
+let displayCollectionProperties = function(collection) {
+    $.get(ownlyAPI + "api/get-collection-properties/" + collection, async function(data) {
+        let properties = data.properties;
+        let content = '';
 
-        let metadata = titans.data;
+        for(let i in properties) {
+            if (properties.hasOwnProperty(i)) {
+                content += '        <div class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">';
+                content += '            <div class="text-color-5 font-size-90 mb-2">' + i + '</div>';
+                content += '            <div style="max-height:130px; overflow-y:scroll">';
 
-        for(let i = 0; i < metadata.length; i++) {
-            marketplaceBinanceContract.methods.fetchMarketItem(titansContractAddress, metadata[i].id).call()
-                .then(async function(marketItem) {
-                    await titansContract.methods.ownerOf(metadata[i].id).call()
-                        .then(async function(owner) {
-                            update_token_transaction(chainIDBsc, titansContractAddress, metadata[i].id, metadata[i].to, owner);
-                            await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, titansContractAddress, "bsc");
-                        });
-                });
-        }
-    });
-};
-let displayGenesisBlockTokens = async function(excludedToken, type, page) {
-    await updateConnectToWallet();
+                let property = properties[i];
 
-    $.get(ownlyAPI + "api/genesis-block-tokens/" + ((address) ? address : "0") + "/" + genesisBlockContractAddress + ((page) ? ("?page=" + page) : ""), async function(genesisBlock) {
-        content = '';
-
-        let metadata = genesisBlock.data;
-
-        generatePagination(genesisBlock, url + '?collection=genesis-block');
-
-        for(let i = 0; i < metadata.length; i++) {
-            if(hasMarketplaceEthereumContract) {
-                marketplaceEthereumContract.methods.fetchMarketItem(genesisBlockContractAddress, metadata[i].id).call()
-                    .then(async function(marketItem) {
-                        await genesisBlockContract.methods.ownerOf(metadata[i].id).call()
-                            .then(async function(owner) {
-                                update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata[i].id, metadata[i].to, owner);
-                                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, genesisBlockContractAddress, "eth");
-                            });
-                    });
-            } else {
-                let marketItem = false;
-                await genesisBlockContract.methods.ownerOf(metadata[i].id).call()
-                    .then(async function(owner) {
-                        update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata[i].id, metadata[i].to, owner);
-                        await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, genesisBlockContractAddress, "eth");
-                    });
-            }
-        }
-    });
-};
-let displaySagesRantCollectibles = function(excludedToken, type, page) {
-    sagesRantContract.methods.totalSupply().call()
-        .then(async function(totalSupply) {
-            await updateConnectToWallet();
-
-            $.get(ownlyAPI + "api/sages-rant-collectibles/" + ((address) ? address : "0") + "/" + sagesRantContractAddress + ((page) ? ("?page=" + page) : ""), async function(sagesRant) {
-                content = '';
-
-                let metadata = sagesRant.data;
-
-                generatePagination(sagesRant, url + '?collection=the-sages-rant-collectibles');
-
-                for(let i = 0; i < metadata.length; i++) {
-                    if(hasMarketplaceEthereumContract) {
-                        marketplaceEthereumContract.methods.fetchMarketItem(sagesRantContractAddress, metadata[i].id).call()
-                            .then(async function(marketItem) {
-                                await sagesRantContract.methods.ownerOf(metadata[i].id).call()
-                                    .then(async function(owner) {
-                                        update_token_transaction(chainIDEth, sagesRantContractAddress, metadata[i].id, metadata[i].to, owner);
-                                        await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, sagesRantContractAddress, "eth");
-                                    });
-                            });
-                    } else {
-                        let marketItem = false;
-                        await sagesRantContract.methods.ownerOf(metadata[i].id).call()
-                            .then(async function(owner) {
-                                update_token_transaction(chainIDEth, sagesRantContractAddress, metadata[i].id, metadata[i].to, owner);
-                                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, sagesRantContractAddress, "eth");
-                            });
+                for (let j in property) {
+                    if (property.hasOwnProperty(j)) {
+                        content += '        <div class="form-check form-switch">';
+                        content += '            <input class="form-check-input property-filter-item" type="checkbox" role="switch" id="' + i + '-' + j + '" data-property="' + i + '" data-value="' + j + '">';
+                        content += '            <label class="form-check-label font-size-80" for="' + i + '-' + j + '" style="margin-top:5px">' + j + ' (' + property[j] + ')</label>';
+                        content += '        </div>';
                     }
                 }
-            });
-        });
-};
-let displayOwnlyHouseOfArtTokens = function(excludedToken, type, page) {
-    ownlyHouseOfArtContract.methods.totalSupply().call()
-        .then(async function(totalSupply) {
-            await updateConnectToWallet();
 
-            $.get(ownlyAPI + "api/oha-tokens/" + ((address) ? address : "0") + "/" + ownlyHouseOfArtContractAddress + ((page) ? ("?page=" + page) : ""), async function(ownlyHouseOfArt) {
-                content = '';
-
-                let metadata = ownlyHouseOfArt.data;
-
-                generatePagination(ownlyHouseOfArt, url + '?collection=oha');
-
-                for(let i = 0; i < metadata.length; i++) {
-                    if(hasMarketplaceEthereumContract) {
-                        marketplaceEthereumContract.methods.fetchMarketItem(ownlyHouseOfArtContractAddress, metadata[i].id).call()
-                            .then(async function(marketItem) {
-                                await ownlyHouseOfArtContract.methods.ownerOf(metadata[i].id).call()
-                                    .then(async function(owner) {
-                                        update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata[i].id, metadata[i].to, owner);
-                                        await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, ownlyHouseOfArtContractAddress, "eth");
-                                    });
-                            });
-                    } else {
-                        let marketItem = false;
-                        await ownlyHouseOfArtContract.methods.ownerOf(metadata[i].id).call()
-                            .then(async function(owner) {
-                                update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata[i].id, metadata[i].to, owner);
-                                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, ownlyHouseOfArtContractAddress, "eth");
-                            });
-                    }
-                }
-            });
-        });
-};
-let displayCryptosolitaireTokens = function(excludedToken, type, page) {
-        $.get(ownlyAPI + "api/cryptosolitaires/" + ((address) ? address : "0") + "/" + chenInkContractAddress + ((page) ? ("?page=" + page) : ""), async function(chenInkTokens) {
-            content = '';
-
-            let metadata = chenInkTokens.data;
-
-            generatePagination(chenInkTokens, url + '?collection=cryptosolitaire');
-
-            for(let i = 0; i < metadata.length; i++) {
-                if(hasMarketplaceEthereumContract) {
-                    marketplaceEthereumContract.methods.fetchMarketItem(chenInkContractAddress, metadata[i].id).call()
-                        .then(async function(marketItem) {
-                            await chenInkContract.methods.ownerOf(metadata[i].id).call()
-                                .then(async function(owner) {
-                                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
-                                    await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
-                                });
-                        });
-                } else {
-                    let marketItem = false;
-                    await chenInkContract.methods.ownerOf(metadata[i].id).call()
-                        .then(async function(owner) {
-                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
-                            await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
-                        });
-                }
-            }
-        });
-};
-let displayInkvadyrzTokens = function(excludedToken, type, page) {
-        $.get(ownlyAPI + "api/inkvadyrz/" + ((address) ? address : "0") + "/" + chenInkContractAddress + ((page) ? ("?page=" + page) : ""), async function(chenInkTokens) {
-            content = '';
-
-            let metadata = chenInkTokens.data;
-
-            generatePagination(chenInkTokens, url + '?collection=inkvadyrz');
-
-            for(let i = 0; i < metadata.length; i++) {
-                if(hasMarketplaceEthereumContract) {
-                    marketplaceEthereumContract.methods.fetchMarketItem(chenInkContractAddress, metadata[i].id).call()
-                        .then(async function(marketItem) {
-                            await chenInkContract.methods.ownerOf(metadata[i].id).call()
-                                .then(async function(owner) {
-                                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
-                                    await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
-                                });
-                        });
-                } else {
-                    let marketItem = false;
-                    await chenInkContract.methods.ownerOf(metadata[i].id).call()
-                        .then(async function(owner) {
-                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata[i].id, metadata[i].to, owner);
-                            await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, chenInkContractAddress, "eth");
-                        });
-                }
-            }
-        });
-};
-let displayRewardTokens = function(excludedToken, type, page) {
-    $.get(ownlyAPI + "api/rewards/" + ((address) ? address : "0") + "/" + rewardsContractAddress + ((page) ? ("?page=" + page) : ""), async function(rewardTokens) {
-        content = '';
-
-        let metadata = rewardTokens.data;
-
-        generatePagination(rewardTokens, url + '?collection=rewards');
-
-        for(let i = 0; i < metadata.length; i++) {
-            if(hasMarketplacePolygonContract) {
-                marketplacePolygonContract.methods.fetchMarketItem(rewardsContractAddress, metadata[i].id).call()
-                    .then(async function(marketItem) {
-                        await rewardsContract.methods.ownerOf(metadata[i].id).call()
-                            .then(async function(owner) {
-                                update_token_transaction(chainIDMatic, rewardsContractAddress, metadata[i].id, metadata[i].to, owner);
-                                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, rewardsContractAddress, "matic");
-                            });
-                    });
-            } else {
-                let marketItem = false;
-                let owner = "0x0000000000000000000000000000000000000000";
-                update_token_transaction(chainIDMatic, rewardsContractAddress, metadata[i].id, metadata[i].to, owner);
-                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, rewardsContractAddress, "matic");
+                content += '            </div>';
+                content += '        </div>';
             }
         }
+
+        $("#property-filter-items").html(content);
     });
-};
-let displayMustachioTokens = function(excludedToken, type, page) {
-    mustachiosContract.methods.totalSupply().call()
-        .then(async function(totalSupply) {
-            await updateConnectToWallet();
-
-            $.get(ownlyAPI + "api/mustachios/" + ((address) ? address : "0") + "/" + mustachiosContractAddress + "/" + totalSupply + ((page) ? ("?page=" + page) : ""), async function(mustachios) {
-                content = '';
-
-                let metadata = mustachios.data;
-
-                generatePagination(mustachios, url + '?collection=the-mustachios');
-
-                for(let i = 0; i < metadata.length; i++) {
-                    if(hasMarketplaceEthereumContract) {
-                        marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, metadata[i].id).call()
-                            .then(async function(marketItem) {
-                                await mustachiosContract.methods.ownerOf(metadata[i].id).call()
-                                    .then(async function(owner) {
-                                        update_token_transaction(chainIDEth, mustachiosContractAddress, metadata[i].id, metadata[i].to, owner);
-                                        await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, mustachiosContractAddress, "eth");
-                                    });
-                            });
-                    } else {
-                        let marketItem = false;
-                        await mustachiosContract.methods.ownerOf(metadata[i].id).call()
-                            .then(async function(owner) {
-                                update_token_transaction(chainIDEth, mustachiosContractAddress, metadata[i].id, metadata[i].to, owner);
-                                await formatTokenCards(excludedToken, type, metadata[i].id, marketItem, metadata[i], owner, mustachiosContractAddress, "eth");
-                            });
-                    }
-                }
-            });
-        });
 };
 let displayOwnedTokens = async function(profile, page) {
     $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
@@ -2799,6 +2572,85 @@ $(document).on("click", ".change-token-view", function() {
         $("#tokens-container").html(tokensContainerInitialContent);
         displayTokens(network, 0, "all", collection, page);
     }
+});
+
+$(document).on("change", ".property-filter-item", function() {
+    let property = $(this).attr("data-property");
+    let value = $(this).attr("data-value");
+    let propertyFilterSelectedItems = $("#property-filter-selected-items");
+
+    if($(this).prop("checked")) {
+        let content = ' <div class="property-filter-selected-item d-flex align-items-center font-size-90 ps-4 pe-2 py-2 me-2 mb-2">';
+        content += '        <div class="pe-2">' + property + ':</div>';
+        content += '        <div class="fw-bold">' + value + '</div>';
+        content += '        <div class="px-3 cursor-pointer remove-property-filter-selected-item" data-property="' + property + '" data-value="' + value + '">';
+        content += '            <i class="fas fa-times font-size-120"></i>';
+        content += '        </div>';
+        content += '    </div>';
+
+        propertyFilterSelectedItems.append(content);
+
+        $("#no-selected-filters").addClass("d-none");
+    } else {
+        $(".remove-property-filter-selected-item[data-property='" + property + "'][data-value='" + value + "']").closest(".property-filter-selected-item").remove();
+    }
+
+    let propertyFilterCount = $(".property-filter-item:checked").length;
+
+    if(!propertyFilterCount) {
+        $("#no-selected-filters").removeClass("d-none");
+        $("#reset-property-filters").addClass("d-none");
+    } else {
+        $("#reset-property-filters").removeClass("d-none");
+    }
+
+    let propertyFilterCountElement = $("#property-filter-count");
+    propertyFilterCountElement.html(propertyFilterCount);
+    if(propertyFilterCount > 0) {
+        propertyFilterCountElement.removeClass("d-none");
+    } else {
+        propertyFilterCountElement.addClass("d-none");
+    }
+});
+
+$(document).on("click", ".remove-property-filter-selected-item", function() {
+    $(this).closest(".property-filter-selected-item").remove();
+
+    let property = $(this).attr("data-property");
+    let value = $(this).attr("data-value");
+
+    $(".property-filter-item[data-property='" + property + "'][data-value='" + value + "']").prop("checked", false);
+
+    let propertyFilterCount = $(".property-filter-item:checked").length;
+
+    if(!propertyFilterCount) {
+        $("#no-selected-filters").removeClass("d-none");
+        $("#reset-property-filters").addClass("d-none");
+    } else {
+        $("#reset-property-filters").removeClass("d-none");
+    }
+
+    let propertyFilterCountElement = $("#property-filter-count");
+    propertyFilterCountElement.html(propertyFilterCount);
+    if(propertyFilterCount > 0) {
+        propertyFilterCountElement.removeClass("d-none");
+    } else {
+        propertyFilterCountElement.addClass("d-none");
+    }
+});
+
+$(document).on("click", "#reset-property-filters", function() {
+    $(".property-filter-item:checked").each(function() {
+        let property = $(this).attr("data-property");
+        let value = $(this).attr("data-value");
+
+        $(".property-filter-item[data-property='" + property + "'][data-value='" + value + "']").prop("checked", false);
+        $(".remove-property-filter-selected-item[data-property='" + property + "'][data-value='" + value + "']").closest(".property-filter-selected-item").remove();
+    });
+
+    $("#no-selected-filters").removeClass("d-none");
+    $("#reset-property-filters").addClass("d-none")
+    $("#property-filter-count").addClass("d-none");
 });
 
 // PROFILE
