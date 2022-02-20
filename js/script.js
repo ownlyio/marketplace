@@ -59,7 +59,7 @@ let address = false;
 let loading_interval;
 let isConnectedToMetamask = false;
 let content;
-let hasMarketplaceEthereumContract = true;
+let hasMarketplaceEthereumContract = false;
 let hasMarketplacePolygonContract = false;
 let searchTimeout;
 let mainWalletAddress;
@@ -300,7 +300,7 @@ let initializePage = () => {
             $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
 
             displayArtistSection((collection === "rewards" || collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
-            displayTokens(network, token, "all", collection);
+            displayTokens(network, token, "all", collection, []);
 
             app.removeClass("d-none");
         });
@@ -356,7 +356,7 @@ let initializePage = () => {
             currentPage = "home";
 
             network = getCollectionNetwork(collection);
-            displayTokens(network, 0, "all", collection, page);
+            displayTokens(network, 0, "all", collection, [], page);
             displayCollectionProperties(collection);
 
             $(".header-collection").addClass("d-none");
@@ -378,6 +378,10 @@ let initializePage = () => {
 
             $(".collection-section").addClass("d-none");
             $(".collection-section[data-collection='" + collection + "']").removeClass("d-none");
+
+            let filterByProperties = $("#filter-by-properties");
+            filterByProperties.attr("data-network", network);
+            filterByProperties.attr("data-collection", collection);
 
             app.removeClass("d-none");
         });
@@ -637,7 +641,7 @@ let displayArtistSection = function(collection) {
         });
     });
 };
-let displayTokens = async (network, excludedToken, type, collection, page) => {
+let displayTokens = async (network, excludedToken, type, collection, filters, page) => {
     let chainId;
     if(network === "eth") {
         chainId = chainIDEth;
@@ -647,13 +651,17 @@ let displayTokens = async (network, excludedToken, type, collection, page) => {
 
     $.get(ownlyAPI + "api/get-tokens/" + collection, {
         address: address,
-        page: page
+        page: page,
+        filters: JSON.stringify(filters)
     }, async function(data) {
-        content = '';
-
-        console.log(data);
-
         let metadata = data.tokens.data;
+
+        if(metadata.length === 0) {
+            $("#loading-container").addClass("d-none");
+            $("#tokens-container").html('<div class="text-center text-color-7 font-size-160 my-5 py-5">No items to display</div>');
+            $(".property-filter-item").prop("disabled", false);
+            return 0;
+        }
 
         collectionContract = new web3[network].eth.Contract(JSON.parse(data.collection.abi), data.collection.contract_address);
 
@@ -662,29 +670,36 @@ let displayTokens = async (network, excludedToken, type, collection, page) => {
         $(".change-token-view[value='" + view + "']").addClass("active");
         $("#view-options-container").removeClass("d-none");
 
-        for(let i = 0; i < metadata.length; i++) {
-            marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].id).call()
-                .then(async function(marketItem) {
-                    await collectionContract.methods.ownerOf(metadata[i].token_id).call()
-                        .then(async function(owner) {
-                            update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata[i].token_id, metadata[i].to, owner);
-                            let content = await formatTokenCards(excludedToken, type, metadata[i].token_id, marketItem, metadata[i], owner, data.collection.contract_address, network);
+        let getOwnerOf = function(marketItem, metadata) {
+            collectionContract.methods.ownerOf(metadata.token_id).call()
+                .then(async function(owner) {
+                    update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
+                    let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
+                    content = (view === "list") ? generateListView(content) : content;
 
-                            if(view === "list") {
-                                content = generateListView(content);
-                            }
+                    $("#loading-container").addClass("d-none");
+                    $(".property-filter-item").prop("disabled", false);
 
-                            $("#loading-container").addClass("d-none");
-
-                            if(type === "all") {
-                                $("#tokens-container").html($("#tokens-container").html() + content);
-                            } else if(type === "owned") {
-                                $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                            } else if(type === "favorites") {
-                                $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
-                            }
-                        });
+                    if(type === "all") {
+                        $("#tokens-container").html($("#tokens-container").html() + content);
+                    } else if(type === "owned") {
+                        $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+                    } else if(type === "favorites") {
+                        $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
+                    }
                 });
+        };
+
+        for(let i = 0; i < metadata.length; i++) {
+            if(marketplaceContracts[network]) {
+                marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].id).call()
+                    .then(async function(marketItem) {
+                        getOwnerOf(marketItem, metadata[i]);
+                    });
+            } else {
+                let marketItem = true;
+                getOwnerOf(marketItem, metadata[i]);
+            }
         }
     });
 };
@@ -696,8 +711,8 @@ let displayCollectionProperties = function(collection) {
         for(let i in properties) {
             if (properties.hasOwnProperty(i)) {
                 content += '        <div class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">';
-                content += '            <div class="text-color-5 font-size-90 mb-2">' + i + '</div>';
-                content += '            <div style="max-height:130px; overflow-y:scroll">';
+                content += '            <div class="text-color-5 font-size-90 px-1 mb-2">' + i + '</div>';
+                content += '            <div class="px-1" style="max-height:130px; overflow-y:scroll">';
 
                 let property = properties[i];
 
@@ -1985,6 +2000,27 @@ let getCollectionNetwork = (collection) => {
 
     return network;
 };
+let getFilteredTokensByProperties = function() {
+    let filters = [];
+
+    $(".property-filter-item:checked").each(function() {
+        let property = $(this).attr("data-property");
+        let value = $(this).attr("data-value");
+
+        filters.push({
+            property: property,
+            value: value
+        });
+    });
+
+    let filterByPropertiess = $("#filter-by-properties");
+    let network = filterByPropertiess.attr("data-network");
+    let collection = filterByPropertiess.attr("data-collection");
+    let page = findGetParameter("page");
+
+    $("#tokens-container").html(tokensContainerInitialContent);
+    displayTokens(network, 0, "all", collection, filters, page);
+};
 
 let test = function() {
     let web3test = new Web3("https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
@@ -2570,11 +2606,13 @@ $(document).on("click", ".change-token-view", function() {
         let network = getCollectionNetwork(collection);
 
         $("#tokens-container").html(tokensContainerInitialContent);
-        displayTokens(network, 0, "all", collection, page);
+        displayTokens(network, 0, "all", collection, [], page);
     }
 });
 
 $(document).on("change", ".property-filter-item", function() {
+    $(".property-filter-item").prop("disabled", true);
+
     let property = $(this).attr("data-property");
     let value = $(this).attr("data-value");
     let propertyFilterSelectedItems = $("#property-filter-selected-items");
@@ -2611,9 +2649,13 @@ $(document).on("change", ".property-filter-item", function() {
     } else {
         propertyFilterCountElement.addClass("d-none");
     }
+
+    getFilteredTokensByProperties();
 });
 
 $(document).on("click", ".remove-property-filter-selected-item", function() {
+    $(".property-filter-item").prop("disabled", true);
+
     $(this).closest(".property-filter-selected-item").remove();
 
     let property = $(this).attr("data-property");
@@ -2637,9 +2679,13 @@ $(document).on("click", ".remove-property-filter-selected-item", function() {
     } else {
         propertyFilterCountElement.addClass("d-none");
     }
+
+    getFilteredTokensByProperties();
 });
 
 $(document).on("click", "#reset-property-filters", function() {
+    $(".property-filter-item").prop("disabled", true);
+
     $(".property-filter-item:checked").each(function() {
         let property = $(this).attr("data-property");
         let value = $(this).attr("data-value");
@@ -2651,6 +2697,8 @@ $(document).on("click", "#reset-property-filters", function() {
     $("#no-selected-filters").removeClass("d-none");
     $("#reset-property-filters").addClass("d-none")
     $("#property-filter-count").addClass("d-none");
+
+    getFilteredTokensByProperties();
 });
 
 // PROFILE
