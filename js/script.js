@@ -744,30 +744,36 @@ let displayOwnedTokens = async function(profile, page) {
         generatePagination(ownedTokens, url + '?profile=' + profile + "&tab=owned");
 
         for(let i = 0; i < metadata.length; i++) {
+            console.log(metadata[i]);
             if(parseInt(metadata[i].chain_id) === chainIDBsc) {
                 marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
-                        await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
+                        let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
+                        $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
                     marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                            let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                            $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                    let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
                     marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                            let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                            $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                    let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
                 }
             }
         }
@@ -798,27 +804,32 @@ let displayFavoritedTokens = async function(profile, page) {
             if(parseInt(metadata[i].chain_id) === chainIDBsc) {
                 marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                     .then(async function(marketItem) {
-                        await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "bsc");
+                        let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "bsc");
+                        $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
                     marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                            let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                            $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                    let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                    $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
                     marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
                         .then(async function(marketItem) {
-                            await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                            let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                            $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
                         });
                 } else {
                     let marketItem = false;
-                    await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                    let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
+                    $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
                 }
             }
         }
