@@ -692,7 +692,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
 
         for(let i = 0; i < metadata.length; i++) {
             if(marketplaceContracts[network]) {
-                marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].id).call()
+                marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
                     .then(async function(marketItem) {
                         getOwnerOf(marketItem, metadata[i]);
                     });
