@@ -1030,7 +1030,7 @@ let generateListView = function(content) {
     content = '     <div class="col-12 mb-4 font-size-100 font-size-md-100">';
     content += '        <div class="d-flex align-items-start align-items-md-center">';
     content += '            <div class="mt-2 list-token-image-container">' + temp.find(".token-image-link").html() + '</div>';
-    content += '            <div class="px-4">';
+    content += '            <div class="flex-fill px-4">';
     content += '                <div class="">' + temp.find(".token-header").html() + '</div>';
     content += '                <div class="row align-items-center">';
     content += '                    <div class="col-12 col-md-6 pe-4 list-token-body">' + temp.find(".token-body").html() + '</div>';
@@ -1300,7 +1300,6 @@ let displayTokenMetadata = function(chainID, metadata, contractAddress, token) {
 
     $("#token-name").text(metadata.name);
     $("#token-description").text(metadata.description);
-    $("#token-contract-address").html('<a href="' + blockchainExplorerBsc + 'address/' + contractAddress + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(contractAddress), 5, 5) + '</a>');
     $("#token-id").text(token);
     $(".create-market-item-confirmation").attr("data-token-id", token);
 
@@ -1389,9 +1388,10 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         tokenCollectionName.attr("href", "?collection=oha");
     }
 
-    $("#token-owner").html('<a href="' + blockchainExplorerBsc + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
+    $("#token-owner").html('<a href="' + blockchainExplorer + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
     $("#token-type").text(token_type);
     $("#token-network").text(token_network);
+    $("#token-contract-address").html('<a href="' + blockchainExplorer + 'address/' + contractAddress + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(contractAddress), 5, 5) + '</a>');
 
     let transferTokenShowModal = $("#transfer-token-show-modal");
     transferTokenShowModal.attr("data-chain-id", chainId);
@@ -1488,7 +1488,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         } else {
             let transactionHash = $(".token-transaction-hash");
 
-            transactionHash.attr("href", blockchainExplorerBsc + "tx/" + metadata.transaction_hash);
+            transactionHash.attr("href", blockchainExplorer + "tx/" + metadata.transaction_hash);
             transactionHash.removeClass("d-none");
 
             $(".owner-address").text(shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5));
