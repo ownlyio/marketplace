@@ -656,6 +656,8 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
     }, async function(data) {
         let metadata = data.tokens.data;
 
+        generatePagination(data.tokens, url + '?collection=' + collection);
+
         if(metadata.length === 0) {
             $("#loading-container").addClass("d-none");
             $("#tokens-container").html('<div class="text-center text-color-7 font-size-160 my-5 py-5">No items to display</div>');
