@@ -737,8 +737,6 @@ let displayCollectionProperties = function(collection) {
 };
 let displayOwnedTokens = async function(profile, page) {
     $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
-        content = '';
-
         let metadata = ownedTokens.data;
 
         generatePagination(ownedTokens, url + '?profile=' + profile + "&tab=owned");
@@ -753,7 +751,7 @@ let displayOwnedTokens = async function(profile, page) {
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
-                    marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                    marketplaceEthereumContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                         .then(async function(marketItem) {
                             let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                             $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
@@ -765,7 +763,7 @@ let displayOwnedTokens = async function(profile, page) {
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
-                    marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                    marketplacePolygonContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                         .then(async function(marketItem) {
                             let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
                             $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
@@ -779,15 +777,18 @@ let displayOwnedTokens = async function(profile, page) {
         }
 
         if(metadata.length === 0) {
-            content += '    <div class="d-flex flex-column align-items-center py-5 mb-5">';
+            let content = ' <div class="d-flex flex-column align-items-center py-5 mb-5">';
             content += '        <div class="mb-4">';
             content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
             content += '        </div>';
             content += '        <div>No owned tokens from our collections yet.<div>';
             content += '    </div>';
-        }
 
-        $("#owned-tokens-container").html(content);
+            $("#owned-tokens-container").html(content);
+        } else {
+            $("#loading-container-owned-tokens").removeClass("d-flex");
+            $("#loading-container-owned-tokens").addClass("d-none");
+        }
     });
 };
 let displayFavoritedTokens = async function(profile, page) {
@@ -809,7 +810,7 @@ let displayFavoritedTokens = async function(profile, page) {
                     });
             } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
                 if(hasMarketplaceEthereumContract) {
-                    marketplaceEthereumContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                    marketplaceEthereumContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                         .then(async function(marketItem) {
                             let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
                             $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
@@ -821,7 +822,7 @@ let displayFavoritedTokens = async function(profile, page) {
                 }
             } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
                 if(hasMarketplacePolygonContract) {
-                    marketplacePolygonContract.methods.fetchMarketItem(ownedTokens[i].contract_address, ownedTokens[i].id).call()
+                    marketplacePolygonContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
                         .then(async function(marketItem) {
                             let content = await formatTokenCards(null, "favorites", metadata[i].id, marketItem, metadata[i], metadata[i].to, metadata[i].contract_address, "eth");
                             $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
@@ -835,15 +836,18 @@ let displayFavoritedTokens = async function(profile, page) {
         }
 
         if(metadata.length === 0) {
-            content += '    <div class="d-flex flex-column align-items-center py-5 mb-5">';
+            let content = ' <div class="d-flex flex-column align-items-center py-5 mb-5">';
             content += '        <div class="mb-4">';
             content += '            <i class="far fa-images text-color-3 font-size-600"></i>';
             content += '        </div>';
             content += '        <div>No added favorite tokens yet.<div>';
             content += '    </div>';
-        }
 
-        $("#favorite-tokens-container").html(content);
+            $("#favorite-tokens-container").html(content);
+        } else {
+            $("#loading-container-favorite-tokens").removeClass("d-flex");
+            $("#loading-container-favorite-tokens").addClass("d-none");
+        }
     }).fail(function(error) {
         console.log(error);
     });
