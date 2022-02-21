@@ -652,6 +652,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
     $.get(ownlyAPI + "api/get-tokens/" + collection, {
         address: address,
         page: page,
+        excludedToken: excludedToken,
         filters: JSON.stringify(filters)
     }, async function(data) {
         let metadata = data.tokens.data;
@@ -677,13 +678,11 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
                 .then(async function(owner) {
                     update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
                     let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
-                    console.log(content);
+
                     content = (view === "list") ? generateListView(content) : content;
 
                     $("#loading-container").addClass("d-none");
                     $(".property-filter-item").prop("disabled", false);
-
-                    console.log(type);
 
                     if(type === "all") {
                         $("#tokens-container").html($("#tokens-container").html() + content);
@@ -878,6 +877,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         view = "large-grid";
         localStorage.setItem('view', view);
     }
+    view = (excludedToken) ? "small-grid" : view;
 
     let grid = "col-sm-6 col-xl-4";
     let fontSize = "font-size-100";
@@ -893,7 +893,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     let padding_top = "100%";
     let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
 
-    let content = '    <div class="' + grid + ' ' + fontSize + ' mb-5 pb-md-3 px-lg-4">';
+    let content = '    <div class="' + grid + ' ' + fontSize + ' ' + ((excludedToken) ? 'mb-4' : 'mb-5') + ' pb-md-3 px-lg-4">';
     content += '        <div class="token-card" data-token-id="' + i + '">';
     content += '            <a href="' + link + '" class="link token-image-link">';
     if(metadata.thumbnail.includes(".mp4")) {
@@ -1028,17 +1028,6 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
 
     if(address && owner.toLowerCase() === address.toLowerCase()) {
         $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
-    }
-
-    if(currentPage === "token") {
-        Ellipsis({
-            class: '.token-description-truncated',
-            lines: 3
-        });
-
-        setTimeout(function() {
-            loadRelatedTokens(excludedToken);
-        }, 1000);
     }
 
     return content;
@@ -1556,67 +1545,6 @@ let shortenAddress = (address, prefixCount, postfixCount) => {
     let postfix = address.substr(address.length - postfixCount, address.length);
 
     return prefix + "..." + postfix;
-};
-let loadRelatedTokens = (excludedToken) => {
-    let tokenCards = [];
-    let _break = false;
-
-    $("#tokens-container").addClass("d-none");
-
-    $("#tokens-container .col-md-6").each(function() {
-        if($(this).find(".owner").html() === "") {
-            _break = true;
-            return 0;
-        }
-
-        if($(this).find(".token-card").attr("data-token-id") !== excludedToken) {
-            tokenCards.push($(this).html());
-        }
-    });
-
-    if(_break) {
-        return 0;
-    }
-
-    let content = '';
-    for(let i = 0; i < tokenCards.length; i+=3) {
-        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
-        content += '        <div class="row">';
-        for(let j = i; j < i + 3 && j < tokenCards.length; j++) {
-            content += '        <div class="col-4">';
-            content +=              tokenCards[j];
-            content += '        </div>';
-        }
-        content += '        </div>';
-        content += '    </div>';
-    }
-    $("#related-tokens-container-xl .carousel-inner").html(content);
-
-    content = '';
-    for(let i = 0; i < tokenCards.length; i+=2) {
-        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
-        content += '        <div class="row">';
-        for(let j = i; j < i + 2 && j < tokenCards.length; j++) {
-            content += '        <div class="col-6">';
-            content +=              tokenCards[j];
-            content += '        </div>';
-        }
-        content += '        </div>';
-        content += '    </div>';
-    }
-    $("#related-tokens-container-md .carousel-inner").html(content);
-
-    content = '';
-    for(let i = 0; i < tokenCards.length; i+=2) {
-        content += '    <div class="carousel-item ' + ((i === 0) ? 'active' : '') + '">';
-        content +=          tokenCards[i];
-        content += '    </div>';
-    }
-    $("#related-tokens-container-xs .carousel-inner").html(content);
-
-    new bootstrap.Carousel($('#related-tokens-container-xl'));
-    new bootstrap.Carousel($('#related-tokens-container-md'));
-    new bootstrap.Carousel($('#related-tokens-container-xs'));
 };
 let getTokenTransfers = async (owner, chainId, contractAddress, token) => {
     let transaction_hashes = [];
