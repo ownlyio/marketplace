@@ -677,10 +677,13 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
                 .then(async function(owner) {
                     update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
                     let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
+                    console.log(content);
                     content = (view === "list") ? generateListView(content) : content;
 
                     $("#loading-container").addClass("d-none");
                     $(".property-filter-item").prop("disabled", false);
+
+                    console.log(type);
 
                     if(type === "all") {
                         $("#tokens-container").html($("#tokens-container").html() + content);

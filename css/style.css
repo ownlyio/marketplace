@@ -298,6 +298,16 @@ html {
     color: #000000;
     border:2px solid #dbd8d5;
 }
+.btn-custom-14 {
+    background-color:#ffffff;
+    color:#000000;
+    border:2px solid #dbd8d5;
+}
+.btn-custom-14:hover, .btn-custom-14:active, .btn-custom-14:focus, .btn-custom-14.active {
+    background-color: #ffffff;
+    color: #000000;
+    border:2px solid #dbd8d5;
+}
 .bg-color-1 {
     background-color:#f3f3f3!important;
 }
