@@ -50,6 +50,7 @@ let web3Bsc;
 let web3Eth;
 let web3Matic;
 let web3;
+let mainWeb3;
 let ownContract;
 let ownContractAbi;
 let approveButton;
@@ -66,6 +67,7 @@ let mainWalletAddress;
 let marketItemsEth;
 let localStorage;
 let tokensContainerInitialContent;
+let walletConnectProvider;
 
 let initializeEnvVariables = () => {
     let currentURL = window.location.href;
@@ -404,7 +406,7 @@ let connectToMetamask = async () => {
 
                 ethereum.on('chainChanged', (_chainId) => window.location.reload());
 
-                web3Bsc = new Web3(ethereum);
+                mainWeb3 = new Web3(ethereum);
 
                 initializeContracts();
 
@@ -1969,6 +1971,27 @@ let getFilteredTokensByProperties = function() {
     $("#tokens-container").html(tokensContainerInitialContent);
     displayTokens(network, 0, "all", collection, filters, page);
 };
+let initializeWalletConnect = function() {
+    let rpc;
+
+    if(chainIDEth === 1) {
+        rpc = {
+            1: rpcEndpointEth,
+            56: rpcEndpointBsc,
+            137: rpcEndpointMatic
+        };
+    } else {
+        rpc = {
+            4: rpcEndpointEth,
+            97: rpcEndpointBsc,
+            80001: rpcEndpointMatic
+        };
+    }
+
+    walletConnectProvider = new WalletConnectProvider.default({
+        rpc: rpc
+    });
+};
 
 let test = function() {
     let web3test = new Web3("https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
@@ -2037,7 +2060,7 @@ $(document).on("click", "#approve", async function() {
 
     isConnectedToMetamask = await connectToMetamask();
     if(isConnectedToMetamask) {
-        let _chainID = await web3Bsc.eth.getChainId();
+        let _chainID = await mainWeb3.eth.getChainId();
 
         if(_chainID !== chainIDBsc) {
             $("#modal-wrong-network").modal("show");
@@ -2047,9 +2070,10 @@ $(document).on("click", "#approve", async function() {
         return 0;
     }
 
+    titansContract = new mainWeb3.eth.Contract(titansContractAbi, titansContractAddress);
     titansContract.methods.setApprovalForAll(marketplaceBinanceContractAddress, true)
         .send({
-            from: web3Bsc.utils.toChecksumAddress(address)
+            from: mainWeb3.utils.toChecksumAddress(address)
         }).on('transactionHash', function(hash){
             $("#modal-processing").modal("show");
         }).on('error', function(error){
@@ -2073,7 +2097,7 @@ $(document).on("click", "#create-market-item", async function() {
 
         isConnectedToMetamask = await connectToMetamask();
         if(isConnectedToMetamask) {
-            let _chainID = await web3Bsc.eth.getChainId();
+            let _chainID = await mainWeb3.eth.getChainId();
 
             if(_chainID !== chainIDBsc) {
                 $("#modal-wrong-network").modal("show");
@@ -2083,9 +2107,10 @@ $(document).on("click", "#create-market-item", async function() {
             return 0;
         }
 
-        marketplaceBinanceContract.methods.createMarketItem(titansContractAddress, $(this).val(), web3Bsc.utils.toWei(price, 'ether'), $("#price-currency").val())
+        marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
+        marketplaceBinanceContract.methods.createMarketItem(titansContractAddress, $(this).val(), mainWeb3.utils.toWei(price, 'ether'), $("#price-currency").val())
             .send({
-                from: web3Bsc.utils.toChecksumAddress(address),
+                from: mainWeb3.utils.toChecksumAddress(address),
                 value: listingPrice
             }).on('transactionHash', function(transactionHash){
                 $("#modal-processing").modal("show");
@@ -2117,7 +2142,7 @@ $(document).on("click", "#cancel-market-item", async function() {
 
     isConnectedToMetamask = await connectToMetamask();
     if(isConnectedToMetamask) {
-        let _chainID = await web3Bsc.eth.getChainId();
+        let _chainID = await mainWeb3.eth.getChainId();
 
         if(_chainID !== chainIDBsc) {
             $("#modal-wrong-network").modal("show");
@@ -2127,9 +2152,10 @@ $(document).on("click", "#cancel-market-item", async function() {
         return 0;
     }
 
+    marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
     marketplaceBinanceContract.methods.cancelMarketItem($(this).val())
         .send({
-            from: web3Bsc.utils.toChecksumAddress(address)
+            from: mainWeb3.utils.toChecksumAddress(address)
         }).on('transactionHash', function(transactionHash){
             $("#modal-processing").modal("show");
         }).on('error', function(error){
@@ -2177,7 +2203,7 @@ $(document).on("click", ".create-market-sale", function() {
             let createMarketSaleFunction = async function(_price) {
                 isConnectedToMetamask = await connectToMetamask();
                 if(isConnectedToMetamask) {
-                    let _chainID = await web3Bsc.eth.getChainId();
+                    let _chainID = await mainWeb3.eth.getChainId();
 
                     if(_chainID !== chainIDBsc) {
                         $("#modal-wrong-network").modal("show");
@@ -2187,9 +2213,10 @@ $(document).on("click", ".create-market-sale", function() {
                     return 0;
                 }
 
+                marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
                 marketplaceBinanceContract.methods.createMarketSale(item_id, selectedCurrency)
                     .send({
-                        from: web3Bsc.utils.toChecksumAddress(address),
+                        from: mainWeb3.utils.toChecksumAddress(address),
                         value: _price
                     }).on('transactionHash', function(transactionHash){
                         $("#modal-processing").modal("show");
@@ -2210,7 +2237,7 @@ $(document).on("click", ".create-market-sale", function() {
                         if(allowance !== price) {
                             isConnectedToMetamask = await connectToMetamask();
                             if(isConnectedToMetamask) {
-                                let _chainID = await web3Bsc.eth.getChainId();
+                                let _chainID = await mainWeb3.eth.getChainId();
 
                                 if(_chainID !== chainIDBsc) {
                                     $("#modal-wrong-network").modal("show");
@@ -2220,9 +2247,10 @@ $(document).on("click", ".create-market-sale", function() {
                                 return 0;
                             }
 
+                            ownContract = new mainWeb3.eth.Contract(ownContractAbi, ownContractAddress);
                             ownContract.methods.approve(marketplaceBinanceContractAddress, price)
                                 .send({
-                                    from: web3Bsc.utils.toChecksumAddress(address)
+                                    from: mainWeb3.utils.toChecksumAddress(address)
                                 }).on('transactionHash', function(transactionHash){
                                     $("#modal-processing").modal("show");
                                 }).on('error', function(error){
@@ -2247,7 +2275,7 @@ $(document).on("click", ".create-market-sale", function() {
                         if(allowance < priceWithSlippage) {
                             isConnectedToMetamask = await connectToMetamask();
                             if(isConnectedToMetamask) {
-                                let _chainID = await web3Bsc.eth.getChainId();
+                                let _chainID = await mainWeb3.eth.getChainId();
 
                                 if(_chainID !== chainIDBsc) {
                                     $("#modal-wrong-network").modal("show");
@@ -2257,9 +2285,10 @@ $(document).on("click", ".create-market-sale", function() {
                                 return 0;
                             }
 
+                            ownContract = new mainWeb3.eth.Contract(ownContractAbi, ownContractAddress);
                             ownContract.methods.approve(marketplaceBinanceContractAddress, priceWithSlippage)
                                 .send({
-                                    from: web3Bsc.utils.toChecksumAddress(address)
+                                    from: mainWeb3.utils.toChecksumAddress(address)
                                 }).on('transactionHash', function(transactionHash){
                                 $("#modal-processing").modal("show");
                             }).on('error', function(error){
@@ -2318,10 +2347,10 @@ $(document).on("click", ".add-to-favorites", async function() {
     if(!address) {
         connectToMetamask();
     } else {
-        web3Bsc = new Web3(ethereum);
+        mainWeb3 = new Web3(ethereum);
 
         let message = "I am confirming this action in Ownly Marketplace.";
-        let signature = await web3Bsc.eth.personal.sign(message, ethereum.selectedAddress);
+        let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
         // var signing_address = await web3Bsc.eth.personal.ecRecover(message, signature)
 
         let button = $(this);
@@ -2463,7 +2492,7 @@ $(document).on("click", "#transfer-token", async function() {
 
     isConnectedToMetamask = await connectToMetamask();
     if(isConnectedToMetamask) {
-        let _chainID = await web3Bsc.eth.getChainId();
+        let _chainID = await mainWeb3.eth.getChainId();
 
         if(tokenChainId !== _chainID) {
             let message = '';
@@ -2487,7 +2516,7 @@ $(document).on("click", "#transfer-token", async function() {
         return 0;
     }
 
-    if(!web3Bsc.utils.isAddress(transferRecipientAddress)) {
+    if(!mainWeb3.utils.isAddress(transferRecipientAddress)) {
         $("#invalid-recipient-wallet-address-container").removeClass("d-none");
 
         setTimeout(function() {
@@ -2500,28 +2529,28 @@ $(document).on("click", "#transfer-token", async function() {
     let nftContract;
 
     if(contractAddress === titansContractAddress && (tokenChainId === 56 || tokenChainId === 97)) {
-        nftContract = titansContract;
+        nftContract = new mainWeb3.eth.Contract(titansContractAbi, titansContractAddress);
     } else if(contractAddress === mustachiosContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
-        nftContract = mustachiosContract;
+        nftContract = new mainWeb3.eth.Contract(mustachiosContractAbi, mustachiosContractAddress);
     } else if(contractAddress === chenInkContractAddress && (tokenChainId === 1 || tokenChainId === 4) && tokenId <= 53) {
-        nftContract = chenInkContract;
+        nftContract = new mainWeb3.eth.Contract(chenInkContractAbi, chenInkContractAddress);
     } else if(contractAddress === chenInkContractAddress && (tokenChainId === 1 || tokenChainId === 4) && tokenId >= 54) {
-        nftContract = chenInkContract;
+        nftContract = new mainWeb3.eth.Contract(chenInkContractAbi, chenInkContractAddress);
     } else if(contractAddress === rewardsContractAddress && (tokenChainId === 137 || tokenChainId === 80001)) {
-        nftContract = rewardsContract;
+        nftContract = new mainWeb3.eth.Contract(rewardsContractAbi, rewardsContractAddress);
     } else if(contractAddress === genesisBlockContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
-        nftContract = genesisBlockContract;
+        nftContract = new mainWeb3.eth.Contract(genesisBlockContractAbi, genesisBlockContractAddress);
     } else if(contractAddress === sagesRantContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
-        nftContract = sagesRantContract;
+        nftContract = new mainWeb3.eth.Contract(sagesRantContractAbi, sagesRantContractAddress);
     } else if(contractAddress === ownlyHouseOfArtContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
-        nftContract = ownlyHouseOfArtContract;
+        nftContract = new mainWeb3.eth.Contract(ownlyHouseOfArtContractAbi, ownlyHouseOfArtContractAddress);
     }
 
     $("#modal-transfer-token").modal("hide");
 
     nftContract.methods.safeTransferFrom(address, transferRecipientAddress, tokenId)
         .send({
-            from: web3Bsc.utils.toChecksumAddress(address)
+            from: mainWeb3.utils.toChecksumAddress(address)
         }).on('transactionHash', function(transactionHash){
             $("#modal-processing").modal("show");
         }).on('error', function(error){
@@ -2684,10 +2713,10 @@ $(document).on("submit", "#account-settings-form", async function(e) {
 
     let button = $(this).find("[type='submit']");
 
-    web3Bsc = new Web3(ethereum);
+    mainWeb3 = new Web3(ethereum);
 
     let message = "I am confirming this action in Ownly Marketplace.";
-    let signature = await web3Bsc.eth.personal.sign(message, ethereum.selectedAddress);
+    let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
 
     if(signature) {
         let form_data = new FormData($(this)[0]);
