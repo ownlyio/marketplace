@@ -895,7 +895,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     let padding_top = "100%";
     let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
 
-    let content = '    <div class="' + grid + ' ' + fontSize + ' ' + ((excludedToken) ? 'mb-4' : 'mb-5') + ' pb-md-3 px-lg-4">';
+    let content = '    <div class="' + grid + ' ' + fontSize + ' ' + ((excludedToken) ? 'mb-2' : 'mb-5') + ' pb-md-3 px-lg-4">';
     content += '        <div class="token-card" data-token-id="' + i + '">';
     content += '            <a href="' + link + '" class="link token-image-link">';
     if(metadata.thumbnail.includes(".mp4")) {
