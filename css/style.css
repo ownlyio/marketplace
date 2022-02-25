@@ -487,6 +487,15 @@ html {
     border:2px solid #147ca0;
     color: #147ca0;
 }
+.wallet-options {
+    background-color:#ffffff;
+    cursor:pointer;
+    transition:0.5s;
+}
+.wallet-options:hover {
+    background-color:#eeeeee;
+    transition:0.5s;
+}
 
 /*##################################################################*/
 

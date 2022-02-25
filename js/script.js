@@ -437,7 +437,7 @@ let updateConnectToWallet = async () => {
     }
 
     if(address) {
-        $("#connect-to-metamask-container").addClass("d-none");
+        $("#connect-wallet-container").addClass("d-none");
 
         let accountAddress = $("#account-address");
 
@@ -479,7 +479,7 @@ let updateConnectToWallet = async () => {
         });
     } else {
         $("#account-address").addClass("d-none");
-        $("#connect-to-metamask-container").removeClass("d-none");
+        $("#connect-wallet-container").removeClass("d-none");
     }
 };
 let initializeWeb3 = async () => {
@@ -1987,10 +1987,25 @@ let initializeWalletConnect = function() {
             80001: rpcEndpointMatic
         };
     }
-
+    rpc = {
+        1: "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        56: "https://bsc-dataseed.binance.org/",
+        137: rpcEndpointMatic
+    };
     walletConnectProvider = new WalletConnectProvider.default({
         rpc: rpc
     });
+};
+let connectWalletConnect = async () => {
+    await walletConnectProvider.enable();
+
+    //  Create Web3 instance
+    mainWeb3 = new Web3(walletConnectProvider);
+
+    let accounts = await mainWeb3.eth.getAccounts(); // get all connected accounts
+    address = accounts[0];
+
+    await updateConnectToWallet();
 };
 
 let test = function() {
@@ -2011,6 +2026,7 @@ initializeEnvVariables();
 
 $(document).ready(function() {
     initiate_loading_page();
+    initializeWalletConnect();
 });
 
 $(window).on("load", async () => {
@@ -2026,8 +2042,24 @@ $(document).on("click", "#install-metamask", () => {
     $("#modal-no-metamask-installed").modal("hide");
 });
 
-$(document).on("click", "#connect-to-metamask", () => {
-    connectToMetamask();
+$(document).on("click", "#connect-wallet", () => {
+    $("#modal-wallet-options").modal("show");
+});
+
+$(document).on("click", ".wallet-options", async function () {
+    let wallet = $(this).attr("data-wallet");
+
+    console.log(wallet);
+
+    $("#modal-wallet-options").modal("hide");
+
+    if(wallet === "MetaMask") {
+        console.log("MetaMask");
+        await connectToMetamask();
+    } else if(wallet === "WalletConnect") {
+        console.log("WalletConnect");
+        await connectWalletConnect();
+    }
 });
 
 $(document).on("click", ".create-market-item-confirmation", function() {

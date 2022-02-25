@@ -178,8 +178,8 @@
 								<a class="text-color-6 text-decoration-none" href="#" id="account-address"></a>
 							</li>
 							
-							<li class="nav-item" id="connect-to-metamask-container">
-								<button type="button" class="btn btn-custom-9 shadow-sm font-size-90 py-2 px-4" id="connect-to-metamask" style="border-radius:100px">Connect&nbsp;Wallet</button>
+							<li class="nav-item" id="connect-wallet-container">
+								<button type="button" class="btn btn-custom-9 shadow-sm font-size-90 py-2 px-4" id="connect-wallet" style="border-radius:100px">Connect&nbsp;Wallet</button>
 							</li>
 						</ul>
 					</div>
@@ -600,6 +600,54 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="modal fade" id="modal-wallet-options" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title font-size-110">Select wallet:</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						
+						<div class="modal-body py-4">
+							<div class="row justify-content-center px-2">
+								<div class="col-md-6 px-2 mb-3">
+									<div class="card wallet-options" data-wallet="MetaMask">
+										<div class="card-body">
+											<div class="text-center mb-2">
+												<img src="img/logo/metamask.webp" width="90" alt="Metamask" />
+											</div>
+											<div class="text-center text-color-7 font-size-90">Connect to your MetaMask Wallet</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="col-md-6 px-2 mb-3">
+									<div class="card wallet-options" data-wallet="MetaMask">
+										<div class="card-body">
+											<div class="text-center mb-2">
+												<img src="img/logo/trust.png" width="81" alt="Trust Wallet" />
+											</div>
+											<div class="text-center text-color-7 font-size-90">Connect to your Trust Wallet</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="col-md-6 px-2 mb-3">
+									<div class="card wallet-options" data-wallet="WalletConnect">
+										<div class="card-body">
+											<div class="text-center mb-2">
+												<img src="img/logo/walletconnect.webp" width="90" alt="Wallet Connect" />
+											</div>
+											<div class="text-center text-color-7 font-size-90">Scan with WalletConnect to connect</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	
@@ -613,6 +661,6 @@
 	<script src="js/moment.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js" async integrity="sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/" crossorigin="anonymous"></script>
-	<script src="js/script.js?v=3.7.5" id="script"></script>
+	<script src="js/script.js?v=3.9.9" id="script"></script>
 </body>
 </html>
