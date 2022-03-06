@@ -346,16 +346,12 @@ let initializePage = () => {
             displaySales(page);
             app.removeClass("d-none");
         });
-    } else if(collection || !collection) {
-        pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
+    } else if(collection) {
+        pageContent.load(url + "js/../collection.html?v=" + cacheVersion, async function() {
             tokensContainerInitialContent = $("#tokens-container").html();
             initializeTooltip();
 
-            if(!collection) {
-                collection = "oha";
-            }
-
-            currentPage = "home";
+            currentPage = "collection";
 
             network = getCollectionNetwork(collection);
             displayTokens(network, 0, "all", collection, [], page);
@@ -370,10 +366,6 @@ let initializePage = () => {
                 displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
             }
 
-            if(collection === "oha") {
-                start_countdown();
-            }
-
             $(".collection-tab[data-collection='" + collection + "']").addClass("active");
 
             $(".collection-dropdown-item[data-collection='" + collection + "']").addClass("active");
@@ -384,6 +376,16 @@ let initializePage = () => {
             let filterByProperties = $("#filter-by-properties");
             filterByProperties.attr("data-network", network);
             filterByProperties.attr("data-collection", collection);
+
+            app.removeClass("d-none");
+        });
+    } else {
+        pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
+            currentPage = "home";
+
+            $("#carousel-1 .container").html($("#carousel-content").html());
+
+            new bootstrap.Carousel($('#carousel-1'));
 
             app.removeClass("d-none");
         });

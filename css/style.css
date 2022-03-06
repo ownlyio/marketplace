@@ -496,7 +496,9 @@ html {
     background-color:#eeeeee;
     transition:0.5s;
 }
-
+.page-min-height {
+    min-height:calc(100vh - 81px);
+}
 /*##################################################################*/
 
 .artist-image {
