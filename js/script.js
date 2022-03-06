@@ -384,10 +384,41 @@ let initializePage = () => {
             currentPage = "home";
 
             $("#carousel-1 .container").html($("#carousel-content").html());
-
             new bootstrap.Carousel($('#carousel-1'));
 
-            app.removeClass("d-none");
+            $.get(ownlyAPI + "api/get-collections", function(data) {
+                let collections = data.collections;
+
+                let content = '';
+
+                for(let i = 0; i < collections.length; i++) {
+                    content += '    <div class="col-md-4 mb-3">';
+                    content += '        <a href="' + url + '?collection=' + collections[i].url_placeholder + '" class="text-decoration-none">';
+                    content += '            <div class="card" style="border:1px solid #cccccc; border-radius:10px">';
+                    content += '                <div class="w-100 background-image-cover" style="background-image:url(\'' + collections[i].banner + '\'); padding-top:50%; background-color:#bbbbbb; border-top-left-radius:10px; border-top-right-radius:10px"></div>';
+                    content += '                <div class="text-center mb-2" style="margin-top:-45px">';
+                    content += '                    <div class="d-inline-block shadow background-image-cover" style="background-image:url(\'' + collections[i].logo + '\'); border:4px solid #ffffff; height:90px; width:90px; border-radius:50%"></div>';
+                    content += '                </div>';
+                    content += '                <div class="px-3">';
+                    content += '                    <p class="text-center text-color-6 fw-bold">' + collections[i].name + '</p>';
+                    content += '                    <p class="text-center text-color-7 font-size-90 clamp">' + collections[i].description + '</p>';
+                    content += '                </div>';
+                    content += '            </div>';
+                    content += '        </a>';
+                    content += '    </div>';
+                }
+
+                $("#collections-container").html(content);
+
+                $(".clamp").each(function() {
+                    new MultiClamp($(this), {
+                        ellipsis: '...',
+                        clamp: 3
+                    });
+                });
+
+                app.removeClass("d-none");
+            });
         });
     }
 
@@ -678,24 +709,34 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
         $("#view-options-container").removeClass("d-none");
 
         let getOwnerOf = function(marketItem, metadata) {
-            collectionContract.methods.ownerOf(metadata.token_id).call()
-                .then(async function(owner) {
-                    update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
-                    let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
+            let owner = null;
 
-                    content = (view === "list") ? generateListView(content) : content;
+            let displayTokenCards = async function(owner) {
+                update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
+                let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
 
-                    $("#loading-container").addClass("d-none");
-                    $(".property-filter-item").prop("disabled", false);
+                content = (view === "list") ? generateListView(content) : content;
 
-                    if(type === "all") {
-                        $("#tokens-container").html($("#tokens-container").html() + content);
-                    } else if(type === "owned") {
-                        $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                    } else if(type === "favorites") {
-                        $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
-                    }
-                });
+                $("#loading-container").addClass("d-none");
+                $(".property-filter-item").prop("disabled", false);
+
+                if(type === "all") {
+                    $("#tokens-container").html($("#tokens-container").html() + content);
+                } else if(type === "owned") {
+                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+                } else if(type === "favorites") {
+                    $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
+                }
+            };
+
+            if(network !== "matic") {
+                collectionContract.methods.ownerOf(metadata.token_id).call()
+                    .then(async function(owner) {
+                        displayTokenCards(owner);
+                    });
+            } else {
+                displayTokenCards(owner);
+            }
         };
 
         for(let i = 0; i < metadata.length; i++) {
@@ -987,10 +1028,12 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                    </div>';
             if(contractAddress === titansContractAddress) {
                 content += '                <div class="col-6 button-container">';
-                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-                } else {
-                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
+                if(owner) {
+                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                        content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                    } else {
+                        content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
+                    }
                 }
             }
             content += '                    </div>';
@@ -1008,10 +1051,12 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                 content += '                    </div>';
                 content += '                    <div class="col-6">';
                 if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
-                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                        content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-                    } else {
-                        content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                    if(owner) {
+                        if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                            content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                        } else {
+                            content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                        }
                     }
                 }
 
@@ -1030,8 +1075,10 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     content += '        </div>';
     content += '    </div>';
 
-    if(address && owner.toLowerCase() === address.toLowerCase()) {
-        $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
+    if(owner) {
+        if(address && owner.toLowerCase() === address.toLowerCase()) {
+            $(".token-card[data-token-id='" + i + "']").find("#create-market-item-confirmation").removeClass("d-none");
+        }
     }
 
     return content;
@@ -1421,7 +1468,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     let soldSagesRantCollectible = [];
     let soldOwnlyHouseOfArt = [];
 
-    if(contractAddress === chenInkContractAddress && token >= 1 && token <= 53) {
+    if(network === "eth" && contractAddress === chenInkContractAddress && token >= 1 && token <= 53) {
         $(".token-price").html("");
         $(".token-price-currency").attr("src", "img/tokens/ETH.png");
 
