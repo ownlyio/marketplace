@@ -2487,9 +2487,9 @@ $(document).on("change", ".sales-date", async function() {
     loadNFTSales();
 });
 
-$(document).on("input", "#search-field", function() {
+$(document).on("input", ".search-field", function() {
     let search = $(this).val();
-    let searchSuggestionsContainer = $("#search-suggestions-container");
+    let searchSuggestionsContainer = $(this).closest(".search-field-container").find(".search-suggestions-container");
 
     if(search.length > 1) {
         let content = ' <div class="card">';
@@ -2550,12 +2550,12 @@ $(document).on("input", "#search-field", function() {
 });
 
 $(document).on("click", 'html', function(e) {
-    if($(e.target).closest('#search-field').length || $(e.target).closest('#search-suggestions-container').length) {
-        if($("#search-field").val().length > 1) {
-            $("#search-suggestions-container").removeClass("d-none");
+    if($(e.target).closest('#search-field').length || $(e.target).closest('.search-suggestions-container').length) {
+        if($(".search-field").val().length > 1) {
+            $(".search-suggestions-container").removeClass("d-none");
         }
     } else {
-        $("#search-suggestions-container").addClass("d-none");
+        $(".search-suggestions-container").addClass("d-none");
     }
 });
 
