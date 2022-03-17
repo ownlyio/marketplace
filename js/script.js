@@ -2514,16 +2514,20 @@ $(document).on("input", ".search-field", function() {
 
                 content = '     <div class="list-group overflow-auto" style="max-height:400px">';
                 for(let i = 0; i < result.length; i++) {
-                    content += '    <a href="' + result[i].token_url + '" class="list-group-item list-group-item-action">';
+                    content += '    <a href="' + result[i].url + '" class="list-group-item list-group-item-action">';
                     content += '        <div class="d-flex align-items-center">';
                     content += '            <div class="pe-3" style="min-width:55px; width:55px">';
                     content += '                <div class="background-image-contain bg-color-1" style="padding-top:100%; border:1px solid #dddddd; background-image:url(\'' + result[i].thumbnail + '\')"></div>';
                     content += '            </div>';
                     content += '            <div class="flex-fill">';
-                    content += '                <div class="text-color-7 font-size-80 mb-1">' + result[i].collection + '</div>';
+                    if(result[i].type === "token") {
+                        content += '            <div class="text-color-7 font-size-80 mb-1">' + result[i].collection + '</div>';
+                    }
                     content += '                <div class="d-flex w-100 justify-content-between align-items-center">';
                     content += '                    <div class="font-size-90 pe-4">' + result[i].name + '</div>';
-                    content += '                    <div class="text-color-7 font-size-70">ID:&nbsp;' + result[i].id + '</div>';
+                    if(result[i].type === "token") {
+                        content += '                <div class="text-color-7 font-size-70">ID:&nbsp;' + result[i].id + '</div>';
+                    }
                     content += '                </div>';
                     content += '            </div>';
                     content += '         </div>';
