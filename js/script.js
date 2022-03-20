@@ -353,16 +353,21 @@ let initializePage = () => {
 
             currentPage = "collection";
 
-            network = getCollectionNetwork(collection);
+            if(collection.split(":").length === 2) {
+                let temp = collection.split(":");
+                network = temp[0];
+                collection = temp[1];
+            } else {
+                network = getCollectionNetwork(collection);
+            }
+
             displayTokens(network, 0, "all", collection, [], page);
             displayCollectionProperties(collection);
 
-            $(".header-collection").addClass("d-none");
             $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-            if(collection === "rewards") {
-                $("#artist-section").addClass("d-none");
-            } else {
+            if(!collection === "rewards") {
+                $("#artist-section").removeClass("d-none");
                 displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
             }
 
@@ -684,7 +689,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
         chainId = chainIDMatic;
     }
 
-    $.get(ownlyAPI + "api/get-tokens/" + collection, {
+    $.get(ownlyAPI + "api/get-tokens/" + network + ":" + collection, {
         address: address,
         page: page,
         excludedToken: excludedToken,
@@ -692,7 +697,24 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
     }, async function(data) {
         let metadata = data.tokens.data;
 
-        generatePagination(data.tokens, url + '?collection=' + collection);
+        if(!$(".header-collection:not(.d-none)").length) {
+            $("#collection-name").text(data.collection.name);
+            $("#collection-contract-address").text(shortenAddress(data.collection.contract_address, 5 ,5));
+
+            let explorer;
+            if(data.collection.chain_id === chainIDEth) {
+                explorer = blockchainExplorerEth;
+            } else if(data.collection.chain_id === chainIDBsc) {
+                explorer = blockchainExplorerBsc;
+            } else if(data.collection.chain_id === chainIDMatic) {
+                explorer = blockchainExplorerMatic;
+            }
+
+            $("#collection-contract-address").attr("href", explorer + "address/" + data.collection.contract_address);
+            $(".header-collection[data-collection='default']").removeClass("d-none");
+        }
+
+        generatePagination(data.tokens, url + '?collection=' + network + ":" + collection);
 
         if(metadata.length === 0) {
             $("#loading-container").addClass("d-none");
@@ -730,6 +752,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
             };
 
             if(network !== "matic") {
+                console.log(metadata.token_id);
                 collectionContract.methods.ownerOf(metadata.token_id).call()
                     .then(async function(owner) {
                         displayTokenCards(owner);
@@ -741,8 +764,10 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
 
         for(let i = 0; i < metadata.length; i++) {
             if(marketplaceContracts[network]) {
+                console.log(metadata[i].token_id);
                 marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
                     .then(async function(marketItem) {
+                        console.log(marketItem);
                         getOwnerOf(marketItem, metadata[i]);
                     });
             } else {
