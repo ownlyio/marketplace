@@ -457,6 +457,9 @@ html {
     text-decoration: none;
     background-color: #147ca0;
 }
+.w-33 {
+    width:33.33%!important;
+}
 
 /* This will work on Firefox */
 * {
