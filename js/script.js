@@ -366,7 +366,7 @@ let initializePage = () => {
 
             $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-            if(!collection === "rewards") {
+            if(collection !== "rewards") {
                 $("#artist-section").removeClass("d-none");
                 displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
             }
@@ -429,8 +429,8 @@ let initializePage = () => {
                     });
                 });
 
-                let width = $(window).width();;
-                console.log(width);
+                let width = $(window).width();
+
                 let perPage = 1;
                 if(width >= 992) {
                     perPage = 3;
@@ -775,7 +775,6 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
             };
 
             if(network !== "matic") {
-                console.log(metadata.token_id);
                 collectionContract.methods.ownerOf(metadata.token_id).call()
                     .then(async function(owner) {
                         displayTokenCards(owner);
@@ -787,10 +786,8 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
 
         for(let i = 0; i < metadata.length; i++) {
             if(marketplaceContracts[network]) {
-                console.log(metadata[i].token_id);
                 marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
                     .then(async function(marketItem) {
-                        console.log(marketItem);
                         getOwnerOf(marketItem, metadata[i]);
                     });
             } else {
