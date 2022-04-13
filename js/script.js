@@ -21,6 +21,8 @@ let rewardsContractAbi;
 let chenInkContract;
 let chenInkContractAddress;
 let chenInkContractAbi;
+let launchpadCollectionContractAddress;
+let launchpadCollectionContractAbi;
 let marketplaceBinanceContractAddress;
 let marketplaceBinanceContract;
 let marketplaceBinanceAbi;
@@ -266,6 +268,8 @@ let initializePage = () => {
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
     let collection = findGetParameter("collection");
+    let collectionItems = findGetParameter("collectionitems");
+    let collectionDetails = findGetParameter("collectiondetails");
     let profile = findGetParameter("profile");
     let tab = findGetParameter("tab");
     let page = findGetParameter("page");
@@ -384,6 +388,96 @@ let initializePage = () => {
 
             app.removeClass("d-none");
         });
+    } else if(collectionDetails) {
+        if(!collectionItems) {
+            pageContent.load(url + "js/../collection-details.html?v=" + cacheVersion, async function() {
+                await updateConnectToWallet();
+
+                $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                    let collection = data.collections[0];
+
+                    let collectionForm = $("#collection-form");
+
+                    collectionForm.attr("data-value", collection.id);
+                    collectionForm.find("input[name='name']").val(collection.name);
+                    collectionForm.find("textarea[name='description']").val(collection.description);
+                    collectionForm.find("input[name='url']").val(collection.url_placeholder);
+                    collectionForm.find("#logo-container").css("background-image", "url('" + collection.logo + "')");
+                    collectionForm.find("#banner-container").css("background-image", "url('" + collection.banner + "')");
+
+                    if(collection.properties !== "") {
+                        let properties = JSON.parse(collection.properties);
+
+                        let content = '';
+                        for(let i = 0; i < properties.length; i++) {
+                            content += '    <div class="col-4 mb-2 px-1 property-container" data-value="' + properties[i] + '">';
+                            content += '        <div class="card h-100">';
+                            content += '            <div class="card-body">';
+                            content += '                <div class="d-flex justify-content-between">';
+                            content += '                    <div class="pe-3">' + properties[i] + '</div>';
+                            content += '                    <div>';
+                            content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
+                            content += '                    </div>';
+                            content += '                </div>';
+                            content += '            </div>';
+                            content += '        </div>';
+                            content += '    </div>';
+                        }
+
+                        $("#properties-container").html(content);
+                    }
+                });
+
+                app.removeClass("d-none");
+            });
+        } else {
+            pageContent.load(url + "js/../collection-items.html?v=" + cacheVersion, async function() {
+                await updateConnectToWallet();
+
+                $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                    let collection = data.collections[0];
+
+                    $("#collection-item-form input[name='collection_id']").val(collection.id);
+
+                    if(collection.properties !== "") {
+                        let properties = JSON.parse(collection.properties);
+                        let content = '';
+
+                        for(let i = 0; i < properties.length; i++) {
+                            content += '    <div class="col-6 mb-3">';
+                            content += '        <label class="font-size-80 mb-1">' + properties[i] + '</label>';
+                            content += '        <input type="text" class="form-control py-2 py-lg-3 px-3 font-size-80 property-field" style="border-width:2px; height:40px" required />';
+                            content += '    </div>';
+                        }
+
+                        $("#property-fields-container").html(content);
+                    }
+
+                    $.get(ownlyAPI + "api/get-launchpad-collection-items/" + collection.id, function(data) {
+                        let launchpadTokens = data.launchpad_tokens;
+                        let content = '';
+
+                        for(let i = 0; i < launchpadTokens.length; i++) {
+                            content += '    <div class="col-md-2 mb-4">';
+                            content += '        <div class="card cursor-pointer collection-item" data-id="' + launchpadTokens[i].token_id + '">';
+                            content += '            <div class="card-body">';
+                            content += '                <div class="background-image-contain bg-color-1 mb-3" style="padding-top:100%; background-image:url(\'' + launchpadTokens[i].image + '\')"></div>';
+                            content += '                <div class="text-center font-size-70 mb-1">Token ID: ' + launchpadTokens[i].token_id + '</div>';
+                            content += '                <div class="text-center font-size-90 name">' + launchpadTokens[i].name + '</div>';
+                            content += '                <div class="d-none description">' + launchpadTokens[i].description + '</div>';
+                            content += '                <div class="d-none attributes">' + launchpadTokens[i].attributes + '</div>';
+                            content += '            </div>';
+                            content += '        </div>';
+                            content += '    </div>';
+                        }
+
+                        $("#collection-items-container").html(content);
+
+                        app.removeClass("d-none");
+                    });
+                });
+            });
+        }
     } else {
         pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
             currentPage = "home";
@@ -718,6 +812,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
         excludedToken: excludedToken,
         filters: JSON.stringify(filters)
     }, async function(data) {
+        console.log(data);
         let metadata = data.tokens.data;
 
         if(!$(".header-collection:not(.d-none)").length) {
@@ -756,43 +851,63 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
         let getOwnerOf = function(marketItem, metadata) {
             let owner = null;
 
-            let displayTokenCards = async function(owner) {
-                update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
-                let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
-
-                content = (view === "list") ? generateListView(content) : content;
-
-                $("#loading-container").addClass("d-none");
-                $(".property-filter-item").prop("disabled", false);
-
-                if(type === "all") {
-                    $("#tokens-container").html($("#tokens-container").html() + content);
-                } else if(type === "owned") {
-                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                } else if(type === "favorites") {
-                    $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
-                }
-            };
-
             if(network !== "matic") {
                 collectionContract.methods.ownerOf(metadata.token_id).call()
                     .then(async function(owner) {
-                        displayTokenCards(owner);
+                        displayTokenCards(owner, marketItem, metadata);
+                    }).catch((err) => {
+                        owner = "0x0000000000000000000000000000000000000000";
+                        displayTokenCards(owner, marketItem, metadata);
                     });
             } else {
-                displayTokenCards(owner);
+                displayTokenCards(owner, marketItem, metadata);
             }
         };
 
-        for(let i = 0; i < metadata.length; i++) {
-            if(marketplaceContracts[network]) {
-                marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
-                    .then(async function(marketItem) {
+        let displayTokenCards = async function(owner, marketItem, metadata) {
+            update_token_transaction(data.collection.chain_id, data.collection.contract_address, metadata.token_id, metadata.to, owner);
+            let content = await formatTokenCards(excludedToken, type, metadata.token_id, marketItem, metadata, owner, data.collection.contract_address, network);
+
+            content = (view === "list") ? generateListView(content) : content;
+
+            $("#loading-container").addClass("d-none");
+            $(".property-filter-item").prop("disabled", false);
+
+            if(type === "all") {
+                $("#tokens-container").html($("#tokens-container").html() + content);
+            } else if(type === "owned") {
+                $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+            } else if(type === "favorites") {
+                $("#favorite-tokens-container").html($("#favorite-tokens-container").html() + content);
+            }
+        };
+
+        if(data.collection.is_launchpad_collection) {
+            for(let i = 0; i < metadata.length; i++) {
+                launchpadCollectionContractAddress = data.collection.contract_address;
+                launchpadCollectionContractAbi = JSON.parse(data.collection.abi);
+
+                let collectionContract = new web3Bsc.eth.Contract(launchpadCollectionContractAbi, launchpadCollectionContractAddress);
+
+                collectionContract.methods.getMintPrice().call()
+                    .then(async function(mintPrice) {
+                        let marketItem = {
+                            price: mintPrice
+                        };
                         getOwnerOf(marketItem, metadata[i]);
                     });
-            } else {
-                let marketItem = true;
-                getOwnerOf(marketItem, metadata[i]);
+            }
+        } else {
+            for(let i = 0; i < metadata.length; i++) {
+                if(marketplaceContracts[network]) {
+                    marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
+                        .then(async function(marketItem) {
+                            getOwnerOf(marketItem, metadata[i]);
+                        });
+                } else {
+                    let marketItem = true;
+                    getOwnerOf(marketItem, metadata[i]);
+                }
             }
         }
     });
@@ -1077,7 +1192,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                     if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
                         content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
                     } else {
-                        content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" style="border-radius:15px">OWN NOW</button>';
+                        content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
                     }
                 }
             }
@@ -1086,32 +1201,39 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                <div class="owner d-none">' + owner + '</div>';
         } else {
             if(chainId !== chainIDMatic) {
-                content += '                <div class="row align-items-center" style="min-height:69px">';
-                content += '                    <div class="col-6">';
-                content += '                        <div>';
-                content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
-                content += '                        </div>';
-                content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
-                content += '                    </div>';
-                content += '                    <div class="col-6">';
-                if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
-                    if(owner) {
-                        if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                            content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-                        } else {
-                            content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                if(web3Bsc.utils.toChecksumAddress(owner) === "0x0000000000000000000000000000000000000000") {
+                    content += '                <div class="row justify-content-end" style="min-height:69px">';
+                    content += '                    <div class="col-6">';
+                    content += '                        <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-sale-confirmation" data-item-id="' + i + '" data-price="' + marketItem.price + '" data-currency="BNB" data-token-id="' + i + '" data-type="mint" style="border-radius:15px">MINT NOW</button>';
+                    content += '                    </div>';
+                } else {
+                    content += '                <div class="row align-items-center" style="min-height:69px">';
+                    content += '                    <div class="col-6">';
+                    content += '                        <div>';
+                    content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                    content += '                        </div>';
+                    content += '                        <div class="font-size-100 neo-bold">Owner</div>';
+                    content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
+                    content += '                    </div>';
+                    content += '                    <div class="col-6">';
+                    if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
+                        if(owner) {
+                            if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                            } else {
+                                content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                            }
                         }
                     }
-                }
 
-                // Bruteforce display for genesis block
-                if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                    content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
-                }
+                    // Bruteforce display for genesis block
+                    if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
+                        content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                    }
 
-                content += '                    </div>';
-                content += '                </div>';
+                    content += '                    </div>';
+                    content += '                </div>';
+                }
             }
         }
     }
@@ -1588,6 +1710,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
                 createMarketSaleConfirmationButton.attr("data-item-id", marketItem.itemId);
                 createMarketSaleConfirmationButton.attr("data-price", marketItem.price);
                 createMarketSaleConfirmationButton.attr("data-currency", marketItem.currency);
+                createMarketSaleConfirmationButton.attr("data-type", "sale");
                 $("#create-market-sale-container").removeClass("d-none");
             }
         } else {
@@ -2034,7 +2157,9 @@ let start_countdown = () => {
 let getCollectionNetwork = (collection) => {
     let network;
 
-    if(collection === "titans-of-industry") {
+    let bscCollections = ["titans-of-industry", "coolmandala"];
+
+    if(bscCollections.includes(collection)) {
         network = "bsc"
     } else if(collection === "rewards") {
         network = "matic"
@@ -2301,6 +2426,7 @@ $(document).on("click", ".create-market-sale-confirmation", function() {
     createMarketSale.attr("data-price", $(this).attr("data-price"));
     createMarketSale.attr("data-item-id", $(this).attr("data-item-id"));
     createMarketSale.attr("data-currency", $(this).attr("data-currency"));
+    createMarketSale.attr("data-type", $(this).attr("data-type"));
 
     update_buying_token();
 
@@ -2324,6 +2450,7 @@ $(document).on("click", ".create-market-sale", function() {
         if(parseInt(ethereum.networkVersion) === chainIDBsc) {
             let price = $(this).attr("data-price");
             let item_id = $(this).attr("data-item-id");
+            let type = $(this).attr("data-type");
             let selectedCurrency = $("input[name='buy_through_token']:checked").val();
 
             let createMarketSaleFunction = async function(_price) {
@@ -2339,12 +2466,13 @@ $(document).on("click", ".create-market-sale", function() {
                     return 0;
                 }
 
-                marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
-                marketplaceBinanceContract.methods.createMarketSale(item_id, selectedCurrency)
-                    .send({
-                        from: mainWeb3.utils.toChecksumAddress(address),
-                        value: _price
-                    }).on('transactionHash', function(transactionHash){
+                if(type === "sale") {
+                    marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
+                    marketplaceBinanceContract.methods.createMarketSale(item_id, selectedCurrency)
+                        .send({
+                            from: mainWeb3.utils.toChecksumAddress(address),
+                            value: _price
+                        }).on('transactionHash', function(transactionHash){
                         $("#modal-processing").modal("show");
                     }).on('error', function(error) {
                         $("#modal-processing").modal("hide");
@@ -2355,6 +2483,42 @@ $(document).on("click", ".create-market-sale", function() {
                         $("#modal-processing").modal("hide");
                         initializePage();
                     });
+                } else if(type === "mint") {
+                    let launchpadContract = new mainWeb3.eth.Contract(launchpadCollectionContractAbi, launchpadCollectionContractAddress);
+
+                    if(selectedCurrency === "BNB") {
+                        launchpadContract.methods.purchase(item_id)
+                            .send({
+                                from: mainWeb3.utils.toChecksumAddress(address),
+                                value: _price
+                            }).on('transactionHash', function(transactionHash){
+                            $("#modal-processing").modal("show");
+                        }).on('error', function(error) {
+                            $("#modal-processing").modal("hide");
+
+                            $("#modal-error .message").text(error.code + ": " + error.message);
+                            $("#modal-error").modal("show");
+                        }).then(function(receipt) {
+                            $("#modal-processing").modal("hide");
+                            initializePage();
+                        });
+                    } else if(selectedCurrency === "OWN") {
+                        launchpadContract.methods.purchaseWithOWN(item_id)
+                            .send({
+                                from: mainWeb3.utils.toChecksumAddress(address)
+                            }).on('transactionHash', function(transactionHash){
+                            $("#modal-processing").modal("show");
+                        }).on('error', function(error) {
+                            $("#modal-processing").modal("hide");
+
+                            $("#modal-error .message").text(error.code + ": " + error.message);
+                            $("#modal-error").modal("show");
+                        }).then(function(receipt) {
+                            $("#modal-processing").modal("hide");
+                            initializePage();
+                        });
+                    }
+                }
             };
 
             if($(this).attr("data-currency") === "OWN" && selectedCurrency === "OWN") {
@@ -2373,8 +2537,12 @@ $(document).on("click", ".create-market-sale", function() {
                                 return 0;
                             }
 
-                            ownContract = new mainWeb3.eth.Contract(ownContractAbi, ownContractAddress);
-                            ownContract.methods.approve(marketplaceBinanceContractAddress, price)
+                            let contractToBeApproved = marketplaceBinanceContractAddress;
+                            if(type === "mint") {
+                                contractToBeApproved = launchpadCollectionContractAddress;
+                            }
+
+                            ownContract.methods.approve(contractToBeApproved, price)
                                 .send({
                                     from: mainWeb3.utils.toChecksumAddress(address)
                                 }).on('transactionHash', function(transactionHash){
@@ -2411,8 +2579,13 @@ $(document).on("click", ".create-market-sale", function() {
                                 return 0;
                             }
 
+                            let contractToBeApproved = marketplaceBinanceContractAddress;
+                            if(type === "mint") {
+                                contractToBeApproved = launchpadCollectionContractAddress;
+                            }
+
                             ownContract = new mainWeb3.eth.Contract(ownContractAbi, ownContractAddress);
-                            ownContract.methods.approve(marketplaceBinanceContractAddress, priceWithSlippage)
+                            ownContract.methods.approve(contractToBeApproved, priceWithSlippage)
                                 .send({
                                     from: mainWeb3.utils.toChecksumAddress(address)
                                 }).on('transactionHash', function(transactionHash){
@@ -2881,3 +3054,241 @@ $(document).on("submit", "#account-settings-form", async function(e) {
         });
     }
 });
+
+// ARTIST
+
+$(document).on("click", ".delete-property", function() {
+    $(this).closest(".property-container").remove();
+});
+
+$(document).on("click", "#add-property", function() {
+    let property = $("#property-name").val();
+
+    if(property !== "") {
+        let content = ' <div class="col-4 mb-2 px-1 property-container" data-value="' + property + '">';
+        content += '        <div class="card h-100">';
+        content += '            <div class="card-body">';
+        content += '                <div class="d-flex justify-content-between">';
+        content += '                    <div class="pe-3">' + property + '</div>';
+        content += '                    <div>';
+        content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
+        content += '                    </div>';
+        content += '                </div>';
+        content += '            </div>';
+        content += '        </div>';
+        content += '    </div>';
+
+        $("#property-name").val("");
+        $("#properties-container").append(content);
+    }
+});
+
+$(document).on("click", "#select-logo", function() {
+    $("input[name='logo']").trigger("click");
+});
+
+$(document).on("change", "input[name='logo']", function() {
+    let reader = new FileReader();
+
+    reader.onload = function(event) {
+        let img = new Image();
+
+        img.onload = function() {
+            let logoContainer = $("#logo-container");
+
+            logoContainer.html("");
+            logoContainer.css("background-image", "url('" + img.src + "')");
+        };
+
+        img.src = event.target.result;
+    };
+
+    if($(this)[0].files.length) {
+        reader.readAsDataURL($(this)[0].files[0]);
+    } else {
+        $("#logo").css("background-image", "initial");
+    }
+});
+
+$(document).on("click", "#select-banner", function() {
+    $("input[name='banner']").trigger("click");
+});
+
+$(document).on("change", "input[name='banner']", function() {
+    let reader = new FileReader();
+
+    reader.onload = function(event) {
+        let img = new Image();
+
+        img.onload = function() {
+            let bannerContainer = $("#banner-container");
+
+            bannerContainer.html("");
+            bannerContainer.css("background-image", "url('" + img.src + "')");
+        };
+
+        img.src = event.target.result;
+    };
+
+    if($(this)[0].files.length) {
+        reader.readAsDataURL($(this)[0].files[0]);
+    } else {
+        $("#banner").css("background-image", "initial");
+    }
+});
+
+$(document).on("submit", "#collection-form", async function(e) {
+    e.preventDefault();
+
+    let button = $(this).find("[type='submit']");
+
+    mainWeb3 = new Web3(ethereum);
+
+    let message = "I am confirming this action in Ownly Marketplace.";
+    let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
+
+    if(signature) {
+        let form_data = new FormData($(this)[0]);
+        form_data.append('id', $(this).attr("data-value"));
+        form_data.append('address', ethereum.selectedAddress);
+        form_data.append('signature', signature);
+
+        let properties = [];
+        $(".property-container").each(function() {
+            properties.push($(this).attr("data-value"));
+        });
+        form_data.append('properties', JSON.stringify(properties));
+
+        button.prop("disabled", true);
+        button.text("Saving Changes");
+
+        $.ajax({
+            url: ownlyAPI + "api/update-collection",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data
+        }).done(function(response) {
+            $("#modal-success .message").text("Changes Saved");
+            $("#modal-success").modal("show");
+        }).fail(function(error) {
+            console.log(error);
+        }).always(function() {
+            button.prop("disabled", false);
+            button.text("Save Changes");
+        });
+    }
+});
+
+$(document).on("click", ".collection-item", async function(e) {
+    let modalCollectionItem = $("#modal-collection-item");
+
+    let collection_id = modalCollectionItem.find("input[name='collection_id']").val();
+
+    modalCollectionItem.find(".modal-title").html("Edit Item");
+    modalCollectionItem.find("button[type='submit']").html("Save Changes");
+    modalCollectionItem.find("input[name='id']").val($(this).attr("data-id"));
+    modalCollectionItem.find("input[name='collection_id']").val(collection_id);
+    modalCollectionItem.find("input[name='name']").val($(this).find(".name").html());
+    modalCollectionItem.find("input[name='description']").val($(this).find(".description").html());
+    modalCollectionItem.modal("show");
+});
+
+$(document).on("click", "#add-collection-item-show-modal", async function(e) {
+    let modalCollectionItem = $("#modal-collection-item");
+
+    let collection_id = modalCollectionItem.find("input[name='collection_id']").val();
+
+    modalCollectionItem.find("input").val("");
+    modalCollectionItem.find(".modal-title").html("Add Item");
+    modalCollectionItem.find("button[type='submit']").html("Submit");
+    modalCollectionItem.find("input[name='id']").val(0);
+    modalCollectionItem.find("input[name='collection_id']").val(collection_id);
+    modalCollectionItem.modal("show");
+});
+
+$(document).on("click", "#select-image", function() {
+    $("input[name='image']").trigger("click");
+});
+
+$(document).on("change", "input[name='image']", function() {
+    let reader = new FileReader();
+
+    reader.onload = function(event) {
+        let img = new Image();
+
+        img.onload = function() {
+            let imageContainer = $("#image-container");
+
+            imageContainer.html("");
+            imageContainer.css("background-image", "url('" + img.src + "')");
+        };
+
+        img.src = event.target.result;
+    };
+
+    if($(this)[0].files.length) {
+        reader.readAsDataURL($(this)[0].files[0]);
+    } else {
+        $("#logo").css("background-image", "initial");
+    }
+});
+
+$(document).on("submit", "#collection-item-form", async function(e) {
+    e.preventDefault();
+
+    let button = $(this).find("[type='submit']");
+
+    mainWeb3 = new Web3(ethereum);
+
+    let message = "I am confirming this action in Ownly Marketplace.";
+    let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
+
+    if(signature) {
+        let form_data = new FormData($(this)[0]);
+        form_data.append('address', ethereum.selectedAddress);
+        form_data.append('signature', signature);
+
+        let properties = [];
+        $(".property-field").each(function() {
+            properties.push($(this).val());
+        });
+        form_data.append('properties', JSON.stringify(properties));
+
+        let id = $("#collection-item-form input[name='id']").val();
+
+        button.prop("disabled", true);
+
+        if(id === "0") {
+            button.text("Adding");
+        } else {
+            button.text("Saving Changes");
+        }
+
+        $.ajax({
+            url: ownlyAPI + "api/update-collection-item",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data
+        }).done(function(response) {
+            $("#modal-collection-item").modal("hide");
+
+            if(id === "0") {
+                $("#modal-success .message").text("Item Added");
+            } else {
+                $("#modal-success .message").text("Changes Saved");
+            }
+
+            $("#modal-success").modal("show");
+        }).fail(function(error) {
+            console.log(error);
+        }).always(function() {
+            button.prop("disabled", false);
+            button.text("Save Changes");
+        });
+    }
+});
+

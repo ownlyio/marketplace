@@ -1,0 +1,71 @@
+<div class="w-100" style="margin-top:80px">
+	<div class="container py-5">
+		<h2 class="mb-4 pb-2">Collection Details</h2>
+		
+		<form id="collection-form">
+			<div class="row">
+				<div class="col-lg-6 order-1 order-lg-0">
+					<div class="mb-4 mb-lg-5">
+						<label class="neo-bold mb-2" for="name">Name</label>
+						<input type="text" class="form-control py-2 py-lg-3 px-3" name="name" placeholder="Enter Collection Name" id="name" style="border-width:2px" required />
+					</div>
+					
+					<div class="mb-4 mb-lg-5">
+						<label class="neo-bold mb-2" for="name">Description</label>
+						<textarea type="text" class="form-control py-2 py-lg-3 px-3" name="description" placeholder="Enter Description" id="description" style="border-width:2px; height:132px" required></textarea>
+					</div>
+					
+					<div class="mb-4 mb-lg-5">
+						<label class="neo-bold mb-2" for="name">Properties</label>
+						<div class="row px-2" id="properties-container"></div>
+						
+						<div class="d-flex flex-nowrap mt-2">
+							<div class="flex-fill">
+								<input type="text" class="form-control font-size-90 px-3" id="property-name" style="border-radius:5px 0 0 5px" placeholder="Enter Property" />
+							</div>
+							<div>
+								<button type="button" class="btn btn-custom-13 py-1 px-5 font-size-90" id="add-property" style="border-radius:0 5px 5px 0; height:35.6px">Add</button>
+							</div>
+						</div>
+					</div>
+					
+					<div class="mb-4 mb-lg-5">
+						<label class="neo-bold mb-2" for="name">Collection URL</label>
+						<div class="d-flex flex-nowrap">
+							<div class="py-2 py-lg-3 px-3 bg-color-1 d-flex align-items-center">
+								<div>https://ownly.market?collection=</div>
+							</div>
+							<div class="flex-fill">
+								<input type="text" class="form-control py-2 py-lg-3 px-3" name="url" placeholder="Enter Collection URL" id="url" style="border-width:2px" required />
+							</div>
+						</div>
+					</div>
+					
+					<div class="text-center text-lg-start mb-4 mb-lg-5">
+						<button type="submit" class="btn btn-custom-6 py-2 py-lg-3 px-5 action-btn" style="border-radius:29px">Save Changes</button>
+					</div>
+				</div>
+				
+				<div class="col-lg-6 order-0 order-lg-1 mb-5 mb-lg-0">
+					<div class="mx-4 mx-sm-5 px-5 px-lg-0 px-xxl-5 mt-4 mb-5">
+						<div class="mx-sm-5 px-md-5 px-lg-5">
+							<div class="w-100 background-image-cover rounded-circle mb-4 position-relative bg-color-1" id="logo-container" style="padding-top:100%; border:3px solid #aaaaaa"></div>
+							<div class="text-center">
+								<input type="file" class="d-none" name="logo" accept="image/*" />
+								<button type="button" class="btn btn-custom-13 px-5 action-btn" id="select-logo" style="border-radius:29px">Select Logo</button>
+							</div>
+						</div>
+					</div>
+					
+					<div class="px-4">
+						<div class="w-100 background-image-cover mb-4 position-relative bg-color-1" id="banner-container" style="padding-top:35%; border:3px solid #aaaaaa"></div>
+						<div class="text-center">
+							<input type="file" class="d-none" name="banner" accept="image/*" />
+							<button type="button" class="btn btn-custom-13 px-5 action-btn" id="select-banner" style="border-radius:29px">Select Banner</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
