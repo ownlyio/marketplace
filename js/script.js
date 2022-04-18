@@ -264,6 +264,7 @@ let initializePage = () => {
     let app = $("#app");
     let pageContent = $("#page-content");
 
+    let currentURL = window.location.href;
     let network = findGetParameter("network");
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
@@ -275,273 +276,277 @@ let initializePage = () => {
     let page = findGetParameter("page");
     let sales = findGetParameter("sales");
 
-    if(network && contract && token) {
-        pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
-            currentPage = "token";
+    if(currentURL.includes("/launchpad")) {
+        app.removeClass("d-none");
+    } else {
+        if(network && contract && token) {
+            pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
+                currentPage = "token";
 
-            contract = web3Bsc.utils.toChecksumAddress(contract);
-
-            await updateConnectToWallet();
-
-            displayToken(network, contract, token);
-
-            if(contract === titansContractAddress && network === "bsc") {
-                collection = "titans-of-industry";
-            } else if(contract === mustachiosContractAddress && network === "eth") {
-                collection = "the-mustachios";
-            } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
-                collection = "cryptosolitaire";
-            } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
-                collection = "inkvadyrz";
-            } else if(contract === rewardsContractAddress && network === "matic") {
-                collection = "rewards";
-            } else if(contract === genesisBlockContractAddress && network === "eth") {
-                collection = "genesis-block";
-            } else if(contract === sagesRantContractAddress && network === "eth") {
-                collection = "the-sages-rant-collectibles";
-            } else if(contract === ownlyHouseOfArtContractAddress && network === "eth") {
-                collection = "oha";
-            }
-
-            $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
-
-            displayArtistSection((collection === "rewards" || collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
-            displayTokens(network, token, "all", collection, []);
-
-            app.removeClass("d-none");
-        });
-    } else if(profile) {
-        pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
-            $("#pills-account-settings-tab").attr("href", "?profile=" + profile);
-            $("#pills-owned-tab").attr("href", "?profile=" + profile + "&tab=owned");
-            $("#pills-favorites-tab").attr("href", "?profile=" + profile + "&tab=favorites");
-
-            if(tab === "owned") {
-                currentPage = "profile:owned";
-
-                $("#pills-owned-tab").addClass("active");
-                $("#owned-container").removeClass("d-none");
+                contract = web3Bsc.utils.toChecksumAddress(contract);
 
                 await updateConnectToWallet();
 
-                displayProfilePage(profile, page, 'owned');
-            } else if(tab === "favorites") {
-                currentPage = "profile:favorites";
+                displayToken(network, contract, token);
 
-                await updateConnectToWallet();
+                if(contract === titansContractAddress && network === "bsc") {
+                    collection = "titans-of-industry";
+                } else if(contract === mustachiosContractAddress && network === "eth") {
+                    collection = "the-mustachios";
+                } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
+                    collection = "cryptosolitaire";
+                } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
+                    collection = "inkvadyrz";
+                } else if(contract === rewardsContractAddress && network === "matic") {
+                    collection = "rewards";
+                } else if(contract === genesisBlockContractAddress && network === "eth") {
+                    collection = "genesis-block";
+                } else if(contract === sagesRantContractAddress && network === "eth") {
+                    collection = "the-sages-rant-collectibles";
+                } else if(contract === ownlyHouseOfArtContractAddress && network === "eth") {
+                    collection = "oha";
+                }
 
-                $("#pills-favorites-tab").addClass("active");
-                $("#favorites-container").removeClass("d-none");
+                $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-                displayProfilePage(profile, page, 'favorited');
-            } else {
-                currentPage = "profile:settings";
-
-                $("#pills-account-settings-tab").addClass("active");
-                $("#account-settings-container").removeClass("d-none");
-
-                await updateConnectToWallet();
-
-                displayProfilePage(profile, page, 'owned');
-            }
-        });
-    } else if(sales) {
-        pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
-            displaySales(page);
-            app.removeClass("d-none");
-        });
-    } else if(collection) {
-        pageContent.load(url + "js/../collection.html?v=" + cacheVersion, async function() {
-            tokensContainerInitialContent = $("#tokens-container").html();
-            initializeTooltip();
-
-            currentPage = "collection";
-
-            if(collection.split(":").length === 2) {
-                let temp = collection.split(":");
-                network = temp[0];
-                collection = temp[1];
-            } else {
-                network = getCollectionNetwork(collection);
-            }
-
-            displayTokens(network, 0, "all", collection, [], page);
-            displayCollectionProperties(network, collection);
-
-            $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
-
-            if(collection !== "rewards") {
-                $("#artist-section").removeClass("d-none");
-                displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
-            }
-
-            $(".collection-tab[data-collection='" + collection + "']").addClass("active");
-
-            $(".collection-dropdown-item[data-collection='" + collection + "']").addClass("active");
-
-            $(".collection-section").addClass("d-none");
-            $(".collection-section[data-collection='" + collection + "']").removeClass("d-none");
-
-            let filterByProperties = $("#filter-by-properties");
-            filterByProperties.attr("data-network", network);
-            filterByProperties.attr("data-collection", collection);
-
-            app.removeClass("d-none");
-        });
-    } else if(collectionDetails) {
-        if(!collectionItems) {
-            pageContent.load(url + "js/../collection-details.html?v=" + cacheVersion, async function() {
-                await updateConnectToWallet();
-
-                $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
-                    let collection = data.collections[0];
-
-                    let collectionForm = $("#collection-form");
-
-                    collectionForm.attr("data-value", collection.id);
-                    collectionForm.find("input[name='name']").val(collection.name);
-                    collectionForm.find("textarea[name='description']").val(collection.description);
-                    collectionForm.find("input[name='url']").val(collection.url_placeholder);
-                    collectionForm.find("#logo-container").css("background-image", "url('" + collection.logo + "')");
-                    collectionForm.find("#banner-container").css("background-image", "url('" + collection.banner + "')");
-
-                    if(collection.properties !== "") {
-                        let properties = JSON.parse(collection.properties);
-
-                        let content = '';
-                        for(let i = 0; i < properties.length; i++) {
-                            content += '    <div class="col-4 mb-2 px-1 property-container" data-value="' + properties[i] + '">';
-                            content += '        <div class="card h-100">';
-                            content += '            <div class="card-body">';
-                            content += '                <div class="d-flex justify-content-between">';
-                            content += '                    <div class="pe-3">' + properties[i] + '</div>';
-                            content += '                    <div>';
-                            content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
-                            content += '                    </div>';
-                            content += '                </div>';
-                            content += '            </div>';
-                            content += '        </div>';
-                            content += '    </div>';
-                        }
-
-                        $("#properties-container").html(content);
-                    }
-                });
+                displayArtistSection((collection === "rewards" || collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
+                displayTokens(network, token, "all", collection, []);
 
                 app.removeClass("d-none");
             });
-        } else {
-            pageContent.load(url + "js/../collection-items.html?v=" + cacheVersion, async function() {
-                await updateConnectToWallet();
+        } else if(profile) {
+            pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
+                $("#pills-account-settings-tab").attr("href", "?profile=" + profile);
+                $("#pills-owned-tab").attr("href", "?profile=" + profile + "&tab=owned");
+                $("#pills-favorites-tab").attr("href", "?profile=" + profile + "&tab=favorites");
 
-                $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
-                    let collection = data.collections[0];
+                if(tab === "owned") {
+                    currentPage = "profile:owned";
 
-                    $("#collection-item-form input[name='collection_id']").val(collection.id);
+                    $("#pills-owned-tab").addClass("active");
+                    $("#owned-container").removeClass("d-none");
 
-                    if(collection.properties !== "") {
-                        let properties = JSON.parse(collection.properties);
-                        let content = '';
+                    await updateConnectToWallet();
 
-                        for(let i = 0; i < properties.length; i++) {
-                            content += '    <div class="col-6 mb-3">';
-                            content += '        <label class="font-size-80 mb-1">' + properties[i] + '</label>';
-                            content += '        <input type="text" class="form-control py-2 py-lg-3 px-3 font-size-80 property-field" style="border-width:2px; height:40px" required />';
-                            content += '    </div>';
+                    displayProfilePage(profile, page, 'owned');
+                } else if(tab === "favorites") {
+                    currentPage = "profile:favorites";
+
+                    await updateConnectToWallet();
+
+                    $("#pills-favorites-tab").addClass("active");
+                    $("#favorites-container").removeClass("d-none");
+
+                    displayProfilePage(profile, page, 'favorited');
+                } else {
+                    currentPage = "profile:settings";
+
+                    $("#pills-account-settings-tab").addClass("active");
+                    $("#account-settings-container").removeClass("d-none");
+
+                    await updateConnectToWallet();
+
+                    displayProfilePage(profile, page, 'owned');
+                }
+            });
+        } else if(sales) {
+            pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
+                displaySales(page);
+                app.removeClass("d-none");
+            });
+        } else if(collection) {
+            pageContent.load(url + "js/../collection.html?v=" + cacheVersion, async function() {
+                tokensContainerInitialContent = $("#tokens-container").html();
+                initializeTooltip();
+
+                currentPage = "collection";
+
+                if(collection.split(":").length === 2) {
+                    let temp = collection.split(":");
+                    network = temp[0];
+                    collection = temp[1];
+                } else {
+                    network = getCollectionNetwork(collection);
+                }
+
+                displayTokens(network, 0, "all", collection, [], page);
+                displayCollectionProperties(network, collection);
+
+                $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
+
+                if(collection !== "rewards") {
+                    $("#artist-section").removeClass("d-none");
+                    displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
+                }
+
+                $(".collection-tab[data-collection='" + collection + "']").addClass("active");
+
+                $(".collection-dropdown-item[data-collection='" + collection + "']").addClass("active");
+
+                $(".collection-section").addClass("d-none");
+                $(".collection-section[data-collection='" + collection + "']").removeClass("d-none");
+
+                let filterByProperties = $("#filter-by-properties");
+                filterByProperties.attr("data-network", network);
+                filterByProperties.attr("data-collection", collection);
+
+                app.removeClass("d-none");
+            });
+        } else if(collectionDetails) {
+            if(!collectionItems) {
+                pageContent.load(url + "js/../collection-details.html?v=" + cacheVersion, async function() {
+                    await updateConnectToWallet();
+
+                    $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                        let collection = data.collections[0];
+
+                        let collectionForm = $("#collection-form");
+
+                        collectionForm.attr("data-value", collection.id);
+                        collectionForm.find("input[name='name']").val(collection.name);
+                        collectionForm.find("textarea[name='description']").val(collection.description);
+                        collectionForm.find("input[name='url']").val(collection.url_placeholder);
+                        collectionForm.find("#logo-container").css("background-image", "url('" + collection.logo + "')");
+                        collectionForm.find("#banner-container").css("background-image", "url('" + collection.banner + "')");
+
+                        if(collection.properties !== "") {
+                            let properties = JSON.parse(collection.properties);
+
+                            let content = '';
+                            for(let i = 0; i < properties.length; i++) {
+                                content += '    <div class="col-4 mb-2 px-1 property-container" data-value="' + properties[i] + '">';
+                                content += '        <div class="card h-100">';
+                                content += '            <div class="card-body">';
+                                content += '                <div class="d-flex justify-content-between">';
+                                content += '                    <div class="pe-3">' + properties[i] + '</div>';
+                                content += '                    <div>';
+                                content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
+                                content += '                    </div>';
+                                content += '                </div>';
+                                content += '            </div>';
+                                content += '        </div>';
+                                content += '    </div>';
+                            }
+
+                            $("#properties-container").html(content);
+                        }
+                    });
+
+                    app.removeClass("d-none");
+                });
+            } else {
+                pageContent.load(url + "js/../collection-items.html?v=" + cacheVersion, async function() {
+                    await updateConnectToWallet();
+
+                    $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                        let collection = data.collections[0];
+
+                        $("#collection-item-form input[name='collection_id']").val(collection.id);
+
+                        if(collection.properties !== "") {
+                            let properties = JSON.parse(collection.properties);
+                            let content = '';
+
+                            for(let i = 0; i < properties.length; i++) {
+                                content += '    <div class="col-6 mb-3">';
+                                content += '        <label class="font-size-80 mb-1">' + properties[i] + '</label>';
+                                content += '        <input type="text" class="form-control py-2 py-lg-3 px-3 font-size-80 property-field" style="border-width:2px; height:40px" required />';
+                                content += '    </div>';
+                            }
+
+                            $("#property-fields-container").html(content);
                         }
 
-                        $("#property-fields-container").html(content);
+                        $.get(ownlyAPI + "api/get-launchpad-collection-items/" + collection.id, function(data) {
+                            let launchpadTokens = data.launchpad_tokens;
+                            let content = '';
+
+                            for(let i = 0; i < launchpadTokens.length; i++) {
+                                content += '    <div class="col-md-2 mb-4">';
+                                content += '        <div class="card cursor-pointer collection-item" data-id="' + launchpadTokens[i].token_id + '">';
+                                content += '            <div class="card-body">';
+                                content += '                <div class="background-image-contain bg-color-1 mb-3" style="padding-top:100%; background-image:url(\'' + launchpadTokens[i].image + '\')"></div>';
+                                content += '                <div class="text-center font-size-70 mb-1">Token ID: ' + launchpadTokens[i].token_id + '</div>';
+                                content += '                <div class="text-center font-size-90 name">' + launchpadTokens[i].name + '</div>';
+                                content += '                <div class="d-none description">' + launchpadTokens[i].description + '</div>';
+                                content += '                <div class="d-none attributes">' + launchpadTokens[i].attributes + '</div>';
+                                content += '            </div>';
+                                content += '        </div>';
+                                content += '    </div>';
+                            }
+
+                            $("#collection-items-container").html(content);
+
+                            app.removeClass("d-none");
+                        });
+                    });
+                });
+            }
+        } else {
+            pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
+                currentPage = "home";
+
+                $("#carousel-1 .container").html($("#carousel-content").html());
+                new bootstrap.Carousel($('#carousel-1'));
+
+                $.get(ownlyAPI + "api/get-collections", function(data) {
+                    let collections = data.collections;
+
+                    let content = '';
+                    content += '    <div class="splide splide--loop px-5 pb-5">';
+                    content += '    <div class="px-2">';
+                    content += '        <div class="splide__track">';
+                    content += '            <ul class="splide__list">';
+                    for(let i = 0; i < collections.length; i++) {
+                        content += '    <li class="splide__slide px-2">';
+                        content += '        <a href="' + url + '?collection=' + collections[i].url_placeholder + '" class="text-decoration-none">';
+                        content += '            <div class="card" style="border:1px solid #cccccc; border-radius:10px">';
+                        content += '                <div class="w-100 background-image-cover" style="background-image:url(\'' + collections[i].banner + '\'); padding-top:50%; background-color:#bbbbbb; border-top-left-radius:10px; border-top-right-radius:10px"></div>';
+                        content += '                <div class="text-center mb-2" style="margin-top:-45px">';
+                        content += '                    <div class="d-inline-block shadow background-image-cover" style="background-image:url(\'' + collections[i].logo + '\'); border:4px solid #ffffff; height:90px; width:90px; border-radius:50%"></div>';
+                        content += '                </div>';
+                        content += '                <div class="px-3">';
+                        content += '                    <p class="text-center text-color-6 fw-bold">' + collections[i].name + '</p>';
+                        content += '                    <p class="text-center text-color-7 font-size-90 clamp">' + collections[i].description + '</p>';
+                        content += '                </div>';
+                        content += '            </div>';
+                        content += '        </a>';
+                        content += '    </li>';
+                    }
+                    content += '        </ul>';
+                    content += '    </div>';
+                    content += '    </div>';
+                    content += '</div>';
+
+                    $("#collections-container").html(content);
+
+                    $(".clamp").each(function() {
+                        new MultiClamp($(this), {
+                            ellipsis: '...',
+                            clamp: 3
+                        });
+                    });
+
+                    let width = $(window).width();
+
+                    let perPage = 1;
+                    if(width >= 992) {
+                        perPage = 3;
+                    } else if(width >= 768) {
+                        perPage = 2;
                     }
 
-                    $.get(ownlyAPI + "api/get-launchpad-collection-items/" + collection.id, function(data) {
-                        let launchpadTokens = data.launchpad_tokens;
-                        let content = '';
+                    new Splide( '.splide', {
+                        type   : 'loop',
+                        start: 1,
+                        perPage: perPage,
+                        perMove: 1,
+                    } ).mount();
 
-                        for(let i = 0; i < launchpadTokens.length; i++) {
-                            content += '    <div class="col-md-2 mb-4">';
-                            content += '        <div class="card cursor-pointer collection-item" data-id="' + launchpadTokens[i].token_id + '">';
-                            content += '            <div class="card-body">';
-                            content += '                <div class="background-image-contain bg-color-1 mb-3" style="padding-top:100%; background-image:url(\'' + launchpadTokens[i].image + '\')"></div>';
-                            content += '                <div class="text-center font-size-70 mb-1">Token ID: ' + launchpadTokens[i].token_id + '</div>';
-                            content += '                <div class="text-center font-size-90 name">' + launchpadTokens[i].name + '</div>';
-                            content += '                <div class="d-none description">' + launchpadTokens[i].description + '</div>';
-                            content += '                <div class="d-none attributes">' + launchpadTokens[i].attributes + '</div>';
-                            content += '            </div>';
-                            content += '        </div>';
-                            content += '    </div>';
-                        }
-
-                        $("#collection-items-container").html(content);
-
-                        app.removeClass("d-none");
-                    });
+                    app.removeClass("d-none");
                 });
             });
         }
-    } else {
-        pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
-            currentPage = "home";
-
-            $("#carousel-1 .container").html($("#carousel-content").html());
-            new bootstrap.Carousel($('#carousel-1'));
-
-            $.get(ownlyAPI + "api/get-collections", function(data) {
-                let collections = data.collections;
-
-                let content = '';
-                content += '    <div class="splide splide--loop px-5 pb-5">';
-                content += '    <div class="px-2">';
-                content += '        <div class="splide__track">';
-                content += '            <ul class="splide__list">';
-                for(let i = 0; i < collections.length; i++) {
-                    content += '    <li class="splide__slide px-2">';
-                    content += '        <a href="' + url + '?collection=' + collections[i].url_placeholder + '" class="text-decoration-none">';
-                    content += '            <div class="card" style="border:1px solid #cccccc; border-radius:10px">';
-                    content += '                <div class="w-100 background-image-cover" style="background-image:url(\'' + collections[i].banner + '\'); padding-top:50%; background-color:#bbbbbb; border-top-left-radius:10px; border-top-right-radius:10px"></div>';
-                    content += '                <div class="text-center mb-2" style="margin-top:-45px">';
-                    content += '                    <div class="d-inline-block shadow background-image-cover" style="background-image:url(\'' + collections[i].logo + '\'); border:4px solid #ffffff; height:90px; width:90px; border-radius:50%"></div>';
-                    content += '                </div>';
-                    content += '                <div class="px-3">';
-                    content += '                    <p class="text-center text-color-6 fw-bold">' + collections[i].name + '</p>';
-                    content += '                    <p class="text-center text-color-7 font-size-90 clamp">' + collections[i].description + '</p>';
-                    content += '                </div>';
-                    content += '            </div>';
-                    content += '        </a>';
-                    content += '    </li>';
-                }
-                content += '        </ul>';
-                content += '    </div>';
-                content += '    </div>';
-                content += '</div>';
-
-                $("#collections-container").html(content);
-
-                $(".clamp").each(function() {
-                    new MultiClamp($(this), {
-                        ellipsis: '...',
-                        clamp: 3
-                    });
-                });
-
-                let width = $(window).width();
-
-                let perPage = 1;
-                if(width >= 992) {
-                    perPage = 3;
-                } else if(width >= 768) {
-                    perPage = 2;
-                }
-
-                new Splide( '.splide', {
-                    type   : 'loop',
-                    start: 1,
-                    perPage: perPage,
-                    perMove: 1,
-                } ).mount();
-
-                app.removeClass("d-none");
-            });
-        });
     }
 
     $(".replace-host").each(function() {
@@ -1202,7 +1207,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         } else {
             if(chainId !== chainIDMatic) {
                 if(web3Bsc.utils.toChecksumAddress(owner) === "0x0000000000000000000000000000000000000000") {
-                    content += '                <div class="row justify-content-end" style="min-height:69px">';
+                    content += '                <div class="row align-items-center justify-content-end" style="min-height:69px">';
                     content += '                    <div class="col-6">';
                     content += '                        <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-sale-confirmation" data-item-id="' + i + '" data-price="' + marketItem.price + '" data-currency="BNB" data-token-id="' + i + '" data-type="mint" style="border-radius:15px">MINT NOW</button>';
                     content += '                    </div>';
@@ -1216,7 +1221,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                     content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
                     content += '                    </div>';
                     content += '                    <div class="col-6">';
-                    if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress) {
+                    if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress || contractAddress === launchpadCollectionContractAddress) {
                         if(owner) {
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
                                 content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
@@ -1825,7 +1830,7 @@ let update_buying_token = async function() {
                 buyingPriceContainerBnbToOwn.removeClass("d-none");
             });
     } else if(currency === "BNB" && token === "BNB") {
-        $("#bnb-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 2));
+        $("#bnb-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 3));
         $(".buying-price-container[data-currency='BNB-BNB']").removeClass("d-none");
     } else if(currency === "OWN" && token === "OWN") {
         $("#own-price").text(numberFormat(web3Bsc.utils.fromWei(price, "ether"), 2));

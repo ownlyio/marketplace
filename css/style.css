@@ -140,6 +140,9 @@ html {
 .text-color-9 {
     color:#e3965c;
 }
+.text-color-10 {
+    color:#c8a851;
+}
 .link-color-1 {
     color:#bc3326;
 }
@@ -308,6 +311,14 @@ html {
     color: #000000;
     border:2px solid #dbd8d5;
 }
+.btn-custom-15 {
+    background-color:#c8a851;
+    color:#ffffff;
+}
+.btn-custom-15:hover, .btn-custom-15:active, .btn-custom-15:focus, .btn-custom-15.active {
+    background-color: #947e3b;
+    color: #ffffff;
+}
 .bg-color-1 {
     background-color:#f3f3f3!important;
 }
@@ -367,6 +378,12 @@ html {
 }
 .bg-color-20 {
     background-color:#9300a8!important;
+}
+.bg-color-21 {
+    background-color:#c8a851!important;
+}
+.bg-color-22 {
+    background-color: #1a1a1a !important;
 }
 .letter-spacing-1 {
     letter-spacing:0.01em;
@@ -459,6 +476,9 @@ html {
 }
 .w-33 {
     width:33.33%!important;
+}
+.border-radius-0 {
+    border-radius:0;
 }
 
 /* This will work on Firefox */

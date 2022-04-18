@@ -1,0 +1,18 @@
+DirectorySlash Off
+RewriteEngine on
+
+RewriteRule ^launchpad$ /launchpad/index.html [L,E=LOOP:1]
+
+RewriteCond %{ENV:REDIRECT_LOOP} !1
+RewriteRule ^launchpad/$ /launchpad [R=301,L]
+
+RewriteCond %{ENV:REDIRECT_LOOP} !1
+RewriteRule ^launchpad/index.html$ /launchpad [R=301,L]
+
+RewriteRule ^alteredperspective$ /alteredperspective/index.html [L,E=LOOP:1]
+RewriteRule ^freefall$ /freefall/index.html [L,E=LOOP:1]
+RewriteRule ^comfortzone$ /comfortzone/index.html [L,E=LOOP:1]
+RewriteRule ^imsorry$ /imsorry/index.html [L,E=LOOP:1]
+RewriteRule ^leavemealone$ /leavemealone/index.html [L,E=LOOP:1]
+RewriteRule ^livewithit$ /livewithit/index.html [L,E=LOOP:1]
+RewriteRule ^sleepless$ /sleepless/index.html [L,E=LOOP:1]

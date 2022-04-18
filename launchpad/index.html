@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="title" content="Ownly: Buy, own, collect, and trade 1 of 1 edition crypto artworks by talented artists." />
+	<meta name="description" content="OWNLY is a metaverse-focused platform that allows creators and collectors to optimize ownership and utility through innovative applications of non-fungible tokens (NFT). Ownly is created to be a meeting place of artists, gamers, and collectors in the crypto and NFT space.">
+	<meta name="author" content="Ownly">
+	
+	<meta property="og:url" content="https://ownly.io/marketplace" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Ownly: Buy, own, collect, and trade 1 of 1 edition crypto artworks by talented artists." />
+	<meta property="og:description" content="OWNLY is a metaverse-focused platform that allows creators and collectors to optimize ownership and utility through innovative applications of non-fungible tokens (NFT). Ownly is created to be a meeting place of artists, gamers, and collectors in the crypto and NFT space." />
+	<meta property="og:image" content="https://ownly.market/img/og/1.png" />
+	
+	<title>Ownly Market | Launchpad</title>
+	<link rel="icon" href="../img/ownly/own-token.webp">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.0.0/css/all.css">
+	<link rel="stylesheet" href="../js/alertifyjs/css/alertify.min.css" />
+	<link rel="stylesheet" href="../js/alertifyjs/css/themes/default.min.css" />
+	<link rel="stylesheet" href="../js/fancybox/fancybox.css" />
+	<link rel="stylesheet" href="../js/splide/splide.min.css" />
+	<link rel="stylesheet" href="../css/style.css?v=30">
+	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-6LBV47LFR4"></script>
+	<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6LBV47LFR4');
+	</script>
+</head>
+<body>
+	<div style="overflow-x:hidden">
+		<div class="d-flex justify-content-center align-items-center position-fixed vh-100 w-100 bg-white" id="loading-ownly-container" style="z-index:1031">
+			<div class="pb-5">
+				<img src="../img/ownly/own-token.webp" id="loading-ownly" style="width:200px; transition:1s" alt="Ownly" />
+				<div class="progress mt-4">
+					<div class="progress-bar progress-bar-striped progress-bar-animated bg-color-2" id="loading-page-progress-bar" role="progressbar" style="width:0"></div>
+				</div>
+				<input type="hidden" id="progress_width" value="0">
+			</div>
+		</div>
+		
+		<div class="d-none" id="app">
+			<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
+				<div class="container">
+					<div class="d-flex align-items-center" style="min-height:63px">
+						<a class="#" href="https://ownly.io/marketplace">
+							<img src="../img/ownly/own-token.webp" width="53" alt="Ownly">
+						</a>
+						<div class="ps-2">
+							<a href="#" class="link-color-1 text-decoration-none website-home-link">
+								<div class="">
+									<div class="d-flex align-items-center">
+										<div class="font-size-150 font-size-sm-200 rubik-black website-home-link line-height-90">OWNLY</div>
+										<div class="bg-color-6 text-center text-white py-1 px-2 ms-2">
+											<div class="font-size-60 font-size-sm-70 rubik-bold line-height-100" id="app-version"></div>
+										</div>
+									</div>
+									<div class="font-size-70 font-size-sm-100 rubik-bold line-height-90" id="market-label">MARKET</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse w-100 justify-content-between" id="navbarSupportedContent" style="flex-grow:initial">
+						<ul class="navbar-nav mb-2 mb-lg-0 ps-lg-3">
+							<li class="nav-item dropdown px-2">
+								<a class="nav-link dropdown-toggle text-color-6" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Collections</a>
+								<ul class="dropdown-menu px-2" aria-labelledby="navbarDropdown">
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=oha" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="oha">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/8.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">Ownly House of Art</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=cryptosolitaire" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="cryptosolitaire">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/1.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">CryptoSolitaire</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=genesis-block" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="genesis-block">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/2.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">Genesis Block</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=inkvadyrz" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="inkvadyrz">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/3.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">Inkvadyrz</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=rewards" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="rewards">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/4.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">Ownly Rewards</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=the-mustachios" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="the-mustachios">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/5.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">The Mustachios</div>
+											</div>
+										</a>
+									</li>
+									<li style="border-bottom:1px solid #cccccc">
+										<a href="http://ownlyio.dev-marketplace.test/?collection=the-sages-rant-collectibles" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="the-sages-rant-collectibles">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/6.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-sm-110 pe-2">The Sages Rant Collectibles</div>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a href="http://ownlyio.dev-marketplace.test/?collection=titans-of-industry" class="dropdown-item collection-dropdown-item p-2 replace-host" data-collection="titans-of-industry">
+											<div class="d-flex align-items-center">
+												<div class="pe-3">
+													<img src="../img/collection-logos/7.webp" class="shadow-sm rounded-3" width="40" />
+												</div>
+												<div class="font-size-110 pe-2">Titans of Industry</div>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li class="nav-item px-2">
+								<a class="nav-link text-color-6 replace-host" href="http://ownlyio.dev-marketplace.test/?sales">NFT&nbsp;Sales</a>
+							</li>
+						</ul>
+						
+						<div class="ps-lg-3 pe-lg-4 mb-3 mb-lg-0 w-100">
+							<div class="position-relative search-field-container">
+								<div class="position-absolute" style="top:11px; left:14px">
+									<i class="fas fa-search"></i>
+								</div>
+								<input type="text" class="form-control font-size-90 search-field" placeholder="Search NFTs" style="padding-left:42px; height:42px" />
+								
+								<div class="position-absolute w-100 d-none search-suggestions-container" style="top:42px; left:0; z-index:1"></div>
+							</div>
+						</div>
+						
+						<ul class="navbar-nav mb-2 mb-lg-0">
+							<li class="nav-item">
+								<a class="text-color-6 text-decoration-none" href="#" id="account-address"></a>
+							</li>
+							
+							<li class="nav-item" id="connect-wallet-container">
+								<button type="button" class="btn btn-custom-9 shadow-sm font-size-90 py-2 px-4" id="connect-wallet" style="border-radius:100px">Connect&nbsp;Wallet</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			
+			<div id="page-content" style="min-height:calc(100vh - 201px)">
+				<div class="background-image-cover" style="background-image:url('../img/bg/launchpad.png')">
+					<div class="container">
+						<div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+							<div>
+								<p class="text-white text-center font-size-200">Ownly Market</p>
+								<p class="text-color-10 neo-black text-center font-size-550 mb-4">ARTIST LAUNCHPAD</p>
+								
+								<div class="px-5 mx-5">
+									<div class="bg-color-21 w-100 mb-5" style="height:1px"></div>
+								</div>
+								
+								<p class="text-white text-center font-size-130">Lorem ipsum dolor sit amet. Ab omnis quia non illum explicabo aut excepturi dicta sed nemo quia aut amet quam nam recusandae totam? Aut adipisci optio eum quos facere in laudantium minus.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="container py-5">
+					<div class="row align-items-center py-5">
+						<div class="col-md-4">
+							<div class="pe-4">
+								<div class="w-100 bg-color-21" style="padding-top:100%">
+								
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-md-8">
+							<div class="ps-3">
+								<p class="neo-bold font-size-300 mb-4">About the Artist Launchpad</p>
+								
+								<div class="bg-color-21 w-100 mb-4" style="height:1px"></div>
+								
+								<p class="font-size-120 pt-2">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+								<p class="font-size-120">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="background-image-cover" style="background-image:url('../img/bg/launchpad-2.png')">
+					<div class="container py-5">
+						<div class="row py-5">
+							<div class="col-md-4">
+								<div class="card border-0 border-radius-0">
+									<div class="card-body p-5">
+										<div class="d-flex justify-content-center mb-4">
+											<div class="bg-color-21 d-flex align-items-center justify-content-center" style="border-radius:50%; width:70px; height:70px">
+												<i class="fas fa-paint-brush font-size-150 text-white"></i>
+											</div>
+										</div>
+										
+										<p class="text-center neo-bold font-size-110">Lorem Ipsum Dolor</p>
+										<p class="text-center font-size-100">Lorem ipsum dolor sit amet. Qui iusto repudiandae aut natus nisi qui Quis doloribus sed quisquam sint eum iste tempora non illum Quis et odio assumenda! Sit molestiae rerum qui quas deleniti et omnis harum et soluta esse. Ea sunt galisum eum omnis asperiores qui asperiores rerum.</p>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
+								<div class="card border-0 border-radius-0">
+									<div class="card-body p-5">
+										<div class="d-flex justify-content-center mb-4">
+											<div class="bg-color-21 d-flex align-items-center justify-content-center" style="border-radius:50%; width:70px; height:70px">
+												<i class="fas fa-image font-size-150 text-white"></i>
+											</div>
+										</div>
+										
+										<p class="text-center neo-bold font-size-110">Lorem Ipsum Dolor</p>
+										<p class="text-center font-size-100">Lorem ipsum dolor sit amet. Qui iusto repudiandae aut natus nisi qui Quis doloribus sed quisquam sint eum iste tempora non illum Quis et odio assumenda! Sit molestiae rerum qui quas deleniti et omnis harum et soluta esse. Ea sunt galisum eum omnis asperiores qui asperiores rerum.</p>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
+								<div class="card border-0 border-radius-0">
+									<div class="card-body p-5">
+										<div class="d-flex justify-content-center mb-4">
+											<div class="bg-color-21 d-flex align-items-center justify-content-center" style="border-radius:50%; width:70px; height:70px">
+												<i class="fas fa-store font-size-150 text-white"></i>
+											</div>
+										</div>
+										
+										<p class="text-center neo-bold font-size-110">Lorem Ipsum Dolor</p>
+										<p class="text-center font-size-100">Lorem ipsum dolor sit amet. Qui iusto repudiandae aut natus nisi qui Quis doloribus sed quisquam sint eum iste tempora non illum Quis et odio assumenda! Sit molestiae rerum qui quas deleniti et omnis harum et soluta esse. Ea sunt galisum eum omnis asperiores qui asperiores rerum.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="container py-5">
+					<div class="row align-items-center py-5">
+						<div class="col-md-8">
+							<div class="pe-3">
+								<p class="neo-bold font-size-300 mb-4">Who is Crypto Art PH?</p>
+								
+								<div class="bg-color-21 w-100 mb-4" style="height:1px"></div>
+								
+								<p class="font-size-120 pt-2">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+								<p class="font-size-120">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+							</div>
+						</div>
+						
+						<div class="col-md-4">
+							<div class="ps-4">
+								<div class="background-image-cover w-100" style="padding-top:100%; border-radius:50%; background-image:url('../img/logo/cryptoartph.jpg')">
+								
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+					<div class="carousel-indicators">
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+					</div>
+					<div class="carousel-inner">
+						<div class="carousel-item active">
+							<div class="background-image-cover" style="background-image:url('../img/bg/launchpad-2.png'); background-position:0 0">
+								<div class="container">
+									<div class="row py-5 min-vh-100 align-items-center">
+										<div class="col-md-8 py-5">
+											<p class="text-color-10 fw-bold font-size-150 font-size-md-400 mb-4">Lei Melendres</p>
+											<p class="text-white fw-bold font-size-150 font-size-md-200 mb-4">“Saying Ownly helped me in a very big way is a huge understatement.”</p>
+											<p class="text-white font-size-100 font-size-md-120 mb-4 line-height-150 mb-4 pb-4">I am super thankful and grateful to them for not only helping me create NFTs, but they were also the one who introduced me to the world of crypto itself. Plus, we didn't just work on one NFT artwork but a full-blown 20 pcs Genesis NFT collection. Isma and his team were very patient and were always there to encourage, support, promote, and help me in my NFT journey every step of the way even until now and I owe them a lot for it.</p>
+											<a href="#" class="btn btn-custom-15 px-5 py-3">View Inkvadyrz Collection</a>
+										</div>
+										
+										<div class="col-md-4 py-5 ps-5">
+											<div class="text-end">
+												<img src="../img/artists/Lei-Melendres.webp" class="w-100" alt="Lei Melendres" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="carousel-item">
+							<div class="background-image-cover" style="background-image:url('../img/bg/launchpad-2.png'); background-position:0 0">
+								<div class="container">
+									<div class="row py-5 min-vh-100 align-items-center">
+										<div class="col-md-8 py-5">
+											<p class="text-color-10 fw-bold font-size-150 font-size-md-400 mb-4">Marso</p>
+											<p class="text-white fw-bold font-size-150 font-size-md-200 mb-4">“Glad to work with a group of intellectuals who aspire to be one of the best in the nft space.”</p>
+											<p class="text-white font-size-100 font-size-md-120 mb-4 line-height-150 mb-4 pb-4">Ownly helped me kickstart one of my projects that helped me to create a masterpiece. Their team are really fun to work with. Will definitely love to work with them again.</p>
+											<a href="#" class="btn btn-custom-15 px-5 py-3">View Genesis Block Collection</a>
+										</div>
+										
+										<div class="col-md-4 py-5 ps-5">
+											<div class="text-end">
+												<img src="../img/artists/Marso.webp" class="w-100" alt="Marso" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="carousel-item">
+							<div class="background-image-cover" style="background-image:url('../img/bg/launchpad-2.png'); background-position:0 0">
+								<div class="container">
+									<div class="row py-5 min-vh-100 align-items-center">
+										<div class="col-md-8 py-5">
+											<p class="text-color-10 fw-bold font-size-150 font-size-md-400 mb-4">Mel Baranda</p>
+											<p class="text-white fw-bold font-size-150 font-size-md-200 mb-4">“I'm so glad to be a part of it, its an amazing experience!”</p>
+											<p class="text-white font-size-100 font-size-md-120 mb-4 line-height-150 mb-4 pb-4">The venue is beautiful and presentable, impressive presentation of artworks and very knowledgeable.</p>
+											<a href="#" class="btn btn-custom-15 px-5 py-3">View Ownly House of Art Collection</a>
+										</div>
+										
+										<div class="col-md-4 py-5 ps-5">
+											<div class="text-end">
+												<img src="../img/artists/Mel-Baranda.webp" class="w-100" alt="Mel Baranda" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button class="carousel-control-prev ms-4" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next me-4" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+				
+				<div class="bg-color-22">
+					<div class="container py-5">
+						<div class="py-5">
+							<p class="neo-bold text-center font-size-300 text-color-10 mb-4">The Process</p>
+							
+							<div class="d-flex justify-content-center">
+								<div class="bg-color-21 w-100 mb-4" style="height:1px; max-width:500px"></div>
+							</div>
+
+							<p class="font-size-120 text-center text-white mb-4 pt-2 mx-5 px-5">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+							<p class="font-size-120 text-center text-white mx-5 px-5">Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="container py-5">
+					<div class="py-5">
+						<p class="neo-bold text-center font-size-300 text-color-10 mb-4">Frequently Asked Questions</p>
+						
+						<div class="d-flex justify-content-center mb-4">
+							<div class="bg-color-21 w-100 mb-4" style="height:1px; max-width:900px"></div>
+						</div>
+						
+						<div class="accordion" id="accordionExample">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="headingOne">
+									<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt?
+									</button>
+								</h2>
+								<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+									<div class="accordion-body">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="headingTwo">
+									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-controls="collapseTwo">
+										Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt?
+									</button>
+								</h2>
+								<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+									<div class="accordion-body">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="headingThree">
+									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-controls="collapseThree">
+										Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt?
+									</button>
+								</h2>
+								<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+									<div class="accordion-body">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="headingFour">
+									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-controls="collapseFour">
+										Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt?
+									</button>
+								</h2>
+								<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+									<div class="accordion-body">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="headingFive">
+									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-controls="collapseFive">
+										Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt?
+									</button>
+								</h2>
+								<div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+									<div class="accordion-body">Lorem ipsum dolor sit amet. Est tempore placeat qui recusandae quia sit voluptates incidunt ut doloremque repellat sit voluptatem voluptatem. Est quam adipisci sit voluptate suscipit aut voluptate quas est quaerat alias eos cumque facilis. Est iure consectetur est ducimus magni et fugit totam. Vel labore accusantium et neque minus cum voluptates laboriosam qui facilis quia qui veniam animi quo dolorem omnis est magni quae.</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="background-image-cover" style="background-image:url('../img/bg/launchpad.png')">
+					<div class="container py-5">
+						<div class="row flex-column align-items-center py-5">
+							<div class="col-md-6 mb-4">
+								<img src="../img/logo/crypto-art-ph-white.png" class="w-100" alt="Crypto Art PH">
+							</div>
+							
+							<div class="col-md-6">
+								<div class="text-center px-5 mb-5">
+									<a href="#" class="btn btn-custom-15 px-5 py-3 font-size-120 w-100">
+										<span class="px-5">JOIN US NOW</span>
+									</a>
+								</div>
+							</div>
+						</div>
+						
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="w-100 bg-white border-top">
+				<div class="container py-4">
+					<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+						<div class="d-flex mb-4 mb-md-0 pb-2 pb-md-0 pe-5">
+							<div class="text-center pe-3 pe-md-5">
+								<img src="../img/ownly/ownly-2.png" class="mb-3" width="120" alt="Ownly" />
+								<div class="text-color-1 font-size-90">Ownly &copy; 2021</div>
+							</div>
+							
+							<div class="d-flex flex-column justify-content-between ps-3 py-1" style="border-left:3px solid #000000">
+								<div class="d-flex text-color-1 mb-2">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-map-marker-alt font-size-120"></i>
+									</div>
+									<div class="font-size-90">
+										<div>SILI DELI: DOST-BU TBI Office, Ground floor,</div>
+										<div>Student Union Bldg., Bicol University Main Campus,</div>
+										<div>Legazpi City, Albay, Philippines 4500</div>
+									</div>
+								</div>
+								
+								<div class="d-flex text-color-1 mb-2">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-envelope font-size-120"></i>
+									</div>
+									<div class="font-size-90">support@ownly.io</div>
+								</div>
+								
+								<div class="d-flex text-color-1">
+									<div class="text-center me-3" style="min-width:20px">
+										<i class="fas fa-phone font-size-120"></i>
+									</div>
+									<div class="font-size-90">+63 977 143 1897</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="ps-xl-5 flex-fill">
+							<div class="mb-4">
+								<div class="text-color-6 font-size-90 pb-2 neo-bold">JOIN OUR VIP LIST FOR THE INSIDE SCOOP!</div>
+								
+								<form class="newsletter-form">
+									<div class="d-flex align-items-center mb-3">
+										<div class="d-flex flex-fill justify-content-center">
+											<input type="email" name="email_address" class="form-control d-block px-3 py-1 font-size-90" placeholder="Your email address" required />
+										</div>
+										
+										<div>
+											<button type="submit" class="btn btn-custom-1 px-3 py-1 font-size-90" style="letter-spacing:0.05em">Let&nbsp;me&nbsp;in!</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							
+							<div class="text-color-1 font-size-110 mb-2">Connect with us:</div>
+							<div class="font-size-170 line-height-140">
+								<a href="https://twitter.com/ownlyio" class="text-decoration-none">
+									<i class="fab fa-twitter text-color-4 me-2"></i>
+								</a>
+								<a href="https://t.me/ownlyio" class="text-decoration-none">
+									<i class="fab fa-telegram text-color-4 me-2"></i>
+								</a>
+								<a href="https://discord.gg/qAyCCMrjww" class="text-decoration-none">
+									<i class="fab fa-discord text-color-4 me-2"></i>
+								</a>
+								<a href="https://github.com/ownlyio" class="text-decoration-none">
+									<i class="fab fa-github text-color-4 me-2"></i>
+								</a>
+								<a href="https://www.linkedin.com/company/ownlyio/" class="text-decoration-none">
+									<i class="fab fa-linkedin-in text-color-4 me-2"></i>
+								</a>
+								<a href="https://web.facebook.com/ownly.io" class="text-decoration-none">
+									<i class="fab fa-facebook text-color-4 me-2"></i>
+								</a>
+								<a href="https://www.reddit.com/r/Ownly/" class="text-decoration-none">
+									<i class="fab fa-reddit text-color-4 me-2"></i>
+								</a>
+								<a href="https://www.instagram.com/ownly.io/" class="text-decoration-none">
+									<i class="fab fa-instagram text-color-4"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+	<script src="../js/alertifyjs/alertify.min.js"></script>
+	<script src="../js/ellipsis.min.js"></script>
+	<script src="../js/fancybox/fancybox.umd.js"></script>
+	<script src="../js/moment.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js" async integrity="sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/" crossorigin="anonymous"></script>
+	<script src="../js/MultiClamp.min.js"></script>
+	<script src="../js/splide/splide.min.js"></script>
+	<script src="../js/script.js?v=4.0.7" id="script"></script>
+</body>
+</html>
