@@ -268,7 +268,7 @@ let initializePage = () => {
     let network = findGetParameter("network");
     let contract = findGetParameter("contract");
     let token = findGetParameter("token");
-    let collection = findGetParameter("collection");
+    let collection = window.location.pathname.replace(/^\/([^\/]*).*$/, '$1');
     let collectionItems = findGetParameter("collectionitems");
     let collectionDetails = findGetParameter("collectiondetails");
     let profile = findGetParameter("profile");
@@ -290,9 +290,9 @@ let initializePage = () => {
                 displayToken(network, contract, token);
 
                 if(contract === titansContractAddress && network === "bsc") {
-                    collection = "titans-of-industry";
+                    collection = "titansofindustry";
                 } else if(contract === mustachiosContractAddress && network === "eth") {
-                    collection = "the-mustachios";
+                    collection = "mustachios";
                 } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
                     collection = "cryptosolitaire";
                 } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
@@ -300,16 +300,16 @@ let initializePage = () => {
                 } else if(contract === rewardsContractAddress && network === "matic") {
                     collection = "rewards";
                 } else if(contract === genesisBlockContractAddress && network === "eth") {
-                    collection = "genesis-block";
+                    collection = "genesisblock";
                 } else if(contract === sagesRantContractAddress && network === "eth") {
-                    collection = "the-sages-rant-collectibles";
+                    collection = "sagesrantcollectibles";
                 } else if(contract === ownlyHouseOfArtContractAddress && network === "eth") {
                     collection = "oha";
                 }
 
                 $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-                displayArtistSection((collection === "rewards" || collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
+                displayArtistSection((collection === "rewards" || collection === "sagesrantcollectibles") ? "mustachios" : collection);
                 displayTokens(network, token, "all", collection, []);
 
                 app.removeClass("d-none");
@@ -376,7 +376,7 @@ let initializePage = () => {
 
                 if(collection !== "rewards") {
                     $("#artist-section").removeClass("d-none");
-                    displayArtistSection((collection === "the-sages-rant-collectibles") ? "the-mustachios" : collection);
+                    displayArtistSection((collection === "sagesrantcollectibles") ? "mustachios" : collection);
                 }
 
                 $(".collection-tab[data-collection='" + collection + "']").addClass("active");
@@ -1596,28 +1596,28 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
     if(contractAddress === titansContractAddress && network === "bsc") {
         tokenCollectionName.text("Titans of Industry");
-        tokenCollectionName.attr("href", "?collection=titans-of-industry");
+        tokenCollectionName.attr("href", "/titansofindustry");
     } else if(contractAddress === mustachiosContractAddress && network === "eth") {
         tokenCollectionName.text("The Mustachios");
-        tokenCollectionName.attr("href", "?collection=the-mustachios");
+        tokenCollectionName.attr("href", "/mustachios");
     } else if(contractAddress === chenInkContractAddress && network === "eth" && token <= 53) {
         tokenCollectionName.text("CryptoSolitaire");
-        tokenCollectionName.attr("href", "?collection=cryptosolitaire");
+        tokenCollectionName.attr("href", "/cryptosolitaire");
     } else if(contractAddress === chenInkContractAddress && network === "eth" && token >= 54) {
         tokenCollectionName.text("Inkvadyrz");
-        tokenCollectionName.attr("href", "?collection=inkvadyrz");
+        tokenCollectionName.attr("href", "/inkvadyrz");
     } else if(contractAddress === rewardsContractAddress && network === "matic") {
         tokenCollectionName.text("Ownly Rewards");
-        tokenCollectionName.attr("href", "?collection=rewards");
+        tokenCollectionName.attr("href", "/rewards");
     } else if(contractAddress === genesisBlockContractAddress && network === "eth") {
         tokenCollectionName.text("Genesis Block");
-        tokenCollectionName.attr("href", "?collection=genesis-block");
+        tokenCollectionName.attr("href", "/genesisblock");
     } else if(contractAddress === sagesRantContractAddress && network === "eth") {
         tokenCollectionName.text("The Sages Rant Collectibles");
-        tokenCollectionName.attr("href", "?collection=the-sages-rant-collectibles");
+        tokenCollectionName.attr("href", "/sagesrantcollectibles");
     } else if(contractAddress === ownlyHouseOfArtContractAddress && network === "eth") {
         tokenCollectionName.text("Ownly House of Art");
-        tokenCollectionName.attr("href", "?collection=oha");
+        tokenCollectionName.attr("href", "/oha");
     }
 
     $("#token-owner").html('<a href="' + blockchainExplorer + 'address/' + owner + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a>');
@@ -2162,7 +2162,7 @@ let start_countdown = () => {
 let getCollectionNetwork = (collection) => {
     let network;
 
-    let bscCollections = ["titans-of-industry", "coolmandala"];
+    let bscCollections = ["titansofindustry", "coolmandala"];
 
     if(bscCollections.includes(collection)) {
         network = "bsc"
