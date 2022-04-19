@@ -171,6 +171,13 @@ html {
     color: #106587;
     text-decoration: underline;
 }
+.link-color-5 {
+    color:#c8a851;
+}
+.link-color-5:hover {
+    color: #947e3b;
+    text-decoration: underline;
+}
 .btn-custom-1 {
     background-color:#bc3426;
     color:#ffffff;
@@ -317,6 +324,14 @@ html {
 }
 .btn-custom-15:hover, .btn-custom-15:active, .btn-custom-15:focus, .btn-custom-15.active {
     background-color: #947e3b;
+    color: #ffffff;
+}
+.btn-custom-16 {
+    background-color:#1a1a1a;
+    color:#ffffff;
+}
+.btn-custom-16:hover, .btn-custom-16:active, .btn-custom-16:focus, .btn-custom-16.active {
+    background-color: #000000;
     color: #ffffff;
 }
 .bg-color-1 {
@@ -645,6 +660,9 @@ html {
     #ene-right-side {
         width:325px;
     }
+    .font-size-xl-1000 {
+        font-size: 10em;
+    }
 }
 
 @media(min-width:1400px) {
@@ -656,5 +674,8 @@ html {
     }
     #ene-right-side {
         width:373px;
+    }
+    .font-size-xxl-1300 {
+        font-size: 13em;
     }
 }
