@@ -1126,8 +1126,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         content += '                </div>';
         content += '            </div>';
     } else {
-        if(contractAddress )
-        content += '            <div class="w-100 background-image-contain token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.thumbnail + '\'); padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px"></div>';
+        content += '            <div class="w-100 ' + ((contractAddress === threeDMustachiosContractAddress) ? 'background-image-cover' : 'background-image-contain') + ' token-image shadow-sm border-1 mb-3" style="background-image:url(\'' + metadata.thumbnail + '\'); padding-top:' + padding_top + '; border:1px solid #cccccc; background-color:rgba(0,0,0,0.01); border-radius:10px"></div>';
     }
     content += '            </a>';
     content += '            <div class="d-flex flex-column justify-content-between h-100 token-header">';
