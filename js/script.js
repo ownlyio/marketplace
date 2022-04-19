@@ -1163,7 +1163,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                    <div class="d-flex align-items-end mb-1">';
             content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
             content += '                        <div class="ps-2 ms-1">';
-            content += '                            <img src="img/tokens/ETH.png" width="30" />';
+            content += '                            <img src="../img/tokens/ETH.png" width="30" />';
             content += '                        </div>';
             content += '                    </div>';
             content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
@@ -1181,11 +1181,11 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
             if(marketItem.currency === "OWN") {
                 content += '                        <div class="ps-2 ms-1">';
-                content += '                            <img src="img/ownly/own-token.png" width="30" />';
+                content += '                            <img src="../img/ownly/own-token.png" width="30" />';
                 content += '                        </div>';
             } else if(marketItem.currency === "BNB") {
                 content += '                        <div class="ps-2 ms-1">';
-                content += '                            <img src="img/bnb/bnb.webp" width="30" />';
+                content += '                            <img src="../img/bnb/bnb.webp" width="30" />';
                 content += '                        </div>';
             }
             content += '                        </div>';
@@ -1642,7 +1642,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
     if(network === "eth" && contractAddress === chenInkContractAddress && token >= 1 && token <= 53) {
         $(".token-price").html("");
-        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+        $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
         let content = '<a href="https://opensea.io/assets/' + chenInkContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
@@ -1661,7 +1661,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         let tokenPrice = $(".token-price");
         tokenPrice.html(genesisBlockPrice + " ETH");
 
-        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+        $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
         let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
@@ -1673,7 +1673,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         let tokenPrice = $(".token-price");
         tokenPrice.html(sagesRantCollectiblePrice + " ETH");
 
-        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+        $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
         let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">BID NOW</a>';
 
@@ -1684,7 +1684,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         let tokenPrice = $(".token-price");
         tokenPrice.html("1 ETH");
 
-        $(".token-price-currency").attr("src", "img/tokens/ETH.png");
+        $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
         let content = '<a href="https://opensea.io/assets/' + ownlyHouseOfArtContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
@@ -1699,12 +1699,12 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
             if(hasMarketplaceEthereumContract) {
                 if(marketItem.currency === "OWN") {
-                    $(".token-price-currency").attr("src", "img/ownly/own-token.png");
+                    $(".token-price-currency").attr("src", "../img/ownly/own-token.png");
                 } else {
-                    $(".token-price-currency").attr("src", "img/bnb/bnb.webp");
+                    $(".token-price-currency").attr("src", "../img/bnb/bnb.webp");
                 }
             } else {
-                $(".token-price-currency").attr("src", "img/bnb/bnb.webp");
+                $(".token-price-currency").attr("src", "../img/bnb/bnb.webp");
             }
 
             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
@@ -1757,7 +1757,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         transfers_content += '          <td style="vertical-align:middle">';
         transfers_content += '              <a href="' + blockchainExplorer + 'address/' + metadata.transfers[j].to + '" target="_blank" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(metadata.transfers[j].to), 4, 4) + '</a>';
         transfers_content += '          </td>';
-        transfers_content += '          <td class="text-end" style="vertical-align:middle">' + numberFormat(parseFloat(metadata.transfers[j].value).toString(), false) + ' <img src="img/tokens/' + metadata.transfers[j].currency + '.png" class="me-1" width="20" alt="' + metadata.transfers[j].currency + '" /> (' + metadata.transfers[j].currency + ')</td>';
+        transfers_content += '          <td class="text-end" style="vertical-align:middle">' + numberFormat(parseFloat(metadata.transfers[j].value).toString(), false) + ' <img src="../img/tokens/' + metadata.transfers[j].currency + '.png" class="me-1" width="20" alt="' + metadata.transfers[j].currency + '" /> (' + metadata.transfers[j].currency + ')</td>';
         transfers_content += '          <td style="vertical-align:middle">' + moment(metadata.transfers[j].signed_at).format('llll') + '</td>';
         transfers_content += '      </tr>';
     }
@@ -2018,7 +2018,7 @@ let loadNFTSales = function(page) {
             content += '        <td class="align-middle">';
             content += '            <div class="d-flex justify-content-end align-items-center">';
             content += '                <div class="pe-1">' + numberFormat(parseFloat(sales.data[i].value).toFixed(4), false) + '</div>';
-            content += '                <div class="pe-1"><img src="img/tokens/' + sales.data[i].currency + '.png" width="20" alt="' + sales.data[i].currency + '"></div>';
+            content += '                <div class="pe-1"><img src="../img/tokens/' + sales.data[i].currency + '.png" width="20" alt="' + sales.data[i].currency + '"></div>';
             content += '                <div class="font-size-80">(' + sales.data[i].currency + ')</div>';
             content += '            </div>';
             content += '        </td>';
@@ -2718,7 +2718,7 @@ $(document).on("input", ".search-field", function() {
         let content = ' <div class="card">';
         content += '        <div class="card-body">';
         content += '            <div class="d-flex justify-content-center align-items-center">';
-        content += '                <div class="spinner-grow background-image-cover bg-transparent me-2" style="width:1.5rem; height:1.5rem; background-image:url(\'img/ownly/own-token.png\')" role="status">';
+        content += '                <div class="spinner-grow background-image-cover bg-transparent me-2" style="width:1.5rem; height:1.5rem; background-image:url(\'../img/ownly/own-token.png\')" role="status">';
         content += '                    <span class="visually-hidden">Loading...</span>';
         content += '                </div>';
         content += '                <div class="font-size-80">Loading</div>';
