@@ -848,7 +848,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
             $(".header-collection[data-collection='default']").removeClass("d-none");
         }
 
-        generatePagination(data.tokens, url + '?collection=' + network + ":" + collection);
+        generatePagination(data.tokens, url + collection);
 
         if(metadata.length === 0) {
             $("#loading-container").addClass("d-none");
@@ -1307,13 +1307,13 @@ let generatePagination = function(pagination, pageUrl) {
 
         if (pagination.current_page > 1) {
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '&page=1' + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + '?page=1' + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">«</span>';
             content += '                </a>';
             content += '            </li>';
 
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '&page=' + ((pagination.current_page - 1 === 0) ? 1 : pagination.current_page - 1) + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + '?page=' + ((pagination.current_page - 1 === 0) ? 1 : pagination.current_page - 1) + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">‹</span>';
             content += '                </a>';
             content += '            </li>';
@@ -1323,19 +1323,19 @@ let generatePagination = function(pagination, pageUrl) {
             let current_page = pagination.current_page === i;
 
             content += '            <li class="page-item ' + (current_page ? 'active' : '') + '">';
-            content += '                <a href="' + (!current_page ? (pageUrl + '&page=' + i) : '#') + '" class="page-link px-3 py-2">' + i + '</a>';
+            content += '                <a href="' + (!current_page ? (pageUrl + '?page=' + i) : '#') + '" class="page-link px-3 py-2">' + i + '</a>';
             content += '            </li>';
         }
 
         if(pagination.current_page < pagination.last_page) {
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '&page=' + ((pagination.current_page + 1 > pagination.last_page) ? pagination.last_page : pagination.current_page + 1) + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + '?page=' + ((pagination.current_page + 1 > pagination.last_page) ? pagination.last_page : pagination.current_page + 1) + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">›</span>';
             content += '                </a>';
             content += '            </li>';
 
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '&page=' + pagination.last_page + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + '?page=' + pagination.last_page + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">»</span>';
             content += '                </a>';
             content += '            </li>';
