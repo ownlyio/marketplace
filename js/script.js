@@ -191,10 +191,6 @@ let initializeEnvVariables = () => {
     sparkSwapContractAddress = "0xeB98E6e5D34c94F56708133579abB8a6A2aC2F26";
     sparkSwapContractAbi = [{"inputs":[{"internalType":"address","name":"_factory","type":"address"},{"internalType":"address","name":"_WETH","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsIn","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"name":"quote","outputs":[{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETHSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermitSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETHSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 
-    $(".website-home-link").attr("href", url);
-    cacheVersion = $("#script").attr("src").split("?v=")[1];
-    $("#app-version").text(cacheVersion);
-
     localStorage = window.localStorage;
 };
 let initiate_loading_page = () => {
@@ -269,7 +265,7 @@ let numberFormat = function(x, decimal) {
         return parts[0];
     }
 };
-let initializePage = () => {
+let initializePage = function() {
     let app = $("#app");
     let pageContent = $("#page-content");
 
@@ -285,283 +281,293 @@ let initializePage = () => {
     let page = findGetParameter("page");
     let sales = findGetParameter("sales");
 
-    if(currentURL.includes("/launchpad")) {
-        app.removeClass("d-none");
-    } else {
-        if(network && contract && token) {
-            pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
-                currentPage = "token";
+    $("#navbar-content").load(url + "js/../navbar.html?v=" + cacheVersion, async function() {
+        $(this).find(".add-public-url").each(function() {
+            $(this).attr("src", url + $(this).attr("src"));
+        });
 
-                contract = web3Bsc.utils.toChecksumAddress(contract);
+        $(".website-home-link").attr("href", url);
+        cacheVersion = $("#script").attr("src").split("?v=")[1];
+        $("#app-version").text(cacheVersion.substr(0, 5));
 
-                await updateConnectToWallet();
+        if(currentURL.includes("/launchpad")) {
+            app.removeClass("d-none");
+        } else {
+            if(network && contract && token) {
+                pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
+                    currentPage = "token";
 
-                displayToken(network, contract, token);
-
-                if(contract === titansContractAddress && network === "bsc") {
-                    collection = "titansofindustry";
-                } else if(contract === mustachiosContractAddress && network === "eth") {
-                    collection = "mustachios";
-                } else if(contract === threeDMustachiosContractAddress && network === "bsc") {
-                    collection = "3dmustachios";
-                } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
-                    collection = "cryptosolitaire";
-                } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
-                    collection = "inkvadyrz";
-                } else if(contract === rewardsContractAddress && network === "matic") {
-                    collection = "rewards";
-                } else if(contract === genesisBlockContractAddress && network === "eth") {
-                    collection = "genesisblock";
-                } else if(contract === sagesRantContractAddress && network === "eth") {
-                    collection = "sagesrantcollectibles";
-                } else if(contract === ownlyHouseOfArtContractAddress && network === "eth") {
-                    collection = "oha";
-                }
-
-                $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
-
-                displayArtistSection((collection === "rewards" || collection === "sagesrantcollectibles") ? "mustachios" : collection);
-                displayTokens(network, token, "all", collection, []);
-
-                app.removeClass("d-none");
-            });
-        } else if(profile) {
-            pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
-                $("#pills-account-settings-tab").attr("href", "?profile=" + profile);
-                $("#pills-owned-tab").attr("href", "?profile=" + profile + "&tab=owned");
-                $("#pills-favorites-tab").attr("href", "?profile=" + profile + "&tab=favorites");
-
-                if(tab === "owned") {
-                    currentPage = "profile:owned";
-
-                    $("#pills-owned-tab").addClass("active");
-                    $("#owned-container").removeClass("d-none");
+                    contract = web3Bsc.utils.toChecksumAddress(contract);
 
                     await updateConnectToWallet();
 
-                    displayProfilePage(profile, page, 'owned');
-                } else if(tab === "favorites") {
-                    currentPage = "profile:favorites";
+                    displayToken(network, contract, token);
 
-                    await updateConnectToWallet();
+                    if(contract === titansContractAddress && network === "bsc") {
+                        collection = "titansofindustry";
+                    } else if(contract === mustachiosContractAddress && network === "eth") {
+                        collection = "mustachios";
+                    } else if(contract === threeDMustachiosContractAddress && network === "bsc") {
+                        collection = "3dmustachios";
+                    } else if(contract === chenInkContractAddress && network === "eth" && token <= 53) {
+                        collection = "cryptosolitaire";
+                    } else if(contract === chenInkContractAddress && network === "eth" && token >= 54) {
+                        collection = "inkvadyrz";
+                    } else if(contract === rewardsContractAddress && network === "matic") {
+                        collection = "rewards";
+                    } else if(contract === genesisBlockContractAddress && network === "eth") {
+                        collection = "genesisblock";
+                    } else if(contract === sagesRantContractAddress && network === "eth") {
+                        collection = "sagesrantcollectibles";
+                    } else if(contract === ownlyHouseOfArtContractAddress && network === "eth") {
+                        collection = "oha";
+                    }
 
-                    $("#pills-favorites-tab").addClass("active");
-                    $("#favorites-container").removeClass("d-none");
+                    $(".about-the-collection[data-collection='" + collection + "']").removeClass("d-none");
 
-                    displayProfilePage(profile, page, 'favorited');
-                } else {
-                    currentPage = "profile:settings";
-
-                    $("#pills-account-settings-tab").addClass("active");
-                    $("#account-settings-container").removeClass("d-none");
-
-                    await updateConnectToWallet();
-
-                    displayProfilePage(profile, page, 'owned');
-                }
-            });
-        } else if(sales) {
-            pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
-                displaySales(page);
-                app.removeClass("d-none");
-            });
-        } else if(collection) {
-            pageContent.load(url + "js/../collection.html?v=" + cacheVersion, async function() {
-                tokensContainerInitialContent = $("#tokens-container").html();
-                initializeTooltip();
-
-                currentPage = "collection";
-
-                if(collection.split(":").length === 2) {
-                    let temp = collection.split(":");
-                    network = temp[0];
-                    collection = temp[1];
-                } else {
-                    network = getCollectionNetwork(collection);
-                }
-
-                displayTokens(network, 0, "all", collection, [], page);
-                displayCollectionProperties(network, collection);
-
-                $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
-
-                if(collection !== "rewards") {
-                    $("#artist-section").removeClass("d-none");
-                    displayArtistSection((collection === "sagesrantcollectibles") ? "mustachios" : collection);
-                }
-
-                $(".collection-tab[data-collection='" + collection + "']").addClass("active");
-
-                $(".collection-dropdown-item[data-collection='" + collection + "']").addClass("active");
-
-                $(".collection-section").addClass("d-none");
-                $(".collection-section[data-collection='" + collection + "']").removeClass("d-none");
-
-                let filterByProperties = $("#filter-by-properties");
-                filterByProperties.attr("data-network", network);
-                filterByProperties.attr("data-collection", collection);
-
-                app.removeClass("d-none");
-            });
-        } else if(collectionDetails) {
-            if(!collectionItems) {
-                pageContent.load(url + "js/../collection-details.html?v=" + cacheVersion, async function() {
-                    await updateConnectToWallet();
-
-                    $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
-                        let collection = data.collections[0];
-
-                        let collectionForm = $("#collection-form");
-
-                        collectionForm.attr("data-value", collection.id);
-                        collectionForm.find("input[name='name']").val(collection.name);
-                        collectionForm.find("textarea[name='description']").val(collection.description);
-                        collectionForm.find("input[name='url']").val(collection.url_placeholder);
-                        collectionForm.find("#logo-container").css("background-image", "url('" + collection.logo + "')");
-                        collectionForm.find("#banner-container").css("background-image", "url('" + collection.banner + "')");
-
-                        if(collection.properties !== "") {
-                            let properties = JSON.parse(collection.properties);
-
-                            let content = '';
-                            for(let i = 0; i < properties.length; i++) {
-                                content += '    <div class="col-4 mb-2 px-1 property-container" data-value="' + properties[i] + '">';
-                                content += '        <div class="card h-100">';
-                                content += '            <div class="card-body">';
-                                content += '                <div class="d-flex justify-content-between">';
-                                content += '                    <div class="pe-3">' + properties[i] + '</div>';
-                                content += '                    <div>';
-                                content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
-                                content += '                    </div>';
-                                content += '                </div>';
-                                content += '            </div>';
-                                content += '        </div>';
-                                content += '    </div>';
-                            }
-
-                            $("#properties-container").html(content);
-                        }
-                    });
+                    displayArtistSection((collection === "rewards" || collection === "sagesrantcollectibles") ? "mustachios" : collection);
+                    displayTokens(network, token, "all", collection, []);
 
                     app.removeClass("d-none");
                 });
-            } else {
-                pageContent.load(url + "js/../collection-items.html?v=" + cacheVersion, async function() {
-                    await updateConnectToWallet();
+            } else if(profile) {
+                pageContent.load(url + "js/../profile.html?v=" + cacheVersion, async function() {
+                    $("#pills-account-settings-tab").attr("href", "?profile=" + profile);
+                    $("#pills-owned-tab").attr("href", "?profile=" + profile + "&tab=owned");
+                    $("#pills-favorites-tab").attr("href", "?profile=" + profile + "&tab=favorites");
 
-                    $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
-                        let collection = data.collections[0];
+                    if(tab === "owned") {
+                        currentPage = "profile:owned";
 
-                        $("#collection-item-form input[name='collection_id']").val(collection.id);
+                        $("#pills-owned-tab").addClass("active");
+                        $("#owned-container").removeClass("d-none");
 
-                        if(collection.properties !== "") {
-                            let properties = JSON.parse(collection.properties);
-                            let content = '';
+                        await updateConnectToWallet();
 
-                            for(let i = 0; i < properties.length; i++) {
-                                content += '    <div class="col-6 mb-3">';
-                                content += '        <label class="font-size-80 mb-1">' + properties[i] + '</label>';
-                                content += '        <input type="text" class="form-control py-2 py-lg-3 px-3 font-size-80 property-field" style="border-width:2px; height:40px" required />';
-                                content += '    </div>';
+                        displayProfilePage(profile, page, 'owned');
+                    } else if(tab === "favorites") {
+                        currentPage = "profile:favorites";
+
+                        await updateConnectToWallet();
+
+                        $("#pills-favorites-tab").addClass("active");
+                        $("#favorites-container").removeClass("d-none");
+
+                        displayProfilePage(profile, page, 'favorited');
+                    } else {
+                        currentPage = "profile:settings";
+
+                        $("#pills-account-settings-tab").addClass("active");
+                        $("#account-settings-container").removeClass("d-none");
+
+                        await updateConnectToWallet();
+
+                        displayProfilePage(profile, page, 'owned');
+                    }
+                });
+            } else if(sales) {
+                pageContent.load(url + "js/../sales.html?v=" + cacheVersion, async function() {
+                    displaySales(page);
+                    app.removeClass("d-none");
+                });
+            } else if(collection) {
+                pageContent.load(url + "js/../collection.html?v=" + cacheVersion, async function() {
+                    tokensContainerInitialContent = $("#tokens-container").html();
+                    initializeTooltip();
+
+                    currentPage = "collection";
+
+                    if(collection.split(":").length === 2) {
+                        let temp = collection.split(":");
+                        network = temp[0];
+                        collection = temp[1];
+                    } else {
+                        network = getCollectionNetwork(collection);
+                    }
+
+                    displayTokens(network, 0, "all", collection, [], page);
+                    displayCollectionProperties(network, collection);
+
+                    $(".header-collection[data-collection='" + collection + "']").removeClass("d-none");
+
+                    if(collection !== "rewards") {
+                        $("#artist-section").removeClass("d-none");
+                        displayArtistSection((collection === "sagesrantcollectibles") ? "mustachios" : collection);
+                    }
+
+                    $(".collection-tab[data-collection='" + collection + "']").addClass("active");
+
+                    $(".collection-dropdown-item[data-collection='" + collection + "']").addClass("active");
+
+                    $(".collection-section").addClass("d-none");
+                    $(".collection-section[data-collection='" + collection + "']").removeClass("d-none");
+
+                    let filterByProperties = $("#filter-by-properties");
+                    filterByProperties.attr("data-network", network);
+                    filterByProperties.attr("data-collection", collection);
+
+                    app.removeClass("d-none");
+                });
+            } else if(collectionDetails) {
+                if(!collectionItems) {
+                    pageContent.load(url + "js/../collection-details.html?v=" + cacheVersion, async function() {
+                        await updateConnectToWallet();
+
+                        $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                            let collection = data.collections[0];
+
+                            let collectionForm = $("#collection-form");
+
+                            collectionForm.attr("data-value", collection.id);
+                            collectionForm.find("input[name='name']").val(collection.name);
+                            collectionForm.find("textarea[name='description']").val(collection.description);
+                            collectionForm.find("input[name='url']").val(collection.url_placeholder);
+                            collectionForm.find("#logo-container").css("background-image", "url('" + collection.logo + "')");
+                            collectionForm.find("#banner-container").css("background-image", "url('" + collection.banner + "')");
+
+                            if(collection.properties !== "") {
+                                let properties = JSON.parse(collection.properties);
+
+                                let content = '';
+                                for(let i = 0; i < properties.length; i++) {
+                                    content += '    <div class="col-4 mb-2 px-1 property-container" data-value="' + properties[i] + '">';
+                                    content += '        <div class="card h-100">';
+                                    content += '            <div class="card-body">';
+                                    content += '                <div class="d-flex justify-content-between">';
+                                    content += '                    <div class="pe-3">' + properties[i] + '</div>';
+                                    content += '                    <div>';
+                                    content += '                        <i class="fas fa-trash-alt text-color-1 cursor-pointer delete-property"></i>';
+                                    content += '                    </div>';
+                                    content += '                </div>';
+                                    content += '            </div>';
+                                    content += '        </div>';
+                                    content += '    </div>';
+                                }
+
+                                $("#properties-container").html(content);
+                            }
+                        });
+
+                        app.removeClass("d-none");
+                    });
+                } else {
+                    pageContent.load(url + "js/../collection-items.html?v=" + cacheVersion, async function() {
+                        await updateConnectToWallet();
+
+                        $.get(ownlyAPI + "api/get-launchpad-collections/" + address, function(data) {
+                            let collection = data.collections[0];
+
+                            $("#collection-item-form input[name='collection_id']").val(collection.id);
+
+                            if(collection.properties !== "") {
+                                let properties = JSON.parse(collection.properties);
+                                let content = '';
+
+                                for(let i = 0; i < properties.length; i++) {
+                                    content += '    <div class="col-6 mb-3">';
+                                    content += '        <label class="font-size-80 mb-1">' + properties[i] + '</label>';
+                                    content += '        <input type="text" class="form-control py-2 py-lg-3 px-3 font-size-80 property-field" style="border-width:2px; height:40px" required />';
+                                    content += '    </div>';
+                                }
+
+                                $("#property-fields-container").html(content);
                             }
 
-                            $("#property-fields-container").html(content);
+                            $.get(ownlyAPI + "api/get-launchpad-collection-items/" + collection.id, function(data) {
+                                let launchpadTokens = data.launchpad_tokens;
+                                let content = '';
+
+                                for(let i = 0; i < launchpadTokens.length; i++) {
+                                    content += '    <div class="col-md-2 mb-4">';
+                                    content += '        <div class="card cursor-pointer collection-item" data-id="' + launchpadTokens[i].token_id + '">';
+                                    content += '            <div class="card-body">';
+                                    content += '                <div class="background-image-contain bg-color-1 mb-3" style="padding-top:100%; background-image:url(\'' + launchpadTokens[i].image + '\')"></div>';
+                                    content += '                <div class="text-center font-size-70 mb-1">Token ID: ' + launchpadTokens[i].token_id + '</div>';
+                                    content += '                <div class="text-center font-size-90 name">' + launchpadTokens[i].name + '</div>';
+                                    content += '                <div class="d-none description">' + launchpadTokens[i].description + '</div>';
+                                    content += '                <div class="d-none attributes">' + launchpadTokens[i].attributes + '</div>';
+                                    content += '            </div>';
+                                    content += '        </div>';
+                                    content += '    </div>';
+                                }
+
+                                $("#collection-items-container").html(content);
+
+                                app.removeClass("d-none");
+                            });
+                        });
+                    });
+                }
+            } else {
+                pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
+                    currentPage = "home";
+
+                    $("#carousel-1 .container").html($("#carousel-content").html());
+                    new bootstrap.Carousel($('#carousel-1'));
+
+                    $.get(ownlyAPI + "api/get-collections", function(data) {
+                        let collections = data.collections;
+
+                        let content = '';
+                        content += '    <div class="splide splide--loop px-5 pb-5">';
+                        content += '    <div class="px-2">';
+                        content += '        <div class="splide__track">';
+                        content += '            <ul class="splide__list">';
+                        for(let i = 0; i < collections.length; i++) {
+                            content += '    <li class="splide__slide px-2">';
+                            content += '        <a href="' + url + '/' + collections[i].url_placeholder + '" class="text-decoration-none">';
+                            content += '            <div class="card" style="border:1px solid #cccccc; border-radius:10px">';
+                            content += '                <div class="w-100 background-image-cover" style="background-image:url(\'' + collections[i].banner + '\'); padding-top:50%; background-color:#bbbbbb; border-top-left-radius:10px; border-top-right-radius:10px"></div>';
+                            content += '                <div class="text-center mb-2" style="margin-top:-45px">';
+                            content += '                    <div class="d-inline-block shadow background-image-cover" style="background-image:url(\'' + collections[i].logo + '\'); border:4px solid #ffffff; height:90px; width:90px; border-radius:50%"></div>';
+                            content += '                </div>';
+                            content += '                <div class="px-3">';
+                            content += '                    <p class="text-center text-color-6 fw-bold">' + collections[i].name + '</p>';
+                            content += '                    <p class="text-center text-color-7 font-size-90 clamp">' + collections[i].description + '</p>';
+                            content += '                </div>';
+                            content += '            </div>';
+                            content += '        </a>';
+                            content += '    </li>';
+                        }
+                        content += '        </ul>';
+                        content += '    </div>';
+                        content += '    </div>';
+                        content += '</div>';
+
+                        $("#collections-container").html(content);
+
+                        $(".clamp").each(function() {
+                            new MultiClamp($(this), {
+                                ellipsis: '...',
+                                clamp: 3
+                            });
+                        });
+
+                        let width = $(window).width();
+
+                        let perPage = 1;
+                        if(width >= 992) {
+                            perPage = 3;
+                        } else if(width >= 768) {
+                            perPage = 2;
                         }
 
-                        $.get(ownlyAPI + "api/get-launchpad-collection-items/" + collection.id, function(data) {
-                            let launchpadTokens = data.launchpad_tokens;
-                            let content = '';
+                        new Splide( '.splide', {
+                            type   : 'loop',
+                            start: 1,
+                            perPage: perPage,
+                            perMove: 1,
+                        } ).mount();
 
-                            for(let i = 0; i < launchpadTokens.length; i++) {
-                                content += '    <div class="col-md-2 mb-4">';
-                                content += '        <div class="card cursor-pointer collection-item" data-id="' + launchpadTokens[i].token_id + '">';
-                                content += '            <div class="card-body">';
-                                content += '                <div class="background-image-contain bg-color-1 mb-3" style="padding-top:100%; background-image:url(\'' + launchpadTokens[i].image + '\')"></div>';
-                                content += '                <div class="text-center font-size-70 mb-1">Token ID: ' + launchpadTokens[i].token_id + '</div>';
-                                content += '                <div class="text-center font-size-90 name">' + launchpadTokens[i].name + '</div>';
-                                content += '                <div class="d-none description">' + launchpadTokens[i].description + '</div>';
-                                content += '                <div class="d-none attributes">' + launchpadTokens[i].attributes + '</div>';
-                                content += '            </div>';
-                                content += '        </div>';
-                                content += '    </div>';
-                            }
-
-                            $("#collection-items-container").html(content);
-
-                            app.removeClass("d-none");
-                        });
+                        app.removeClass("d-none");
                     });
                 });
             }
-        } else {
-            pageContent.load(url + "js/../home.html?v=" + cacheVersion, async function() {
-                currentPage = "home";
-
-                $("#carousel-1 .container").html($("#carousel-content").html());
-                new bootstrap.Carousel($('#carousel-1'));
-
-                $.get(ownlyAPI + "api/get-collections", function(data) {
-                    let collections = data.collections;
-
-                    let content = '';
-                    content += '    <div class="splide splide--loop px-5 pb-5">';
-                    content += '    <div class="px-2">';
-                    content += '        <div class="splide__track">';
-                    content += '            <ul class="splide__list">';
-                    for(let i = 0; i < collections.length; i++) {
-                        content += '    <li class="splide__slide px-2">';
-                        content += '        <a href="' + url + '/' + collections[i].url_placeholder + '" class="text-decoration-none">';
-                        content += '            <div class="card" style="border:1px solid #cccccc; border-radius:10px">';
-                        content += '                <div class="w-100 background-image-cover" style="background-image:url(\'' + collections[i].banner + '\'); padding-top:50%; background-color:#bbbbbb; border-top-left-radius:10px; border-top-right-radius:10px"></div>';
-                        content += '                <div class="text-center mb-2" style="margin-top:-45px">';
-                        content += '                    <div class="d-inline-block shadow background-image-cover" style="background-image:url(\'' + collections[i].logo + '\'); border:4px solid #ffffff; height:90px; width:90px; border-radius:50%"></div>';
-                        content += '                </div>';
-                        content += '                <div class="px-3">';
-                        content += '                    <p class="text-center text-color-6 fw-bold">' + collections[i].name + '</p>';
-                        content += '                    <p class="text-center text-color-7 font-size-90 clamp">' + collections[i].description + '</p>';
-                        content += '                </div>';
-                        content += '            </div>';
-                        content += '        </a>';
-                        content += '    </li>';
-                    }
-                    content += '        </ul>';
-                    content += '    </div>';
-                    content += '    </div>';
-                    content += '</div>';
-
-                    $("#collections-container").html(content);
-
-                    $(".clamp").each(function() {
-                        new MultiClamp($(this), {
-                            ellipsis: '...',
-                            clamp: 3
-                        });
-                    });
-
-                    let width = $(window).width();
-
-                    let perPage = 1;
-                    if(width >= 992) {
-                        perPage = 3;
-                    } else if(width >= 768) {
-                        perPage = 2;
-                    }
-
-                    new Splide( '.splide', {
-                        type   : 'loop',
-                        start: 1,
-                        perPage: perPage,
-                        perMove: 1,
-                    } ).mount();
-
-                    app.removeClass("d-none");
-                });
-            });
         }
-    }
 
-    $(".replace-host").each(function() {
-        $(this).attr("href", $(this).attr("href").replace("http://ownlyio.dev-marketplace.test/", url));
+        $(".replace-host").each(function() {
+            $(this).attr("href", $(this).attr("href").replace("http://ownlyio.marketplace.test/", url));
+        });
     });
 };
 let connectToMetamask = async () => {
