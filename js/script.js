@@ -172,7 +172,7 @@ let initializeEnvVariables = () => {
         marketplacePolygonAbi = [];
 
         rpcEndpointEth = "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161";
-        rpcEndpointBsc = "https://data-seed-prebsc-2-s2.binance.org:8545/";
+        rpcEndpointBsc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
         rpcEndpointMatic = "https://rpc-mumbai.matic.today";
 
         blockchainExplorerEth = "https://rinkeby.etherscan.io/";
@@ -917,7 +917,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
             for(let i = 0; i < metadata.length; i++) {
                 if(marketplaceContracts[network]) {
                     marketplaceContracts[network].methods.fetchMarketItem(data.collection.contract_address, metadata[i].token_id).call()
-                        .then(async function(marketItem) {
+                        .then(function(marketItem) {
                             getOwnerOf(marketItem, metadata[i]);
                         });
                 } else {
@@ -1202,14 +1202,12 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                        </div>';
             content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
             content += '                    </div>';
-            if(contractAddress === titansContractAddress) {
-                content += '                <div class="col-6 button-container">';
-                if(owner) {
-                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                        content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-                    } else {
-                        content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
-                    }
+            content += '                    <div class="col-6 button-container">';
+            if(owner) {
+                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                } else {
+                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
                 }
             }
             content += '                    </div>';
@@ -1232,10 +1230,10 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                     content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
                     content += '                    </div>';
                     content += '                    <div class="col-6">';
-                    if(hasMarketplaceEthereumContract || contractAddress === titansContractAddress || contractAddress === launchpadCollectionContractAddress) {
+                    if(hasMarketplaceEthereumContract || network === "bsc") {
                         if(owner) {
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
                             } else {
                                 content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
                             }
@@ -1574,6 +1572,7 @@ let displayTokenMetadata = function(chainID, metadata, contractAddress, token) {
     $("#token-description").text(metadata.description);
     $("#token-id").text(token);
     $(".create-market-item-confirmation").attr("data-token-id", token);
+    $(".create-market-item-confirmation").attr("data-contract-address", contractAddress);
 
     $("#token-original-image").attr("href", metadata.image);
     $("#token-original-image-preload").attr("src", metadata.image);
@@ -2329,21 +2328,37 @@ $(document).on("click", ".wallet-options", async function () {
     }
 });
 
-$(document).on("click", ".create-market-item-confirmation", function() {
+$(document).on("click", ".create-market-item-confirmation", async function() {
     let button = $(this);
     button.prop("disabled", true);
 
+    let contractAddress = button.attr("data-contract-address");
     let tokenID = button.attr("data-token-id");
 
-    titansContract.methods.isApprovedForAll(address, marketplaceBinanceContractAddress).call()
+    isConnectedToMetamask = await connectToMetamask();
+    if(isConnectedToMetamask) {
+        let _chainID = await mainWeb3.eth.getChainId();
+
+        if(_chainID !== chainIDBsc) {
+            $("#modal-wrong-network").modal("show");
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+
+    let contract = new mainWeb3.eth.Contract(titansContractAbi, contractAddress);
+    contract.methods.isApprovedForAll(address, marketplaceBinanceContractAddress).call()
         .then(function(isApprovedForAll) {
             button.prop("disabled", false);
 
             if(isApprovedForAll) {
                 $("#create-market-item").val(tokenID);
+                $("#create-market-item").attr("data-contract-address", contractAddress);
                 $("#modal-create-market-item").modal("show");
             } else {
                 $("#approve").val(tokenID);
+                $("#approve").attr("data-contract-address", contractAddress);
                 $("#modal-approve").modal("show");
             }
         });
@@ -2353,6 +2368,7 @@ $(document).on("click", "#approve", async function() {
     approveButton = $("#approveButton");
     approveButton.prop("disabled", true);
 
+    let contractAddress = $(this).attr("data-contract-address");
     let tokenID = $(this).val();
 
     $("#modal-approve").modal("hide");
@@ -2369,8 +2385,8 @@ $(document).on("click", "#approve", async function() {
         return 0;
     }
 
-    titansContract = new mainWeb3.eth.Contract(titansContractAbi, titansContractAddress);
-    titansContract.methods.setApprovalForAll(marketplaceBinanceContractAddress, true)
+    let contract = new mainWeb3.eth.Contract(titansContractAbi, contractAddress);
+    contract.methods.setApprovalForAll(marketplaceBinanceContractAddress, true)
         .send({
             from: mainWeb3.utils.toChecksumAddress(address)
         }).on('transactionHash', function(hash){
@@ -2384,6 +2400,7 @@ $(document).on("click", "#approve", async function() {
             $("#modal-processing").modal("hide");
 
             $("#create-market-item").val(tokenID);
+            $("#create-market-item").attr("data-contract-address", contractAddress);
             $("#modal-create-market-item").modal("show");
         });
 });
@@ -2407,7 +2424,7 @@ $(document).on("click", "#create-market-item", async function() {
         }
 
         marketplaceBinanceContract = new mainWeb3.eth.Contract(marketplaceBinanceAbi, marketplaceBinanceContractAddress);
-        marketplaceBinanceContract.methods.createMarketItem(titansContractAddress, $(this).val(), mainWeb3.utils.toWei(price, 'ether'), $("#price-currency").val())
+        marketplaceBinanceContract.methods.createMarketItem($(this).attr("data-contract-address"), $(this).val(), mainWeb3.utils.toWei(price, 'ether'), $("#price-currency").val())
             .send({
                 from: mainWeb3.utils.toChecksumAddress(address),
                 value: listingPrice
