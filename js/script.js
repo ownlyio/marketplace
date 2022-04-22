@@ -292,6 +292,9 @@ let initializePage = function() {
 
         if(currentURL.includes("/launchpad")) {
             app.removeClass("d-none");
+        } else if(currentURL.includes("/artists")) {
+            app.removeClass("d-none");
+            adjust_artist_descriptions();
         } else {
             if(network && contract && token) {
                 pageContent.load(url + "js/../token.html?v=" + cacheVersion, async function() {
@@ -2279,6 +2282,12 @@ let connectWalletConnect = async () => {
 
     await updateConnectToWallet();
 };
+let adjust_artist_descriptions = () => {
+    $(".artist-description").each(function() {
+        let height = parseFloat($(this).css("height")) * -1;
+        $(this).css("bottom", height + "px")
+    });
+};
 
 let test = function() {
     let web3test = new Web3("https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
@@ -3365,3 +3374,25 @@ $(document).on("submit", "#collection-item-form", async function(e) {
     }
 });
 
+// Artists
+$(document).on("mouseover", ".artist-card", function() {
+    if($(window).width() >= 768) {
+        $(this).find(".artist-description").css("bottom", "0");
+    }
+});
+
+$(document).on("mouseout", ".artist-card", function() {
+    if($(window).width() >= 768) {
+        let height = parseFloat($(this).find(".artist-description").css("height"));
+        $(this).find(".artist-description").css("bottom", "-" + height + "px");
+    }
+});
+
+$(document).on("click", ".show-artist-description", function() {
+    $(this).closest(".artist-card").find(".artist-description").css("bottom", "0");
+});
+
+$(document).on("click", ".hide-artist-description", function() {
+    let height = parseFloat($(this).closest(".artist-card").find(".artist-description").css("height"));
+    $(this).closest(".artist-card").find(".artist-description").css("bottom", "-" + height + "px");
+});
