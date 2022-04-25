@@ -1420,7 +1420,6 @@ let display3DMustachioToken = (token) => {
     $.get(ownlyAPI + "api/get-token/" + ((address) ? address : "0") + "/" + threeDMustachiosContractAddress + "/" + token, async function(metadata) {
         displayTokenMetadata(chainIDEth, metadata, threeDMustachiosContractAddress, token);
 
-        $("#additional-assets-container").removeClass("d-none");
         $("#transparent-bg-mustachio-preload").attr("src", metadata.trans_bg);
         $("#transparent-bg-mustachio").attr("href", metadata.trans_bg);
 
