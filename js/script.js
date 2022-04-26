@@ -2957,7 +2957,7 @@ $(document).on("click", ".change-token-view", function() {
         $(".change-token-view").removeClass("active");
         $(".change-token-view[value='" + view + "']").addClass("active");
 
-        let collection = findGetParameter("collection");
+        let collection = window.location.pathname.replace(/^\/([^\/]*).*$/, '$1');
         let page = findGetParameter("page");
 
         if(!collection) {
