@@ -1190,7 +1190,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
         }
         content += '                    </div>';
         content += '                    <div class="col-6 button-container">';
-        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
         content += '                    </div>';
         content += '                </div>';
     } else {
@@ -1244,14 +1244,14 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
                                 content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
                             } else {
-                                content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                                content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
                             }
                         }
                     }
 
                     // Bruteforce display for genesis block
                     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        content += '                <div class="w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 text-center neo-bold link" style="border-radius:5px; background-color:#e1e3e3; border-color:#c7c9c9; padding-top:6px; padding-bottom:6px; line-height:1.5">SOLD OUT</div>';
+                        content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
                     }
 
                     content += '                    </div>';
@@ -1694,7 +1694,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         $(".token-price").html("");
         $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
-        let content = '<a href="https://opensea.io/assets/' + chenInkContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        let content = '<a href="https://opensea.io/assets/' + chenInkContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
         $("#create-market-sale-container .text-end").html(content);
         $("#create-market-sale-container").removeClass("d-none");
@@ -1713,7 +1713,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
         $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
-        let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        let content = '<a href="https://opensea.io/assets/' + genesisBlockContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
         $("#create-market-sale-container .text-end").html(content);
         $("#create-market-sale-container").removeClass("d-none");
@@ -1736,7 +1736,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
 
         $(".token-price-currency").attr("src", "../img/tokens/ETH.png");
 
-        let content = '<a href="https://opensea.io/assets/' + ownlyHouseOfArtContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-100 font-size-md-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
+        let content = '<a href="https://opensea.io/assets/' + ownlyHouseOfArtContractAddress + '/' + token + '" class="btn btn-custom-2 w-100 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link" style="border-radius:15px">OWN NOW</a>';
 
         $("#create-market-sale-container .fw-bold").html("Price:");
         $("#create-market-sale-container .text-end").html(content);
@@ -2338,10 +2338,8 @@ $(document).on("click", ".wallet-options", async function () {
     $("#modal-wallet-options").modal("hide");
 
     if(wallet === "MetaMask") {
-        console.log("MetaMask");
-        await connectToMetamask();
+        await updateConnectToWallet();
     } else if(wallet === "WalletConnect") {
-        console.log("WalletConnect");
         await connectWalletConnect();
     }
 });
