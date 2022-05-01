@@ -281,6 +281,9 @@ let initializePage = function() {
     let page = findGetParameter("page");
     let sales = findGetParameter("sales");
 
+    $("#modals-container").load(url + "js/../modals.html?v=" + cacheVersion);
+    $("#footer-container").load(url + "js/../footer.html?v=" + cacheVersion);
+
     $("#navbar-content").load(url + "js/../navbar.html?v=" + cacheVersion, async function() {
         $(this).find(".add-public-url").each(function() {
             $(this).attr("src", url + $(this).attr("src"));
@@ -1214,9 +1217,9 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
             content += '                    <div class="col-6 button-container">';
             if(owner) {
                 if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
                 } else {
-                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
+                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
                 }
             }
             content += '                    </div>';
@@ -1242,16 +1245,18 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                     if(hasMarketplaceEthereumContract || network === "bsc") {
                         if(owner) {
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
                             } else {
-                                content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                                // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                                content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                             }
                         }
                     }
 
                     // Bruteforce display for genesis block
                     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                        // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                        content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                     }
 
                     content += '                    </div>';
@@ -2287,6 +2292,122 @@ let adjust_artist_descriptions = () => {
         $(this).css("bottom", height + "px")
     });
 };
+let checkNetwork = async function(chainId) {
+    await updateConnectToWallet();
+
+    isConnectedToMetamask = await connectToMetamask();
+    if(isConnectedToMetamask) {
+        let _chainID = await mainWeb3.eth.getChainId();
+
+        if(_chainID === chainId) {
+            return true;
+        } else {
+            await switchNetwork(chainId);
+        }
+    }
+
+    return false;
+};
+let switchNetwork = async function(chainId) {
+    try {
+        let chainIdInHex = "0x" + chainId.toString(16);
+        await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: chainIdInHex}],
+        });
+        console.log("You have switched to the right network")
+    } catch (switchError) {
+        // The network has not been added to MetaMask
+        if (switchError.code === 4902) {
+            await addNetwork(chainIdInHex);
+        }
+    }
+};
+let addNetwork = async function(chainIdInHex) {
+    try {
+        let data;
+        if(chainIdInHex === chainIDBsc) {
+            if(chainIDBsc === 56) {
+                data = {
+                    chainId: '0x' + chainIDBsc.toString(16),
+                    chainName:'BNB Chain',
+                    rpcUrls:['https://bsc-dataseed.binance.org/'],
+                    blockExplorerUrls:['https://bscscan.com/'],
+                    nativeCurrency: {
+                        symbol:'BNB',
+                        decimals: 18
+                    }
+                }
+            } else {
+                data = {
+                    chainId: '0x' + chainIDBsc.toString(16),
+                    chainName:'BNB Chain Testnet',
+                    rpcUrls:['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+                    blockExplorerUrls:['https://testnet.bscscan.com/'],
+                    nativeCurrency: {
+                        symbol:'BNB',
+                        decimals: 18
+                    }
+                }
+            }
+        } else if(chainIdInHex === chainIDMatic) {
+            if(chainIDMatic === 137) {
+                data = {
+                    chainId: '0x' + chainIDMatic.toString(16),
+                    chainName:'Polygon',
+                    rpcUrls:['https://polygon-rpc.com'],
+                    blockExplorerUrls:['https://polygonscan.com/'],
+                    nativeCurrency: {
+                        symbol:'MATIC',
+                        decimals: 18
+                    }
+                }
+            } else {
+                data = {
+                    chainId: '0x' + chainIDMatic.toString(16),
+                    chainName:'Polygon Mumbai',
+                    rpcUrls:['https://rpc-mumbai.maticvigil.com/'],
+                    blockExplorerUrls:['https://mumbai-explorer.matic.today/'],
+                    nativeCurrency: {
+                        symbol:'MATIC',
+                        decimals: 18
+                    }
+                }
+            }
+        } else if(chainIdInHex === chainIDEth) {
+            if(chainIDMatic === 1) {
+                data = {
+                    chainId: '0x' + chainIDEth.toString(16),
+                    chainName:'Ethereum Mainnet',
+                    rpcUrls:['https://mainnet.infura.io/v3/'],
+                    blockExplorerUrls:['https://etherscan.io'],
+                    nativeCurrency: {
+                        symbol:'ETH',
+                        decimals: 18
+                    }
+                }
+            } else {
+                data = {
+                    chainId: '0x' + chainIDEth.toString(16),
+                    chainName:'Rinkeby Test Network',
+                    rpcUrls:['https://rinkeby.infura.io/v3/'],
+                    blockExplorerUrls:['https://rinkeby.etherscan.io'],
+                    nativeCurrency: {
+                        symbol:'ETH',
+                        decimals: 18
+                    }
+                }
+            }
+        }
+
+        await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [data]
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 let test = function() {
     // let web3test = new Web3("https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
@@ -2696,31 +2817,63 @@ $(document).on("click", ".create-market-sale", function() {
     $("#modal-buy-select-currency").modal("hide");
 });
 
+// $(document).on("submit", ".newsletter-form", function(e) {
+//     e.preventDefault();
+//
+//     let newsletter_form = $(this);
+//     newsletter_form.find("[type='submit']").prop("disabled", true);
+//
+//     let data = new FormData(newsletter_form[0]);
+//
+//     $.ajax({
+//         url: "https://ownly.tk/api/store-mustachio-subscriber",
+//         // url: "http://ownly-api.test/api/store-mustachio-subscriber",
+//         method: "POST",
+//         cache: false,
+//         contentType: false,
+//         processData: false,
+//         data: data
+//     }).done(function(response) {
+//         newsletter_form.find("input").val("");
+//
+//         $("#modal-subscribe-success").modal("show");
+//     }).fail(function(error) {
+//         console.log(error);
+//     }).always(function() {
+//         newsletter_form.find("[type='submit']").prop("disabled", false);
+//     });
+// });
+
 $(document).on("submit", ".newsletter-form", function(e) {
     e.preventDefault();
 
     let newsletter_form = $(this);
-    newsletter_form.find("[type='submit']").prop("disabled", true);
 
-    let data = new FormData(newsletter_form[0]);
+    if(newsletter_form.find("#agreement").prop("checked")) {
+        newsletter_form.find("[type='submit']").prop("disabled", true);
 
-    $.ajax({
-        url: "https://ownly.tk/api/store-mustachio-subscriber",
-        // url: "http://ownly-api.test/api/store-mustachio-subscriber",
-        method: "POST",
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: data
-    }).done(function(response) {
-        newsletter_form.find("input").val("");
+        let data = new FormData($(this)[0]);
 
-        $("#modal-subscribe-success").modal("show");
-    }).fail(function(error) {
-        console.log(error);
-    }).always(function() {
-        newsletter_form.find("[type='submit']").prop("disabled", false);
-    });
+        $.ajax({
+            url: "https://ownly.tk/api/store-mustachio-subscriber",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: data
+        }).done(function(response) {
+            newsletter_form.find("input").val("");
+            newsletter_form.find("#agreement").prop("checked", false)
+
+            $("#modal-subscribe-success").modal("show");
+        }).fail(function(error) {
+            console.log(error);
+        }).always(function() {
+            newsletter_form.find("[type='submit']").prop("disabled", false);
+        });
+    } else {
+        newsletter_form.find("#agreement").focus();
+    }
 });
 
 $(document).on("click", ".add-to-favorites", async function() {
@@ -3396,4 +3549,96 @@ $(document).on("click", ".show-artist-description", function() {
 $(document).on("click", ".hide-artist-description", function() {
     let height = parseFloat($(this).closest(".artist-card").find(".artist-description").css("height"));
     $(this).closest(".artist-card").find(".artist-description").css("bottom", "-" + height + "px");
+});
+
+// Make Offer
+
+let updateMakeOfferBalanceShown = function() {
+    let selectedCurrency = $("#make-offer-currency").find(".selected").html();
+    $(".offer-currency-balance").addClass("d-none");
+    $(".offer-currency-balance[data-value='" + selectedCurrency + "']").removeClass("d-none");
+
+    console.log(selectedCurrency);
+};
+
+$(document).on("click", ".make-offer-show-modal", async function() {
+    let contractAddress = $(this).attr("data-contract-address");
+    let tokenId = $(this).attr("data-token-id");
+
+    if(!await checkNetwork(chainIDBsc)) {
+        return false;
+    }
+
+    let makeOfferBtn = $("#make-offer");
+    makeOfferBtn.attr("data-contract-address", contractAddress);
+    makeOfferBtn.attr("data-token-id", tokenId);
+
+    if(address) {
+        ownContract.methods.balanceOf(address).call()
+            .then(function(balance) {
+                balance = web3Bsc.utils.fromWei(balance, "ether");
+
+                let ownBalance = $("#offer-own-balance");
+                ownBalance.attr("data-value", balance);
+                ownBalance.text(numberFormat(balance, 3));
+
+                makeOfferBtn.attr("data-own-balance", balance);
+            });
+
+        web3Bsc.eth.getBalance(address, function(err, balance) {
+            balance = web3Bsc.utils.fromWei(balance, "ether");
+
+            let bnbBalance = $("#offer-bnb-balance");
+            bnbBalance.attr("data-value", balance);
+            bnbBalance.text(numberFormat(balance, 3));
+
+            makeOfferBtn.attr("data-bnb-balance", balance);
+        })
+
+        updateMakeOfferBalanceShown();
+
+        $("#offer-amount").val(0);
+        $("#offer-expiration").val(30);
+
+        $("#modal-make-offer").modal("show");
+    }
+});
+
+$(document).on("click", ".select-make-offer-currency", function() {
+    $("#make-offer-currency").html($(this).find(".d-flex").html());
+    updateMakeOfferBalanceShown();
+});
+
+$(document).on("click", "#make-offer", async function() {
+    let amount = parseFloat($("#offer-amount").val());
+    let contractAddress = $(this).attr("data-contract-address");
+    let tokenId = $(this).attr("data-token-id");
+    let ownBalance = parseFloat($(this).attr("data-own-balance"));
+    let bnbBalance = parseFloat($(this).attr("data-bnb-balance"));
+
+    if(amount <= 0) {
+        return 0;
+    }
+
+    let selectedCurrency = $("#make-offer-currency").find(".selected").html();
+    if(selectedCurrency === "OWN") {
+        if(ownBalance < amount) {
+            $("#modal-make-offer").modal("hide");
+
+            $("#modal-error .message").html("Insufficient OWN balance. <a href='https://ownly.io/token/#exchanges'></a>");
+            $("#modal-error").modal("show");
+        }
+    } else if(selectedCurrency === "BNB") {
+        if(bnbBalance < amount) {
+            $("#modal-make-offer").modal("hide");
+
+            $("#modal-error .message").text("Insufficient BNB balance.");
+            $("#modal-error").modal("show");
+        }
+    }
+
+    await checkNetwork(chainIDBsc);
+
+    let message = "I am confirming this action in Ownly Marketplace.";
+    let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
 });
