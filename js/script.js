@@ -782,7 +782,7 @@ let initializeWeb3 = async () => {
 let initializeContracts = () => {
     titansContract = new web3Bsc.eth.Contract(titansContractAbi, titansContractAddress);
     mustachiosContract = new web3Eth.eth.Contract(mustachiosContractAbi, mustachiosContractAddress);
-    threeDMustachiosContract = new web3Eth.eth.Contract(threeDMustachiosContractAbi, threeDMustachiosContractAddress);
+    threeDMustachiosContract = new web3Bsc.eth.Contract(threeDMustachiosContractAbi, threeDMustachiosContractAddress);
     genesisBlockContract = new web3Eth.eth.Contract(genesisBlockContractAbi, genesisBlockContractAddress);
     sagesRantContract = new web3Eth.eth.Contract(sagesRantContractAbi, sagesRantContractAddress);
     ownlyHouseOfArtContract = new web3Eth.eth.Contract(ownlyHouseOfArtContractAbi, ownlyHouseOfArtContractAddress);
@@ -1424,28 +1424,16 @@ let displayMustachioToken = (token) => {
 };
 let display3DMustachioToken = (token) => {
     $.get(ownlyAPI + "api/get-token/" + ((address) ? address : "0") + "/" + threeDMustachiosContractAddress + "/" + token, async function(metadata) {
-        displayTokenMetadata(chainIDEth, metadata, threeDMustachiosContractAddress, token);
+        displayTokenMetadata(chainIDBsc, metadata, threeDMustachiosContractAddress, token);
 
-        $("#transparent-bg-mustachio-preload").attr("src", metadata.trans_bg);
-        $("#transparent-bg-mustachio").attr("href", metadata.trans_bg);
-
-        if(hasMarketplaceEthereumContract) {
-            marketplaceEthereumContract.methods.fetchMarketItem(threeDMustachiosContractAddress, token).call()
-                .then(function(marketItem) {
-                    mustachiosContract.methods.ownerOf(token).call()
-                        .then(async function(owner) {
-                            update_token_transaction(chainIDEth, threeDMustachiosContractAddress, metadata.id, metadata.to, owner);
-                            displayTokenDetails(metadata, marketItem, token, owner, threeDMustachiosContractAddress, "eth");
-                        });
-                });
-        } else {
-            let marketItem = false;
-            mustachiosContract.methods.ownerOf(token).call()
-                .then(async function(owner) {
-                    update_token_transaction(chainIDEth, threeDMustachiosContractAddress, metadata.id, metadata.to, owner);
-                    displayTokenDetails(metadata, marketItem, token, owner, threeDMustachiosContractAddress, "eth");
-                });
-        }
+        marketplaceBinanceContract.methods.fetchMarketItem(threeDMustachiosContractAddress, token).call()
+            .then(function(marketItem) {
+                threeDMustachiosContract.methods.ownerOf(token).call()
+                    .then(async function(owner) {
+                        update_token_transaction(chainIDBsc, threeDMustachiosContractAddress, metadata.id, metadata.to, owner);
+                        displayTokenDetails(metadata, marketItem, token, owner, threeDMustachiosContractAddress, "bsc");
+                    });
+            });
     });
 };
 let displayGenesisBlockToken = (token) => {
