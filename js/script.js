@@ -1124,7 +1124,7 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     }
 
     let padding_top = "100%";
-    let link = '?network=' + network + '&contract=' + contractAddress + '&token=' + i;
+    let link = '../?network=' + network + '&contract=' + contractAddress + '&token=' + i;
 
     let content = '    <div class="' + grid + ' ' + fontSize + ' ' + ((excludedToken) ? 'mb-2' : 'mb-5') + ' pb-md-3 px-lg-4">';
     content += '        <div class="token-card" data-token-id="' + i + '">';
@@ -1247,16 +1247,16 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
                                 content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
                             } else {
-                                // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                                content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                                content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                                // content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                             }
                         }
                     }
 
                     // Bruteforce display for genesis block
                     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                        content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                        content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                        // content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                     }
 
                     content += '                    </div>';
@@ -1392,6 +1392,7 @@ let displayTitanToken = (token) => {
                         displayTokenDetails(metadata, marketItem, token, owner, titansContractAddress, "bsc");
                     });
             });
+
     });
 };
 let displayMustachioToken = (token) => {
@@ -1685,10 +1686,15 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     transferTokenShowModal.attr("data-contract-address", contractAddress);
     transferTokenShowModal.attr("data-token-id", token);
 
+    let isOwner = false;
+
     if(address && web3Bsc.utils.toChecksumAddress(address) === owner) {
+        isOwner = true;
         $("#transfer-token-container").removeClass("d-none");
         initializeTooltip();
     }
+
+    generateOffersTable(metadata.offers, isOwner);
 
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
@@ -1818,6 +1824,51 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
     }
     transfers_content += '      </tbody>';
     $("#transfer-history").html(transfers_content);
+};
+let generateOffersTable = function(offers, isOwner) {
+    let content = '';
+
+    if(offers.length === 0) {
+        content += '    <div class="text-center p-3">';
+        content += '        <div class="mb-2">';
+        content += '            <i class="fas fa-list-dropdown font-size-250"></i>';
+        content += '        </div>';
+        content += '        <div class="font-size-90">No offers yet</div>';
+        content += '    </div>';
+    } else {
+        content += '    <div class="table-responsive p-3">';
+        content += '        <table class="table table-bordered font-size-80 mb-0">';
+        content += '            <tr>';
+        content += '                <th>Date</th>';
+        content += '                <th>From</th>';
+        content += '                <th>Amount</th>';
+        content += '                <th>Expiration</th>';
+        if(isOwner) {
+            content += '            <th></th>';
+        }
+        content += '            </tr>';
+        for(let i = 0; i < offers.length; i++) {
+            content += '        <tr>';
+            content += '            <td class="align-middle">' + offers[i].date_time_offered + '</td>';
+            if(offers[i].name) {
+                content += '        <td class="align-middle"><a href="../?profile=' + offers[i].offeror + '" class="link-color-3">' + offers[i].name + '</a></td>';
+            } else {
+                content += '        <td class="align-middle"><a href="../?profile=' + offers[i].offeror + '" class="link-color-3">' + shortenAddress(web3Bsc.utils.toChecksumAddress(offers[i].offeror), 4, 4) + '</a></td>';
+            }
+            content += '            <td class="text-end align-middle">' + numberFormat(parseFloat(offers[i].amount).toString(), false) + ' <img src="../img/tokens/' + offers[i].currency + '.png" class="me-1" width="20" alt="' + offers[i].currency + '" /></td>';
+            content += '            <td class="align-middle">' + offers[i].expiration + ' day' + (offers[i].expiration > 1 ? 's' : '') + '</td>';
+            if(isOwner) {
+                content += '        <td class="align-middle text-center">';
+                content += '            <button class="btn btn-custom-2 btn-sm font-size-90" style="padding-top:3px">Accept</button>';
+                content += '        </td>';
+            }
+            content += '        </tr>';
+        }
+        content += '        </table>';
+        content += '    </div>';
+    }
+
+    $("#offers-container").html(content);
 };
 let shortenAddress = (address, prefixCount, postfixCount) => {
     let prefix = address.substr(0, prefixCount);
@@ -3615,6 +3666,7 @@ $(document).on("click", "#make-offer", async function() {
     let tokenId = $(this).attr("data-token-id");
     let ownBalance = parseFloat($(this).attr("data-own-balance"));
     let bnbBalance = parseFloat($(this).attr("data-bnb-balance"));
+    let offerExpiration = $("#offer-expiration").val();
 
     if(amount <= 0) {
         return 0;
@@ -3639,6 +3691,40 @@ $(document).on("click", "#make-offer", async function() {
 
     await checkNetwork(chainIDBsc);
 
+    $("#modal-make-offer").modal("hide");
+
     let message = "I am confirming this action in Ownly Marketplace.";
-    let signature = await mainWeb3.eth.personal.sign(message, ethereum.selectedAddress);
+    let signature = await mainWeb3.eth.personal.sign(message, address);
+
+    console.log(signature);
+
+    if(signature) {
+        let form_data = new FormData();
+        form_data.append('chain_id', chainIDBsc);
+        form_data.append('contract_address', contractAddress);
+        form_data.append('token_id', tokenId);
+        form_data.append('offeror', address);
+        form_data.append('signature', signature);
+        form_data.append('currency', selectedCurrency);
+        form_data.append('amount', amount.toString());
+        form_data.append('offer_expiration', offerExpiration);
+
+        $("#modal-processing").modal("show");
+
+        $.ajax({
+            url: ownlyAPI + "api/offer/makeOffer",
+            method: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data
+        }).done(function(response) {
+            console.log(response);
+            $("#modal-success").modal("show");
+        }).fail(function(error) {
+            console.log(error);
+        }).always(function() {
+
+        });
+    }
 });
