@@ -1301,6 +1301,11 @@ let generatePagination = function(pagination, pageUrl) {
     let paginationContainer = $("#pagination-container");
     paginationContainer.addClass("d-none");
 
+    let param = '/?page=';
+    if(pageUrl.includes("?sales")) {
+        param = '&page=';
+    }
+
     if(pagination.last_page > 1) {
         let interval = 2;
         let from = pagination.current_page - interval;
@@ -1319,13 +1324,13 @@ let generatePagination = function(pagination, pageUrl) {
 
         if (pagination.current_page > 1) {
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '?page=1' + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + param + '1' + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">«</span>';
             content += '                </a>';
             content += '            </li>';
 
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '?page=' + ((pagination.current_page - 1 === 0) ? 1 : pagination.current_page - 1) + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + param + ((pagination.current_page - 1 === 0) ? 1 : pagination.current_page - 1) + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">‹</span>';
             content += '                </a>';
             content += '            </li>';
@@ -1335,19 +1340,19 @@ let generatePagination = function(pagination, pageUrl) {
             let current_page = pagination.current_page === i;
 
             content += '            <li class="page-item ' + (current_page ? 'active' : '') + '">';
-            content += '                <a href="' + (!current_page ? (pageUrl + '?page=' + i) : '#') + '" class="page-link px-3 py-2">' + i + '</a>';
+            content += '                <a href="' + (!current_page ? (pageUrl + param + i) : '#') + '" class="page-link px-3 py-2">' + i + '</a>';
             content += '            </li>';
         }
 
         if(pagination.current_page < pagination.last_page) {
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '?page=' + ((pagination.current_page + 1 > pagination.last_page) ? pagination.last_page : pagination.current_page + 1) + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + param + ((pagination.current_page + 1 > pagination.last_page) ? pagination.last_page : pagination.current_page + 1) + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">›</span>';
             content += '                </a>';
             content += '            </li>';
 
             content += '            <li class="page-item">';
-            content += '                <a href="' + pageUrl + '?page=' + pagination.last_page + '" class="page-link px-3 py-2">';
+            content += '                <a href="' + pageUrl + param + pagination.last_page + '" class="page-link px-3 py-2">';
             content += '                    <span aria-hidden="true">»</span>';
             content += '                </a>';
             content += '            </li>';
@@ -1400,8 +1405,8 @@ let displayMustachioToken = (token) => {
         displayTokenMetadata(chainIDEth, metadata, mustachiosContractAddress, token);
 
         $("#additional-assets-container").removeClass("d-none");
-        $("#transparent-bg-mustachio-preload").attr("src", metadata.trans_bg);
-        $("#transparent-bg-mustachio").attr("href", metadata.trans_bg);
+        $("#transparent-bg-mustachio-preload").attr("src", metadata.trans_bg.replace("ipfs.io", "gateway.pinata.cloud"));
+        $("#transparent-bg-mustachio").attr("href", metadata.trans_bg.replace("ipfs.io", "gateway.pinata.cloud"));
 
         if(hasMarketplaceEthereumContract) {
             marketplaceEthereumContract.methods.fetchMarketItem(mustachiosContractAddress, token).call()
