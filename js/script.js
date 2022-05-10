@@ -1393,7 +1393,7 @@ let displayTitanToken = (token) => {
             .then(function(marketItem) {
                 titansContract.methods.ownerOf(token).call()
                     .then(async function(owner) {
-                        update_token_transaction(chainIDBsc, titansContractAddress, metadata.id, metadata.to, owner);
+                        update_token_transaction(chainIDBsc, titansContractAddress, metadata.token_id, metadata.to, owner);
                         displayTokenDetails(metadata, marketItem, token, owner, titansContractAddress, "bsc");
                     });
             });
@@ -1412,7 +1412,7 @@ let displayMustachioToken = (token) => {
                 .then(function(marketItem) {
                     mustachiosContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, mustachiosContractAddress, "eth");
                         });
                 });
@@ -1420,7 +1420,7 @@ let displayMustachioToken = (token) => {
             let marketItem = false;
             mustachiosContract.methods.ownerOf(token).call()
                 .then(async function(owner) {
-                    update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDEth, mustachiosContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, mustachiosContractAddress, "eth");
                 });
         }
@@ -1434,7 +1434,7 @@ let display3DMustachioToken = (token) => {
             .then(function(marketItem) {
                 threeDMustachiosContract.methods.ownerOf(token).call()
                     .then(async function(owner) {
-                        update_token_transaction(chainIDBsc, threeDMustachiosContractAddress, metadata.id, metadata.to, owner);
+                        update_token_transaction(chainIDBsc, threeDMustachiosContractAddress, metadata.token_id, metadata.to, owner);
                         displayTokenDetails(metadata, marketItem, token, owner, threeDMustachiosContractAddress, "bsc");
                     });
             });
@@ -1449,7 +1449,7 @@ let displayGenesisBlockToken = (token) => {
                 .then(function(marketItem) {
                     genesisBlockContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, genesisBlockContractAddress, "eth");
                         });
                 });
@@ -1457,7 +1457,7 @@ let displayGenesisBlockToken = (token) => {
             let marketItem = false;
             genesisBlockContract.methods.ownerOf(token).call()
                 .then(async function(owner) {
-                    update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDEth, genesisBlockContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, genesisBlockContractAddress, "eth");
                 });
         }
@@ -1472,7 +1472,7 @@ let displaySagesRantToken = (token) => {
                 .then(function(marketItem) {
                     sagesRantContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDEth, sagesRantContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDEth, sagesRantContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, sagesRantContractAddress, "eth");
                         });
                 });
@@ -1480,7 +1480,7 @@ let displaySagesRantToken = (token) => {
             let marketItem = false;
             sagesRantContract.methods.ownerOf(token).call()
                 .then(async function(owner) {
-                    update_token_transaction(chainIDEth, sagesRantContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDEth, sagesRantContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, sagesRantContractAddress, "eth");
                 });
         }
@@ -1495,7 +1495,7 @@ let displayOwnlyHouseOfArtToken = (token) => {
                 .then(function(marketItem) {
                     ownlyHouseOfArtContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, ownlyHouseOfArtContractAddress, "eth");
                         });
                 });
@@ -1503,7 +1503,7 @@ let displayOwnlyHouseOfArtToken = (token) => {
             let marketItem = false;
             ownlyHouseOfArtContract.methods.ownerOf(token).call()
                 .then(async function(owner) {
-                    update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDEth, ownlyHouseOfArtContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, ownlyHouseOfArtContractAddress, "eth");
                 });
         }
@@ -1518,7 +1518,7 @@ let displayChenInkToken = (token) => {
                 .then(function(marketItem) {
                     chenInkContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDEth, chenInkContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, chenInkContractAddress, "eth");
                         });
                 });
@@ -1526,7 +1526,7 @@ let displayChenInkToken = (token) => {
             let marketItem = false;
             chenInkContract.methods.ownerOf(token).call()
                 .then(async function(owner) {
-                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDEth, chenInkContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, chenInkContractAddress, "eth");
                 });
         }
@@ -1541,7 +1541,7 @@ let displayRewardToken = (token) => {
                 .then(function(marketItem) {
                     rewardsContract.methods.ownerOf(token).call()
                         .then(async function(owner) {
-                            update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.id, metadata.to, owner);
+                            update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.token_id, metadata.to, owner);
                             displayTokenDetails(metadata, marketItem, token, owner, rewardsContractAddress, "matic");
                         });
                 });
@@ -1550,7 +1550,7 @@ let displayRewardToken = (token) => {
             let owner = "0x768532c218f4f4e6E4960ceeA7F5a7A947a1dd61";
             // rewardsContract.methods.ownerOf(token).call()
             //     .then(async function(owner) {
-                    update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.id, metadata.to, owner);
+                    update_token_transaction(chainIDMatic, rewardsContractAddress, metadata.token_id, metadata.to, owner);
                     displayTokenDetails(metadata, marketItem, token, owner, rewardsContractAddress, "matic");
                 // });
         }
