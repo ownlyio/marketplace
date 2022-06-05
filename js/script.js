@@ -1046,9 +1046,9 @@ let displayOwnedTokens = async function(profile, page) {
 
         let displayTokenCards = async function(owner, marketItem, metadata) {
             let network = "eth";
-            if(metadata.chainId === chainIDBsc) {
+            if(metadata.chain_id === chainIDBsc) {
                 network = "bsc";
-            } else if(metadata.chainId === chainIDMatic) {
+            } else if(metadata.chain_id === chainIDMatic) {
                 network = "matic";
             }
 
@@ -1208,107 +1208,109 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
 
-    content += '            <div class="token-footer">';
-    if(owner === mainWalletAddress && network === "eth") {
-        let price = 0;
+    if(type === "all") { // token footer is not visible in owned and favorites views
+        content += '            <div class="token-footer">';
+        if(owner === mainWalletAddress && network === "eth") {
+            let price = 0;
 
-        try {
-            await $.get("https://api.opensea.io/api/v1/asset/" + contractAddress + "/" + i, async function(data) {
-                if(data && data.orders && data.orders.length > 0) {
-                    price = web3Bsc.utils.fromWei(data.orders[0].base_price, "ether");
-                }
-            });
-        } catch (error) {}
+            try {
+                await $.get("https://api.opensea.io/api/v1/asset/" + contractAddress + "/" + i, async function(data) {
+                    if(data && data.orders && data.orders.length > 0) {
+                        price = web3Bsc.utils.fromWei(data.orders[0].base_price, "ether");
+                    }
+                });
+            } catch (error) {}
 
-        content += '                <div class="row align-items-center">';
-        content += '                    <div class="col-6">';
-        if(price > 0) {
-            content += '                    <div class="d-flex align-items-end mb-1">';
-            content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
-            content += '                        <div class="ps-2 ms-1">';
-            content += '                            <img src="../img/tokens/ETH.png" width="30" />';
-            content += '                        </div>';
-            content += '                    </div>';
-            content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
-        }
-        content += '                    </div>';
-        content += '                    <div class="col-6 button-container">';
-        content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
-        content += '                    </div>';
-        content += '                </div>';
-    } else {
-        if(parseInt(marketItem.itemId)) {
             content += '                <div class="row align-items-center">';
             content += '                    <div class="col-6">';
-            content += '                        <div class="d-flex align-items-end mb-1">';
-            content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
-            if(marketItem.currency === "OWN") {
+            if(price > 0) {
+                content += '                    <div class="d-flex align-items-end mb-1">';
+                content += '                        <div class="font-size-100 font-size-md-110">Price:</div>';
                 content += '                        <div class="ps-2 ms-1">';
-                content += '                            <img src="../img/ownly/own-token.png" width="30" />';
+                content += '                            <img src="../img/tokens/ETH.png" width="30" />';
                 content += '                        </div>';
-            } else if(marketItem.currency === "BNB") {
-                content += '                        <div class="ps-2 ms-1">';
-                content += '                            <img src="../img/bnb/bnb.webp" width="30" />';
-                content += '                        </div>';
+                content += '                    </div>';
+                content += '                    <div class="font-size-160 font-size-md-180 neo-black">' + price + ' ETH</div>';
             }
-            content += '                        </div>';
-            content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
             content += '                    </div>';
             content += '                    <div class="col-6 button-container">';
-            if(owner) {
-                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                    content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
-                } else {
-                    content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
-                }
-            }
+            content += '                        <a href="https://opensea.io/assets/' + contractAddress + '/' + i + '" class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link" style="border-radius:15px">OWN NOW</a>';
             content += '                    </div>';
             content += '                </div>';
-            content += '                <div class="owner d-none">' + owner + '</div>';
         } else {
-            if(chainId !== chainIDMatic) {
-                if(web3Bsc.utils.toChecksumAddress(owner) === "0x0000000000000000000000000000000000000000") {
-                    content += '                <div class="row align-items-center justify-content-end" style="min-height:69px">';
-                    content += '                    <div class="col-6">';
-                    content += '                        <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-sale-confirmation" data-item-id="' + i + '" data-price="' + marketItem.price + '" data-currency="BNB" data-token-id="' + i + '" data-type="mint" style="border-radius:15px">MINT NOW</button>';
-                    content += '                    </div>';
-                } else {
-                    content += '                <div class="row align-items-center" style="min-height:69px">';
-                    content += '                    <div class="col-6">';
-                    content += '                        <div>';
-                    content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+            if(parseInt(marketItem.itemId)) {
+                content += '                <div class="row align-items-center">';
+                content += '                    <div class="col-6">';
+                content += '                        <div class="d-flex align-items-end mb-1">';
+                content += '                            <div class="font-size-100 font-size-md-110">Price:</div>';
+                if(marketItem.currency === "OWN") {
+                    content += '                        <div class="ps-2 ms-1">';
+                    content += '                            <img src="../img/ownly/own-token.png" width="30" />';
                     content += '                        </div>';
-                    content += '                        <div class="font-size-100 neo-bold">Owner</div>';
-                    content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
-                    content += '                    </div>';
-                    content += '                    <div class="col-6">';
-                    if(hasMarketplaceEthereumContract || network === "bsc") {
-                        if(owner) {
-                            if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
-                                content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
-                            } else {
-                                // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                                content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                } else if(marketItem.currency === "BNB") {
+                    content += '                        <div class="ps-2 ms-1">';
+                    content += '                            <img src="../img/bnb/bnb.webp" width="30" />';
+                    content += '                        </div>';
+                }
+                content += '                        </div>';
+                content += '                        <div class="font-size-160 font-size-md-180 neo-black">' + web3Bsc.utils.fromWei(marketItem.price, "ether") + ' ' + ((hasMarketplaceEthereumContract) ? marketItem.currency : ((marketItem.currency) ? marketItem.currency : "BNB")) + '</div>';
+                content += '                    </div>';
+                content += '                    <div class="col-6 button-container">';
+                if(owner) {
+                    if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                        content += '                <button class="btn btn-custom-3 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold link cancel-market-item-confirmation" data-item-id="' + marketItem.itemId + '" style="border-radius:15px">CANCEL</button>';
+                    } else {
+                        content += '                <button class="btn btn-custom-2 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold link create-market-sale-confirmation" data-item-id="' + marketItem.itemId + '" data-price="' + marketItem.price + '" data-currency="' + marketItem.currency + '" data-type="sale" style="border-radius:15px">OWN NOW</button>';
+                    }
+                }
+                content += '                    </div>';
+                content += '                </div>';
+                content += '                <div class="owner d-none">' + owner + '</div>';
+            } else {
+                if(chainId !== chainIDMatic) {
+                    if(web3Bsc.utils.toChecksumAddress(owner) === "0x0000000000000000000000000000000000000000") {
+                        content += '                <div class="row align-items-center justify-content-end" style="min-height:69px">';
+                        content += '                    <div class="col-6">';
+                        content += '                        <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-110 font-size-xl-110 font-size-xxl-120 neo-bold create-market-sale-confirmation" data-item-id="' + i + '" data-price="' + marketItem.price + '" data-currency="BNB" data-token-id="' + i + '" data-type="mint" style="border-radius:15px">MINT NOW</button>';
+                        content += '                    </div>';
+                    } else {
+                        content += '                <div class="row align-items-center" style="min-height:69px">';
+                        content += '                    <div class="col-6">';
+                        content += '                        <div>';
+                        content += '                            <a href="' + blockchainExplorer + "tx/" + metadata.transaction_hash + '" target="_blank" class="link-color-4 font-size-90 text-decoration-none transaction-hash">View on ' + explorerName + '</a>';
+                        content += '                        </div>';
+                        content += '                        <div class="font-size-100 neo-bold">Owner</div>';
+                        content += '                        <div class="font-size-90 owner-address"><a href="' + url + '?profile=' + owner + '" class="link-color-4 text-decoration-none">' + shortenAddress(web3Bsc.utils.toChecksumAddress(owner), 5, 5) + '</a></div>';
+                        content += '                    </div>';
+                        content += '                    <div class="col-6">';
+                        if(hasMarketplaceEthereumContract || network === "bsc") {
+                            if(owner) {
+                                if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
+                                    content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
+                                } else {
+                                    // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                                    content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                                }
                             }
                         }
-                    }
 
-                    // Bruteforce display for genesis block
-                    if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                        content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
-                    }
+                        // Bruteforce display for genesis block
+                        if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
+                            // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                            content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                        }
 
-                    content += '                    </div>';
-                    content += '                </div>';
+                        content += '                    </div>';
+                        content += '                </div>';
+                    }
                 }
             }
         }
+        content += '                </div>';
+        content += '            </div>';
+        content += '        </div>';
+        content += '    </div>';
     }
-    content += '                </div>';
-    content += '            </div>';
-    content += '        </div>';
-    content += '    </div>';
 
     if(owner) {
         if(address && owner.toLowerCase() === address.toLowerCase()) {
@@ -1684,10 +1686,10 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         tokenCollectionName.text("Titans of Industry");
         tokenCollectionName.attr("href", "/titansofindustry");
     } else if(contractAddress === mustachiosContractAddress && network === "eth") {
-        tokenCollectionName.text("The Mustachios");
+        tokenCollectionName.text("Mustachios (2D)");
         tokenCollectionName.attr("href", "/mustachios");
     } else if(contractAddress === threeDMustachiosContractAddress && network === "BSC") {
-        tokenCollectionName.text("Mustachio Pathfinders");
+        tokenCollectionName.text("Mustachios (3D)");
         tokenCollectionName.attr("href", "/3dmustachios");
     } else if(contractAddress === chenInkContractAddress && network === "eth" && token <= 53) {
         tokenCollectionName.text("CryptoSolitaire");
