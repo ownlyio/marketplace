@@ -281,6 +281,8 @@ let initializePage = function() {
     let page = findGetParameter("page");
     let sales = findGetParameter("sales");
 
+    cacheVersion = $("#script").attr("src").split("?v=")[1];
+
     $("#modals-container").load(url + "js/../modals.html?v=" + cacheVersion);
     $("#footer-container").load(url + "js/../footer.html?v=" + cacheVersion);
 
@@ -290,7 +292,6 @@ let initializePage = function() {
         });
 
         $(".website-home-link").attr("href", url);
-        cacheVersion = $("#script").attr("src").split("?v=")[1];
         $("#app-version").text(cacheVersion.substr(0, 5));
 
         if(currentURL.includes("/launchpad")) {
@@ -971,58 +972,97 @@ let displayCollectionProperties = function(network, collection) {
     });
 };
 let displayOwnedTokens = async function(profile, page) {
-    $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
-        let metadata = ownedTokens.data;
+    // $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(ownedTokens) {
+    //     let metadata = ownedTokens.data;
+    //
+    //     generatePagination(ownedTokens, url + '?profile=' + profile + "&tab=owned");
+    //
+    //     for(let i = 0; i < metadata.length; i++) {
+    //         console.log(metadata[i]);
+    //         if(parseInt(metadata[i].chain_id) === chainIDBsc) {
+    //             marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
+    //                 .then(async function(marketItem) {
+    //                     let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
+    //                     $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+    //                 });
+    //         } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
+    //             if(hasMarketplaceEthereumContract) {
+    //                 marketplaceEthereumContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
+    //                     .then(async function(marketItem) {
+    //                         let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+    //                         $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+    //                     });
+    //             } else {
+    //                 let marketItem = false;
+    //                 let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+    //                 $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+    //             }
+    //         } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
+    //             if(hasMarketplacePolygonContract) {
+    //                 marketplacePolygonContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
+    //                     .then(async function(marketItem) {
+    //                         let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+    //                         $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+    //                     });
+    //             } else {
+    //                 let marketItem = false;
+    //                 let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
+    //                 $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+    //             }
+    //         }
+    //     }
+    //
+    //     if(metadata.length === 0) {
+    //         let content = ' <div class="d-flex flex-column align-items-center py-5 mb-5">';
+    //         content += '        <div class="mb-4">';
+    //         content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
+    //         content += '        </div>';
+    //         content += '        <div>No owned tokens from our collections yet.<div>';
+    //         content += '    </div>';
+    //
+    //         $("#owned-tokens-container").html(content);
+    //     } else {
+    //         $("#loading-container-owned-tokens").removeClass("d-flex");
+    //         $("#loading-container-owned-tokens").addClass("d-none");
+    //     }
+    // });
 
-        generatePagination(ownedTokens, url + '?profile=' + profile + "&tab=owned");
+    $.get(ownlyAPI + "api/owned_tokens/" + ((profile) ? profile : "0") + ((page) ? ("?page=" + page) : ""), async function(data) {
+        let metadata = data.tokens.data;
 
-        for(let i = 0; i < metadata.length; i++) {
-            console.log(metadata[i]);
-            if(parseInt(metadata[i].chain_id) === chainIDBsc) {
-                marketplaceBinanceContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
-                    .then(async function(marketItem) {
-                        let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "bsc");
-                        $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                    });
-            } else if(parseInt(metadata[i].chain_id) === chainIDEth) {
-                if(hasMarketplaceEthereumContract) {
-                    marketplaceEthereumContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
-                        .then(async function(marketItem) {
-                            let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
-                            $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                        });
-                } else {
-                    let marketItem = false;
-                    let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
-                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                }
-            } else if(parseInt(metadata[i].chain_id) === chainIDMatic) {
-                if(hasMarketplacePolygonContract) {
-                    marketplacePolygonContract.methods.fetchMarketItem(metadata[i].contract_address, metadata[i].id).call()
-                        .then(async function(marketItem) {
-                            let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
-                            $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                        });
-                } else {
-                    let marketItem = false;
-                    let content = await formatTokenCards(null, "owned", metadata[i].id, marketItem, metadata[i], profile, metadata[i].contract_address, "eth");
-                    $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
-                }
-            }
-        }
+        generatePagination(data, url + '?profile=' + profile + "&tab=owned");
 
         if(metadata.length === 0) {
-            let content = ' <div class="d-flex flex-column align-items-center py-5 mb-5">';
-            content += '        <div class="mb-4">';
-            content += '            <i class="far fa-images text-color-5 font-size-600"></i>';
-            content += '        </div>';
-            content += '        <div>No owned tokens from our collections yet.<div>';
-            content += '    </div>';
+            $("#loading-container").addClass("d-none");
+            $("#tokens-container").html('<div class="text-center text-color-7 font-size-160 my-5 py-5">No items to display</div>');
+            $(".property-filter-item").prop("disabled", false);
+            return 0;
+        }
 
-            $("#owned-tokens-container").html(content);
-        } else {
-            $("#loading-container-owned-tokens").removeClass("d-flex");
+        let view = (localStorage.getItem("view")) ? localStorage.getItem("view") : 'large-grid';
+        $(".change-token-view").removeClass("active");
+        $(".change-token-view[value='" + view + "']").addClass("active");
+        $("#view-options-container").removeClass("d-none");
+
+        let displayTokenCards = async function(owner, marketItem, metadata) {
+            let network = "eth";
+            if(metadata.chainId === chainIDBsc) {
+                network = "bsc";
+            } else if(metadata.chainId === chainIDMatic) {
+                network = "matic";
+            }
+
+            let content = await formatTokenCards(0, "owned", metadata.token_id, marketItem, metadata, owner, metadata.contract_address, network);
+
+            content = (view === "list") ? generateListView(content) : content;
+
             $("#loading-container-owned-tokens").addClass("d-none");
+
+            $("#owned-tokens-container").html($("#owned-tokens-container").html() + content);
+        };
+
+        for(let i = 0; i < metadata.length; i++) {
+            displayTokenCards(metadata[i].to, false, metadata[i]);
         }
     });
 };
@@ -1247,16 +1287,16 @@ let formatTokenCards = async function(excludedToken, type, i, marketItem, metada
                             if(address && web3Bsc.utils.toChecksumAddress(owner) === web3Bsc.utils.toChecksumAddress(address)) {
                                 content += '                <button class="btn btn-custom-4 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 font-size-xxl-120 neo-bold create-market-item-confirmation" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">SELL NOW</button>';
                             } else {
-                                content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                                // content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                                // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                                content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-100 font-size-xxl-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                             }
                         }
                     }
 
                     // Bruteforce display for genesis block
                     if(web3Bsc.utils.toChecksumAddress(contractAddress) === web3Bsc.utils.toChecksumAddress(genesisBlockContractAddress) && soldGenesisBlock.includes(i)) {
-                        content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
-                        // content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
+                        // content += '                <button class="btn btn-custom-6 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold make-offer-show-modal" data-contract-address="' + contractAddress + '" data-token-id="' + i + '" style="border-radius:15px">MAKE OFFER</button>';
+                        content += '                <button class="btn btn-custom-17 w-100 line-height-110 font-size-90 font-size-lg-110 py-3 neo-bold" style="border-radius:15px" disabled>SOLD OUT</button>';
                     }
 
                     content += '                    </div>';
