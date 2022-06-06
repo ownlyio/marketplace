@@ -1729,7 +1729,7 @@ let displayTokenDetails = async function(metadata, marketItem, token, owner, con
         initializeTooltip();
     }
 
-    generateOffersTable(metadata.offers, isOwner);
+    // generateOffersTable(metadata.offers, isOwner);
 
     // Bruteforce display for genesis block
     let soldGenesisBlock = [3];
