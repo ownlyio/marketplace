@@ -1040,6 +1040,7 @@ let displayOwnedTokens = async function(profile, page) {
         }
 
         let view = (localStorage.getItem("view")) ? localStorage.getItem("view") : 'large-grid';
+        view = (view === "list") ? "large-grid" : view;
         $(".change-token-view").removeClass("active");
         $(".change-token-view[value='" + view + "']").addClass("active");
         $("#view-options-container").removeClass("d-none");
