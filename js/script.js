@@ -873,6 +873,7 @@ let displayTokens = async (network, excludedToken, type, collection, filters, pa
         collectionContract = new web3[network].eth.Contract(JSON.parse(data.collection.abi), data.collection.contract_address);
 
         let view = (localStorage.getItem("view")) ? localStorage.getItem("view") : 'large-grid';
+        view = (excludedToken) ? 'small-grid' : view;
         $(".change-token-view").removeClass("active");
         $(".change-token-view[value='" + view + "']").addClass("active");
         $("#view-options-container").removeClass("d-none");
@@ -3156,7 +3157,7 @@ $(document).on("click", "#transfer-token", async function() {
         nftContract = new mainWeb3.eth.Contract(titansContractAbi, titansContractAddress);
     } else if(contractAddress === mustachiosContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
         nftContract = new mainWeb3.eth.Contract(mustachiosContractAbi, mustachiosContractAddress);
-    } else if(contractAddress === threeDMustachiosContractAddress && (tokenChainId === 1 || tokenChainId === 4)) {
+    } else if(contractAddress === threeDMustachiosContractAddress) {
         nftContract = new mainWeb3.eth.Contract(threeDMustachiosContractAbi, threeDMustachiosContractAddress);
     } else if(contractAddress === chenInkContractAddress && (tokenChainId === 1 || tokenChainId === 4) && tokenId <= 53) {
         nftContract = new mainWeb3.eth.Contract(chenInkContractAbi, chenInkContractAddress);
