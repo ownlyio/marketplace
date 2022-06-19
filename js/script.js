@@ -2260,7 +2260,7 @@ let pad_zeroes = (number) => {
 };
 let start_countdown = () => {
     $.ajax({
-        url: "https://ownly.tk/api/get-remaining-time/2021-12-03%2007:07:00",
+        url: "https://ownly.tk/api/get-remaining-time/2022-06-27%2012:00:00",
         // url: "http://ownly-api.test/api/get-remaining-time/2021-09-30%2009:00:00",
         method: "GET"
     }).done(function(remaining_time) {
@@ -2520,6 +2520,8 @@ initializeEnvVariables();
 $(document).ready(function() {
     initiate_loading_page();
     initializeWalletConnect();
+
+    start_countdown();
 });
 
 $(window).on("load", async () => {
