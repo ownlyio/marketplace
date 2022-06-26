@@ -132,7 +132,7 @@ let initializeEnvVariables = () => {
         chainIDMatic = 137;
 
         url = "https://ownly.market/";
-        ownlyAPI = "https://ownly.tk/";
+        ownlyAPI = "http://142.93.51.143/";
         mainWalletAddress = "0x672b733C5350034Ccbd265AA7636C3eBDDA2223B";
     } else {
         titansContractAddress = "0xB9f74a918d3bF21be452444e65039e6365DF9B98";
@@ -2260,7 +2260,7 @@ let pad_zeroes = (number) => {
 };
 let start_countdown = () => {
     $.ajax({
-        url: "https://ownly.tk/api/get-remaining-time/2022-06-27%2012:00:00",
+        url: "http://142.93.51.143/api/get-remaining-time/2022-06-27%2012:00:00",
         // url: "http://ownly-api.test/api/get-remaining-time/2021-09-30%2009:00:00",
         method: "GET"
     }).done(function(remaining_time) {
@@ -2506,7 +2506,7 @@ let test = function() {
     //         console.log(data);
     //     });
 
-    $.get("https://ownly.tk/api/quest/getQuestOneReward/0x7ef49272bb9EDBF9350B2D884C4Ac0aF34D9826F/2", function(data) {
+    $.get("http://142.93.51.143/api/quest/getQuestOneReward/0x7ef49272bb9EDBF9350B2D884C4Ac0aF34D9826F/2", function(data) {
         console.log(data);
     });
 };
@@ -2945,7 +2945,7 @@ $(document).on("submit", ".newsletter-form", function(e) {
         let data = new FormData($(this)[0]);
 
         $.ajax({
-            url: "https://ownly.tk/api/store-mustachio-subscriber",
+            url: "http://142.93.51.143/api/store-mustachio-subscriber",
             method: "POST",
             cache: false,
             contentType: false,
